@@ -2,6 +2,7 @@ var path = require('path');
 var pathToPhaser = path.join(__dirname, '/node_modules/phaser/');
 var phaser = path.join(pathToPhaser, 'dist/phaser.js');
 var peer = path.join(path.join(__dirname, '/node_modules/peerjs/dist/peer.js'))
+var qrious = path.join(__dirname, '/node_modules/qrious/dist/qrious.js')
 
 module.exports = {
   entry: './src/main.ts',
@@ -20,7 +21,8 @@ module.exports = {
     extensions: ['.ts', '.js'],
     alias: {
       phaser: phaser,
-      peer: peer
+      peer: peer,
+      qrious: qrious
     }
   },
   module: {

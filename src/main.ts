@@ -1,4 +1,5 @@
 import "peer";
+import * as QRious from 'qrious';
 import { Point } from "./point";
 import { Switchboard } from "./switchboard";
 
@@ -112,7 +113,11 @@ window.onload = () => {
 		ClearCanvas();
 	});
 	switchboard.startListening().subscribe((id: string)=> {
-		// create QR code
+		const qr = new QRious({			
+			element: document.getElementById('qrCode'),
+			value: id
+		});
+		
 	});
 /*	const connect: HTMLElement = document.getElementById('connect');
 	connect.addEventListener('click', (e) => {
