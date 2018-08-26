@@ -5,10 +5,13 @@ var peer = path.join(path.join(__dirname, '/node_modules/peerjs/dist/peer.js'))
 var qrious = path.join(__dirname, '/node_modules/qrious/dist/qrious.js')
 
 module.exports = {
-  entry: './src/main.ts',
+  entry: {
+    host: './src/host.ts',
+    client: './src/client.ts'
+  },
   output: {
     path: path.resolve(__dirname, 'build'),
-    filename: 'bundle.js'
+    filename: '[name].entry.js'
   },
   devServer: {
     contentBase: path.resolve(__dirname, './'),
