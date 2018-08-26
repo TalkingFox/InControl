@@ -52,7 +52,7 @@ export function sendMessage() {
 }
 
 function InitializeCanvas() {
-	const canvas: HTMLCanvasElement = document.getElementById('drawingBoard') as HTMLCanvasElement;
+	canvas = document.getElementById('drawingBoard') as HTMLCanvasElement;
 	canvasContext = canvas.getContext("2d");
 	canvas.addEventListener('mousedown', function (e: MouseEvent) {
 		isMouseDown = true;
@@ -61,7 +61,6 @@ function InitializeCanvas() {
 	});
 	canvas.addEventListener('touchstart', function (e) {
 		isMouseDown = true;
-		console.log('touch start');
 		const coordinates = GetTouchCoordinates(e, this);
 		SetLastCoordinates(coordinates);
 	});
@@ -121,6 +120,10 @@ function Draw(newCoordinates: Point) {
 	SetLastCoordinates(newCoordinates);
 }
 
+function ClearCanvas() {
+	canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+}
+
 
 
 
@@ -128,6 +131,10 @@ function Draw(newCoordinates: Point) {
 window.onload = () => {
 	InitializeCanvas();
 	var game = new Game(config);
+	const clearButton = document.getElementById("clearBoard");
+	clearButton.addEventListener('click', function (e) {
+		ClearCanvas();
+	});
 /*	const connect: HTMLElement = document.getElementById('connect');
 	connect.addEventListener('click', (e) => {
 		this.connect();
