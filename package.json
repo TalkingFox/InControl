@@ -24,6 +24,7 @@
     "babel-loader": "^7.1.5",
     "peerjs": "^0.3.16",
     "phaser": "3.9.0",
+    "rxjs": "^6.2.2",
     "url-parse": "^1.4.3"
   },
   "scripts": {

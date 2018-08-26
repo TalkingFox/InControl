@@ -1,38 +1,15 @@
-/// <reference path="../phaser.d.ts"/>
-
-import "phaser";
 import "peer";
-import { BackDrop } from "./scenes/backdrop";
-import { Point } from "../point";
-
-const config: GameConfig = {
-	width: 800,
-	height: 600,
-	type: Phaser.AUTO,
-	parent: "game",
-	scene: BackDrop,
-	physics: {
-		default: "arcade",
-		arcade: {
-			gravity: { y: 0 }
-		}
-	}
-};
+import { Point } from "./point";
+import { Switchboard } from "./switchboard";
 
 let isMouseDown: boolean = false;
 let canvasContext: CanvasRenderingContext2D;
 let canvas: HTMLCanvasElement;
 let lastPosition: Point = new Point(0,0);
-let connection: PeerJs.DataConnection;
+const switchboard: Switchboard = new Switchboard();
 
-// game class
-export class Game extends Phaser.Game {
-	constructor(config: GameConfig) {
-		super(config);
-	}
-}
 
-export function connect() {
+/*export function connect() {
 	const idElement = document.getElementById("connectId") as HTMLInputElement;
 	const id = idElement.value;
 	console.log('connecting with: ' + id);
@@ -49,7 +26,7 @@ export function sendMessage() {
 	const message = messageElement.value;
 	console.log('sending message: ' + message);
 	connection.send(message);
-}
+}*/
 
 function InitializeCanvas() {
 	canvas = document.getElementById('drawingBoard') as HTMLCanvasElement;
@@ -130,10 +107,12 @@ function ClearCanvas() {
 // when the page is loaded, create our game instance
 window.onload = () => {
 	InitializeCanvas();
-	var game = new Game(config);
 	const clearButton = document.getElementById("clearBoard");
 	clearButton.addEventListener('click', function (e) {
 		ClearCanvas();
+	});
+	switchboard.startListening().subscribe((id: string)=> {
+		// create QR code
 	});
 /*	const connect: HTMLElement = document.getElementById('connect');
 	connect.addEventListener('click', (e) => {
