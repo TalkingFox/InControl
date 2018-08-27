@@ -30,7 +30,7 @@ window.onload = () => {
         drawLine(code.location.topLeftCorner, code.location.topRightCorner);
         drawLine(code.location.topRightCorner, code.location.bottomRightCorner);
         drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner);
-        drawLine(code.location.bottomLeftCorner, code.location.bottomLeftCorner);
+        drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner);
         outputMessage.innerText = code.data;
         video.pause();        
     }
