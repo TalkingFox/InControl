@@ -22,6 +22,7 @@
   "dependencies": {
     "@types/peerjs": "^0.0.29",
     "babel-loader": "^7.1.5",
+    "jsqr": "^1.1.1",
     "peerjs": "^0.3.16",
     "phaser": "3.9.0",
     "qrious": "^4.0.2",

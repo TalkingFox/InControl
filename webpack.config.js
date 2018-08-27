@@ -3,6 +3,7 @@ var pathToPhaser = path.join(__dirname, '/node_modules/phaser/');
 var phaser = path.join(pathToPhaser, 'dist/phaser.js');
 var peer = path.join(path.join(__dirname, '/node_modules/peerjs/dist/peer.js'))
 var qrious = path.join(__dirname, '/node_modules/qrious/dist/qrious.js')
+var jsqr = path.join(__dirname, '/node_modules/jsqr/dist/jsQR.js');
 
 module.exports = {
   entry: {
