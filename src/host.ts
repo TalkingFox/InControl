@@ -1,7 +1,8 @@
-import "peer";
 import * as QRious from 'qrious';
 import { Point } from "./point";
-import { Switchboard } from "./switchboard";
+import { Switchboard } from "./telephony/switchboard";
+import { Room } from "./models/room";
+import { User } from "./models/user";
 
 let isMouseDown: boolean = false;
 let canvasContext: CanvasRenderingContext2D;
@@ -102,23 +103,56 @@ function ClearCanvas() {
 	canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 }
 
+function createRoom(roomName: string) {
+	const roomContainer = document.getElementById('roomInformation');
+	roomContainer.setAttribute('hidden','');
+	initializeWaitingRoom(roomName);
+}
 
+function userJoined(user: string) {
+	console.log(user+' joined!');
+}
 
+function initializeWaitingRoom(roomName: string) {
+	console.log('initializing wait room');
+	switchboard.startListening().subscribe((id: string)=> {
+		console.log('connection open');
+		const room = new Room(id, roomName);
+		const qr = new QRious({			
+			element: document.getElementById('qrCode'),
+			value: JSON.stringify(room)
+		});	
+		switchboard.users.subscribe((user: string) => {
+			this.userJoined(user);
+		});
+		const waitingRoom = document.getElementById('waitingRoom');
+		waitingRoom.removeAttribute('hidden');
+		const drawingBoard = document.getElementById('drawingBoard');
+		drawingBoard.removeAttribute('hidden');
+	});
+}
+
+function startGame() {
+
+}
 
 // when the page is loaded, create our game instance
 window.onload = () => {
-	InitializeCanvas();
+	const roomMaker = document.getElementById('createRoom');
+	roomMaker.addEventListener('click', () => {
+		const roomElement = document.getElementById('roomName') as HTMLInputElement;
+		if (!roomElement.value) {
+			alert('Please enter a room name.')
+			return;
+		}		
+		createRoom(roomElement.value);
+	});
+	/* InitializeCanvas();
 	const clearButton = document.getElementById("clearBoard");
 	clearButton.addEventListener('click', function (e) {
 		ClearCanvas();
-	});
-	switchboard.startListening().subscribe((id: string)=> {
-		const qr = new QRious({			
-			element: document.getElementById('qrCode'),
-			value: id
-		});
-		
-	});
+	});*/
+	
 /*	const connect: HTMLElement = document.getElementById('connect');
 	connect.addEventListener('click', (e) => {
 		this.connect();

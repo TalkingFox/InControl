@@ -65,3 +65,4 @@ assets
 
 # build output
 build
+host.ps1

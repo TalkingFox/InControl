@@ -1,14 +1,23 @@
-import {Observable, Subject} from 'rxjs';
+import { Observable, Subject } from 'rxjs';
+import { DataMessage, DataMessageType } from '../models/message';
+import { User } from '../models/user';
+import "peer";
 
 export class Switchboard {
-    public messages: Observable<string>;
-    private messageQueue: Subject<string>;
+    public messages: Observable<DataMessage>;
+    public users: Observable<string>;
+
+    private messageQueue: Subject<DataMessage>;
+    private userQueue: Subject<string>;
     private connections: PeerJs.DataConnection[];
     private isOpenToNewUsers: boolean = true;
+    private peer: PeerJs.Peer;
 
     constructor() {
-        this.messageQueue = new Subject<string>();
+        this.messageQueue = new Subject<DataMessage>();
         this.messages = this.messageQueue.asObservable();
+        this.userQueue = new Subject<string>();
+        this.users = this.userQueue.asObservable();
         this.connections = [];
     }
 
@@ -17,29 +26,35 @@ export class Switchboard {
     }
     
     public startListening(): Observable<string> {
-        const peer: PeerJs.Peer = new Peer({});
         const subject: Subject<string> = new Subject();
-        peer.on('open', (id: string) => {
+        this.peer = new Peer({});
+        this.peer.on('open', (id: string) => {
+            console.log('connection open');
             subject.next(id);
             subject.complete();
         });
-        this.registerNewConnections(peer);
+        this.registerNewConnections(this.peer);
         return subject.asObservable();
-    }
+    }   
 
     private registerNewConnections(peer: PeerJs.Peer) {
         peer.on('connection', (newConnection: PeerJs.DataConnection) => {
             if (!this.isOpenToNewUsers) {
                 return;
             }
+            this.userQueue.next(newConnection.label)
             this.connections.push(newConnection);
             this.listenForMessages(newConnection);
         });
     }
 
     private listenForMessages(connection: PeerJs.DataConnection) {
-        connection.on('data', (data) => {
-            this.messageQueue.next(data);
+        connection.on('data', (data: DataMessage) => {
+            switch (data.type) {
+                default:
+                    console.log(data);
+            }
+
         });
     }
     

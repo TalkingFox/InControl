@@ -1,6 +1,13 @@
 import jsQR, { QRCode } from 'jsqr';
 import { Point } from 'jsqr/dist/locator';
+import { Room } from './models/room';
+import { Switchboard } from './telephony/switchboard';
+import { Telephone } from './telephony/telephone';
+
+
 window.onload = () => {
+    const telephone: Telephone = new Telephone('tacoman');
+
     const video = document.createElement('video');
     const canvasElement = document.getElementById('scanner') as HTMLCanvasElement;
     const canvasContext = canvasElement.getContext('2d');
@@ -42,6 +49,15 @@ window.onload = () => {
         canvasContext.lineWidth = 4;
         canvasContext.strokeStyle = 'yellow';
         canvasContext.stroke();
+    }
+
+    function joinRoom(room: Room) {
+        if (!confirm('Is it ok to join room "'+room.name+'"?')) {
+            return;
+        }
+        telephone.connectTo(room.id).subscribe(() => {
+            alert('connect to room');
+        });        
     }
 
     const mediaConstraints: MediaStreamConstraints = {

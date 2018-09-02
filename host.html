@@ -8,13 +8,19 @@
   <body>
     <h3>TITLE</h3>
     <div class="container">
-      <canvas id="drawingBoard"></canvas>
-      <canvas id="qrCode"></canvas>
-      <button id="clearBoard">Clear Board</button>
-      <input type="text" id="connectId">
-      <button id="connect">Connect</button>
-      <input type="text" id="text">
-      <button id="send">Send Message</button>
+      <div id="roomInformation">
+        <label>Room Name</label>
+        <input id="roomName"/>
+        <button id="createRoom">Create Room</button>
+      </div>
+      <div id="waitingRoom" hidden>        
+          <canvas id="qrCode"></canvas>
+          <!--<button id="startGame">Start Game</button>-->
+      </div>
+      <div id="drawingBoard" hidden>
+        <canvas id="drawingBoard"></canvas>
+        <button id="clearBoard">Clear Board</button>
+      </div>
     </div>
   </body>
 </html>
