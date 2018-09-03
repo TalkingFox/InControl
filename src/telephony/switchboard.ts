@@ -29,16 +29,16 @@ export class Switchboard {
         const subject: Subject<string> = new Subject();
         this.peer = new Peer({});
         this.peer.on('open', (id: string) => {
-            console.log('connection open');
+            this.registerNewConnections(this.peer);            
             subject.next(id);
             subject.complete();
         });
-        this.registerNewConnections(this.peer);
         return subject.asObservable();
     }   
 
     private registerNewConnections(peer: PeerJs.Peer) {
         peer.on('connection', (newConnection: PeerJs.DataConnection) => {
+            console.log('new connection')
             if (!this.isOpenToNewUsers) {
                 return;
             }

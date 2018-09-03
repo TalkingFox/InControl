@@ -14,6 +14,15 @@ window.onload = () => {
     const loadingMessage = document.getElementById('loadingMessage');
     const outputContainer = document.getElementById('output');
     const outputMessage = document.getElementById('outputMessage');
+    const connect = document.getElementById('connect');
+    connect.addEventListener('click', () =>{
+        const idElement = document.getElementById('connectId') as HTMLInputElement;
+        const id = idElement.value;
+        console.log('attempting to login to id '+id);
+        // joinRoom(new Room(id, 'butts'));
+        //straightConnect(id);
+        telephone.connectTo(new Room(id, 'butts'));
+    });
 
     function analyzeFrame() {
         loadingMessage.innerText = 'Loading video...';
@@ -39,7 +48,9 @@ window.onload = () => {
         drawLine(code.location.bottomRightCorner, code.location.bottomLeftCorner);
         drawLine(code.location.bottomLeftCorner, code.location.topLeftCorner);
         outputMessage.innerText = code.data;
-        video.pause();        
+        video.pause();      
+        const room = JSON.parse(code.data) as Room;
+        joinRoom(room);
     }
 
     function drawLine(start: Point, end: Point) {
@@ -53,11 +64,13 @@ window.onload = () => {
 
     function joinRoom(room: Room) {
         if (!confirm('Is it ok to join room "'+room.name+'"?')) {
+            console.log('did not join room');
             return;
         }
-        telephone.connectTo(room.id).subscribe(() => {
-            alert('connect to room');
-        });        
+        console.log('attempting to join room');
+        telephone.connectTo(room).subscribe(() => {
+            alert('connected to room');
+        });   
     }
 
     const mediaConstraints: MediaStreamConstraints = {

@@ -117,13 +117,15 @@ function initializeWaitingRoom(roomName: string) {
 	console.log('initializing wait room');
 	switchboard.startListening().subscribe((id: string)=> {
 		console.log('connection open');
+		const idHaver = document.getElementById('roomId') as HTMLInputElement;
+		idHaver.value = id;
 		const room = new Room(id, roomName);
 		const qr = new QRious({			
 			element: document.getElementById('qrCode'),
 			value: JSON.stringify(room)
 		});	
 		switchboard.users.subscribe((user: string) => {
-			this.userJoined(user);
+			userJoined(user);
 		});
 		const waitingRoom = document.getElementById('waitingRoom');
 		waitingRoom.removeAttribute('hidden');
