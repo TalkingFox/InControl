@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
-import { DataMessage, DataMessageType } from '../models/message';
+import { DataMessage, DataMessageType } from '../models/events/message';
 import "peer";
-import { NewDrawing } from '../models/new-drawing';
+import { NewDrawing } from '../models/events/new-drawing';
 
 export class Switchboard {
     public users: Observable<string>;
@@ -19,6 +19,22 @@ export class Switchboard {
         this.userQueue = new Subject<string>();
         this.users = this.userQueue.asObservable();
         this.connections = [];
+    }
+
+    public dispatchMessage(user: string, message: DataMessage) {
+        const matchedUser = this.connections.find((connection: PeerJs.DataConnection) => {
+            return connection.label == user;
+        });
+        console.log('sending message ',message);
+        matchedUser.send(JSON.stringify(message));
+        console.log('message sent to ',matchedUser);
+
+    }
+
+    public dispatchMessageToAll(message: DataMessage) {
+        this.connections.forEach((connection: PeerJs.DataConnection) => {
+            connection.send(JSON.stringify(message));
+        });
     }
 
     public stopAcceptingNewUsers() {

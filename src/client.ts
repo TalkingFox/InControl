@@ -4,7 +4,7 @@ import { Room } from './models/room';
 import { Switchboard } from './telephony/switchboard';
 import { Telephone } from './telephony/telephone';
 import { DrawingBoard } from './drawing-board';
-import { NewDrawing } from './models/new-drawing';
+import { NewDrawing } from './models/events/new-drawing';
 
 let drawingBoard: DrawingBoard;
 const telephone: Telephone = new Telephone('tacoman');
@@ -84,6 +84,15 @@ function preparePlayArea() {
     scanningArea.setAttribute('hidden','');
     const playArea = document.getElementById('playArea');
     playArea.removeAttribute('hidden');
+    waitForClues();
+}
+
+function waitForClues() {
+    console.log('waiting for clues');
+    const clueSub = telephone.clues.subscribe((clue: string) => {
+        alert('Your clue is: "'+clue+'"');
+        clueSub.unsubscribe();
+    });
 }
 
 function startScanning() {

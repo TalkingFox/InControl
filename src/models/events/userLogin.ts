@@ -1,5 +1,5 @@
 import { Message, DataMessage, DataMessageType } from './message';
-import { User } from './user';
+import { User } from '../user';
 
 export class UserLogin implements Message<User> {
     public type: string = DataMessageType.UserLogin;

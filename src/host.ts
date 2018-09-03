@@ -1,10 +1,13 @@
 import * as QRious from 'qrious';
 import { Switchboard } from "./telephony/switchboard";
 import { Room } from "./models/room";
+import { GiveClue } from './models/events/giveClue';
 
 const switchboard: Switchboard = new Switchboard();
 let drawingBoard: HTMLCanvasElement;
 let drawingBoardContext: CanvasRenderingContext2D;
+let room: Room;
+let waitingRoom: HTMLElement;
 
 function createRoom(roomName: string) {
 	const roomContainer = document.getElementById('roomInformation');
@@ -22,6 +25,8 @@ function copyToCanvas(dataUrl: string) {
 
 function userJoined(user: string) {
 	console.log(user+' joined!');
+	room.users.push(user);
+
 }
 
 function initializeWaitingRoom(roomName: string) {
@@ -30,7 +35,7 @@ function initializeWaitingRoom(roomName: string) {
 		console.log('connection open');
 		const idHaver = document.getElementById('roomId') as HTMLInputElement;
 		idHaver.value = id;
-		const room = new Room(id, roomName);
+		room = new Room(id, roomName);
 		const qr = new QRious({			
 			element: document.getElementById('qrCode'),
 			value: JSON.stringify(room)
@@ -40,21 +45,27 @@ function initializeWaitingRoom(roomName: string) {
 		});
 		const waitingRoom = document.getElementById('waitingRoom');
 		waitingRoom.removeAttribute('hidden');
-		const drawingRoom = document.getElementById('drawingRoom');
-		drawingRoom.removeAttribute('hidden');
-		startGame();
+		const startGameOk = document.getElementById('startGame');
+		startGameOk.addEventListener('click', () => {
+			startGame();
+		});	
 	});
 }
 
 function startGame() {
+	waitingRoom.setAttribute('hidden','');
+	const drawingRoom = document.getElementById('drawingRoom');
+	drawingRoom.removeAttribute('hidden');
+	switchboard.stopAcceptingNewUsers();	
 	switchboard.drawings.subscribe((dataUrl: string) => {
 		console.log('drawing receieved');
 		copyToCanvas(dataUrl);
 	});
+	switchboard.dispatchMessage(room.users[0], new GiveClue('Animal with four legs.'));
 }
 
-// when the page is loaded, create our game instance
 window.onload = () => {
+	waitingRoom = document.getElementById('waitingRoom');
 	drawingBoard = document.getElementById('drawingBoard') as HTMLCanvasElement;
 	drawingBoardContext = drawingBoard.getContext('2d');
 	const roomMaker = document.getElementById('createRoom');
