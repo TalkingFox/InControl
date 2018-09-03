@@ -2,12 +2,15 @@ import { Room } from "../models/room";
 import { Subject, Observable } from "rxjs";
 import { DataMessage, DataMessageType } from "../models/events/message";
 import "peer";
+import { RoomState } from "../models/events/stateChanged";
 
 export class Telephone {
     public user: string;
     public messages: Observable<DataMessage>;
     public clues: Observable<string>;
+    public roomState: Observable<RoomState>;
 
+    private roomStateSubject: Subject<RoomState>;
     private messageSubject: Subject<DataMessage>;
     private cluesSubject: Subject<string>;
     private peer: PeerJs.Peer;
@@ -15,6 +18,8 @@ export class Telephone {
     
     constructor(user: string) {
         this.user = user;
+        this.roomStateSubject = new Subject<RoomState>();
+        this.roomState = this.roomStateSubject.asObservable();
         this.messageSubject = new Subject<DataMessage>();
         this.messages = this.messageSubject.asObservable();
         this.cluesSubject = new Subject<string>();
@@ -44,6 +49,9 @@ export class Telephone {
             switch (data.type) {
                 case DataMessageType.GiveClue:
                     this.cluesSubject.next(<string>data.body);
+                    break;
+                case DataMessageType.StateChange:
+                    this.roomStateSubject.next(<RoomState>data.body);
                     break;
                 default:
                     console.log(data);

@@ -2,12 +2,14 @@ import * as QRious from 'qrious';
 import { Switchboard } from "./telephony/switchboard";
 import { Room } from "./models/room";
 import { GiveClue } from './models/events/giveClue';
+import { StateChanged, RoomState } from './models/events/stateChanged';
 
 const switchboard: Switchboard = new Switchboard();
 let drawingBoard: HTMLCanvasElement;
 let drawingBoardContext: CanvasRenderingContext2D;
 let room: Room;
 let waitingRoom: HTMLElement;
+let revealRoom: HTMLElement;
 
 function createRoom(roomName: string) {
 	const roomContainer = document.getElementById('roomInformation');
@@ -57,14 +59,32 @@ function startGame() {
 	const drawingRoom = document.getElementById('drawingRoom');
 	drawingRoom.removeAttribute('hidden');
 	switchboard.stopAcceptingNewUsers();	
-	switchboard.drawings.subscribe((dataUrl: string) => {
+	const waitForDrawings = switchboard.drawings.subscribe((dataUrl: string) => {
 		console.log('drawing receieved');
 		copyToCanvas(dataUrl);
+		waitForGuesses();
+		waitForDrawings.unsubscribe();
 	});
 	switchboard.dispatchMessage(room.users[0], new GiveClue('Animal with four legs.'));
 }
 
+function waitForGuesses() {
+	const stateChange = new StateChanged(RoomState.WaitingForGuesses);
+	switchboard.dispatchMessageToAll(stateChange);
+	switchboard.guesses.subscribe((guess: string) => {
+		alert('received guess '+guess);
+		displayAnswer();
+	});
+}
+
+function displayAnswer() {
+	const answerField = document.getElementById('answer');
+	answerField.textContent = 'The thing was ZEBRA!!!';
+	revealRoom.removeAttribute('hidden');
+}
+
 window.onload = () => {
+	revealRoom = document.getElementById('revealRoom');
 	waitingRoom = document.getElementById('waitingRoom');
 	drawingBoard = document.getElementById('drawingBoard') as HTMLCanvasElement;
 	drawingBoardContext = drawingBoard.getContext('2d');

@@ -1,10 +1,12 @@
 import jsQR, { QRCode } from 'jsqr';
 import { Point } from 'jsqr/dist/locator';
 import { Room } from './models/room';
-import { Switchboard } from './telephony/switchboard';
 import { Telephone } from './telephony/telephone';
 import { DrawingBoard } from './drawing-board';
 import { NewDrawing } from './models/events/new-drawing';
+import { Guess } from './models/events/guess';
+import { RoomState } from './models/events/stateChanged';
+import { Subject, Observable } from 'rxjs';
 
 let drawingBoard: DrawingBoard;
 const telephone: Telephone = new Telephone('tacoman');
@@ -12,26 +14,23 @@ let video: HTMLVideoElement;
 let scanner: HTMLCanvasElement;
 let scannerContext: CanvasRenderingContext2D;
 let loadingMessage: HTMLElement;
+let guessArea: HTMLElement;
+let sendDrawing: HTMLElement;
 
 function initialize() {
+    guessArea = document.getElementById('guessArea');
     drawingBoard = new DrawingBoard('drawingBoard');
     video = document.createElement('video');
     scanner = document.getElementById('scanner') as HTMLCanvasElement;
     scannerContext = scanner.getContext('2d');
     loadingMessage = document.getElementById('loadingMessage');
     const connect = document.getElementById('connect');
+    sendDrawing = document.getElementById('sendDrawing');
     connect.addEventListener('click', () => {
         const idElement = document.getElementById('connectId') as HTMLInputElement;
         const id = idElement.value;
         joinRoom(new Room(id, 'butts'));
-    });
-
-    const send = document.getElementById('send');
-    send.addEventListener('click', () => {
-        const data = drawingBoard.toDataUrl();
-        const message = new NewDrawing(data);
-        telephone.SendMessage(message);
-    })
+    });   
 }
 
 function analyzeFrame() {
@@ -85,6 +84,28 @@ function preparePlayArea() {
     const playArea = document.getElementById('playArea');
     playArea.removeAttribute('hidden');
     waitForClues();
+    sendDrawing.addEventListener('click', () => {
+        const data = drawingBoard.toDataUrl();
+        const message = new NewDrawing(data);
+        telephone.SendMessage(message);
+        waitForStateChange(RoomState.WaitingForGuesses).subscribe(() => {
+            playArea.setAttribute('hidden','');
+            guessArea.removeAttribute('hidden');
+            submitFinalGuess();
+        });
+    })
+}
+
+function waitForStateChange(expectedState: RoomState): Observable<void> {
+    const waiter = new Subject<void>();
+    const subscription = telephone.roomState.subscribe((state) => {
+        if (state != expectedState) {
+            console.log('skipping ',state);
+        }
+        waiter.next();
+        waiter.complete();
+    });
+    return waiter.asObservable();
 }
 
 function waitForClues() {
@@ -93,6 +114,21 @@ function waitForClues() {
         alert('Your clue is: "'+clue+'"');
         clueSub.unsubscribe();
     });
+}
+
+function waitForNewRound() {
+    console.log('waiting for answer');
+}
+
+function submitFinalGuess() {
+    guessArea.removeAttribute('hidden');
+    const sendGuess = document.getElementById('sendGuess');
+    sendGuess.addEventListener('click', () => {
+        const guessElement = document.getElementById('guess') as HTMLInputElement;
+        const guess = new Guess(guessElement.value);
+        telephone.SendMessage(guess);
+        waitForNewRound();
+    });    
 }
 
 function startScanning() {
