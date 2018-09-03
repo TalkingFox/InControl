@@ -7,7 +7,12 @@
   </head>
   <body>
     <H3>CLIENT</H3>
-    <div id="scanningArea">
+    <div id="userArea">
+      <label>Enter your name</label>
+      <input type="text" id="username"/>
+      <button id="login">Next</button>
+    </div>
+    <div id="scanningArea" hidden>
       <div id="loadingMessage">Unable to access video stream. (Please make sure it is enabled)</div>
       <canvas id="scanner"></canvas>
       <input type="text" id="connectId">
