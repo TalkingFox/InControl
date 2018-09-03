@@ -11,12 +11,15 @@
       <div id="roomInformation">
         <label>Room Name</label>
         <input id="roomName"/>
-        <button id="createRoom">Create Room</button>
+        <button id="createRoom">Create Room</button>        
       </div>
       <div id="waitingRoom" hidden>        
           <canvas id="qrCode"></canvas>
           <input id="roomId"/>
           <button id="startGame">Start Game</button>
+          <div id="usersArea" >
+              <ul id="users"></ul>
+            </div>
       </div>
       <div id="drawingRoom" hidden>
         <canvas id="drawingBoard"></canvas>

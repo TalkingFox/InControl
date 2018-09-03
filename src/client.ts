@@ -36,6 +36,12 @@ function initialize() {
 
   const login = document.getElementById("login");
   login.addEventListener("click", () => {
+    const username = document.getElementById('username') as HTMLInputElement;
+    if (!username.value) {
+        alert('It would be really cool if you entered a name.');
+        return;
+    }
+    telephone = new Telephone(username.value);
     userArea.setAttribute("hidden", "");
     scanningArea.removeAttribute('hidden');
     const subscription = scanner.scanForQrCode().subscribe((room: Room) => {

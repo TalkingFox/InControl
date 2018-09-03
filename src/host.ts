@@ -10,6 +10,24 @@ let drawingBoardContext: CanvasRenderingContext2D;
 let room: Room;
 let waitingRoom: HTMLElement;
 let revealRoom: HTMLElement;
+let users: HTMLElement;
+
+function initialize() {
+	revealRoom = document.getElementById('revealRoom');
+	waitingRoom = document.getElementById('waitingRoom');
+	drawingBoard = document.getElementById('drawingBoard') as HTMLCanvasElement;
+	drawingBoardContext = drawingBoard.getContext('2d');
+	users = document.getElementById('users');
+	const roomMaker = document.getElementById('createRoom');
+	roomMaker.addEventListener('click', () => {
+		const roomElement = document.getElementById('roomName') as HTMLInputElement;
+		if (!roomElement.value) {
+			alert('Please enter a room name.')
+			return;
+		}		
+		createRoom(roomElement.value);
+	});
+}
 
 function createRoom(roomName: string) {
 	const roomContainer = document.getElementById('roomInformation');
@@ -26,9 +44,10 @@ function copyToCanvas(dataUrl: string) {
 }
 
 function userJoined(user: string) {
-	console.log(user+' joined!');
 	room.users.push(user);
-
+	let newUser = document.createElement('li');
+	newUser.textContent = user;
+	users.appendChild(newUser);
 }
 
 function initializeWaitingRoom(roomName: string) {
@@ -84,17 +103,5 @@ function displayAnswer() {
 }
 
 window.onload = () => {
-	revealRoom = document.getElementById('revealRoom');
-	waitingRoom = document.getElementById('waitingRoom');
-	drawingBoard = document.getElementById('drawingBoard') as HTMLCanvasElement;
-	drawingBoardContext = drawingBoard.getContext('2d');
-	const roomMaker = document.getElementById('createRoom');
-	roomMaker.addEventListener('click', () => {
-		const roomElement = document.getElementById('roomName') as HTMLInputElement;
-		if (!roomElement.value) {
-			alert('Please enter a room name.')
-			return;
-		}		
-		createRoom(roomElement.value);
-	});
+	initialize();	
 };
