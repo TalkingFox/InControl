@@ -1,21 +1,21 @@
 import { Observable, Subject } from 'rxjs';
 import { DataMessage, DataMessageType } from '../models/message';
-import { User } from '../models/user';
 import "peer";
+import { NewDrawing } from '../models/new-drawing';
 
 export class Switchboard {
-    public messages: Observable<DataMessage>;
     public users: Observable<string>;
+    public drawings: Observable<string>;
 
-    private messageQueue: Subject<DataMessage>;
+    private drawingQueue: Subject<string>;
     private userQueue: Subject<string>;
     private connections: PeerJs.DataConnection[];
     private isOpenToNewUsers: boolean = true;
     private peer: PeerJs.Peer;
 
     constructor() {
-        this.messageQueue = new Subject<DataMessage>();
-        this.messages = this.messageQueue.asObservable();
+        this.drawingQueue = new Subject<string>();
+        this.drawings = this.drawingQueue.asObservable();
         this.userQueue = new Subject<string>();
         this.users = this.userQueue.asObservable();
         this.connections = [];
@@ -49,8 +49,12 @@ export class Switchboard {
     }
 
     private listenForMessages(connection: PeerJs.DataConnection) {
-        connection.on('data', (data: DataMessage) => {
+        connection.on('data', (message: string) => {
+            const data = JSON.parse(message) as DataMessage;
             switch (data.type) {
+                case DataMessageType.NewDrawing:
+                    this.drawingQueue.next(<string>data.body);
+                    break;
                 default:
                     console.log(data);
             }

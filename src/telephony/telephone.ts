@@ -17,9 +17,9 @@ export class Telephone {
 
     public connectTo(room: Room): Observable<void> {
         const peer: PeerJs.Peer = new Peer({});
-        const connection = peer.connect(room.id, {label: this.User});
+        this.connection = peer.connect(room.id, {label: this.User});
         const established: Subject<void> = new Subject<void>();
-        connection.on('open', () => {
+        this.connection.on('open', () => {
             console.log('connection established');
             established.next();
             established.complete();
@@ -28,6 +28,6 @@ export class Telephone {
     }
 
     public SendMessage(message: DataMessage): void {
-        this.connection.send(message);
+        this.connection.send(JSON.stringify(message));
     }
 }

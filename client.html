@@ -7,18 +7,16 @@
   </head>
   <body>
     <H3>CLIENT</H3>
-    <div class="container">
+    <div id="scanningArea">
       <div id="loadingMessage">Unable to access video stream. (Please make sure it is enabled)</div>
-      <canvas id="drawingBoard"></canvas>
       <canvas id="scanner"></canvas>
-      <div id="output">
-        <div id="outputMessage">No code detected</div>
-      </div>
-      <button id="clearBoard">Clear Board</button>
       <input type="text" id="connectId">
       <button id="connect">Connect</button>
-      <input type="text" id="text">
+    </div>
+    <div id="playArea" hidden>
+      <canvas id="drawingBoard"></canvas>
       <button id="send">Send Message</button>
+      <button id="clearBoard">Clear Board</button>
     </div>
   </body>
 </html>
