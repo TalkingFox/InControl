@@ -7,7 +7,7 @@ export class DrawingBoard {
     private lastPosition: Point = new Point(0, 0);
 
     public constructor(elementId: string) {
-        this.canvas = document.getElementById('drawingBoard') as HTMLCanvasElement;
+        this.canvas = document.getElementById(elementId) as HTMLCanvasElement;
         this.canvasContext = this.canvas.getContext("2d");
         this.setEvents(this.canvas);
     }
