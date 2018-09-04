@@ -22,8 +22,12 @@
       <p>Waiting for the game to begin.</p>
       <p>You can practice drawing in the meantime...</p>
       <canvas id="waitingDrawingBoard"></canvas>
+    </div>    
+    <div id="clueArea" hidden>
+      <p>Your clue is <p id="waitingClue"></p>. Try thinking about how it will fit into the bigger picture.</p>
     </div>
     <div id="playArea" hidden>
+      <p>Your clue was </p><p id="clue"></p>
       <canvas id="drawingBoard"></canvas>
       <button id="sendDrawing">Submit</button>
     </div>

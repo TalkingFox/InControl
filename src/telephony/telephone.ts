@@ -9,12 +9,14 @@ export class Telephone {
     public messages: Observable<DataMessage>;
     public clues: Observable<string>;
     public roomState: Observable<RoomState>;
+    public selectedUser: Observable<string>;
 
     private roomStateSubject: Subject<RoomState>;
     private messageSubject: Subject<DataMessage>;
     private cluesSubject: Subject<string>;
     private peer: PeerJs.Peer;
-    private connection: PeerJs.DataConnection;  
+    private connection: PeerJs.DataConnection;
+    private selectedUserSubject: Subject<string>;
     
     constructor(user: string) {
         this.user = user;
@@ -24,6 +26,8 @@ export class Telephone {
         this.messages = this.messageSubject.asObservable();
         this.cluesSubject = new Subject<string>();
         this.clues = this.cluesSubject.asObservable();
+        this.selectedUserSubject = new Subject<string>();
+        this.selectedUser = this.selectedUserSubject.asObservable();
     }
 
     public connectTo(room: Room): Observable<void> {
@@ -52,6 +56,9 @@ export class Telephone {
                     break;
                 case DataMessageType.StateChange:
                     this.roomStateSubject.next(<RoomState>data.body);
+                    break;
+                case DataMessageType.UserSelected:
+                    this.selectedUserSubject.next(<string>data.body);
                     break;
                 default:
                     console.log(data);

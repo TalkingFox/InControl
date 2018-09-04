@@ -8,12 +8,12 @@
   <body>
     <h3>TITLE</h3>
     <div class="container">
-      <div id="roomInformation">
+      <div id="roomArea">
         <label>Room Name</label>
         <input id="roomName"/>
         <button id="createRoom">Create Room</button>
       </div>
-      <div id="waitingRoom" hidden>        
+      <div id="waitingArea" hidden>        
           <canvas id="qrCode"></canvas>
           <input id="roomId"/>
           <button id="startGame">Start Game</button>
@@ -21,11 +21,12 @@
               <ul id="users"></ul>
             </div>
       </div>
-      <div id="drawingRoom" hidden>
+      <div id="drawingArea" hidden>
+        <p>Let's watch your clues come together</p>
+        <p id="currentUser"></p>
         <canvas id="drawingBoard"></canvas>
-        <button id="clearBoard">Clear Board</button>
       </div>
-      <div id="revealRoom" hidden>
+      <div id="revealArea" hidden>
         <p id="answer"></p>
       </div>
     </div>

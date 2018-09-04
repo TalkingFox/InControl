@@ -1,6 +1,6 @@
 import { DataMessageType, Message } from "./message";
 
-export class NewDrawing implements Message<string> {
+export class sentDrawing implements Message<string> {
     public type: string = DataMessageType.NewDrawing;
     public body: string;
 

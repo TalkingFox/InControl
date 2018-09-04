@@ -2,7 +2,7 @@ import { Point } from 'jsqr/dist/locator';
 import { Room } from './models/room';
 import { Telephone } from './telephony/telephone';
 import { DrawingBoard } from './drawing-board';
-import { NewDrawing } from './models/events/new-drawing';
+import { sentDrawing } from './models/events/sentDrawing';
 import { Guess } from './models/events/guess';
 import { RoomState } from './models/events/stateChanged';
 import { Subject, Observable } from 'rxjs';
@@ -56,15 +56,15 @@ function joinRoom(room: Room) {
     }
     telephone.connectTo(room).subscribe(() => {
         transitionTo('waitingArea');
+        waitForClues();
     });
 }
 
 function preparePlayArea() {
     transitionTo('playArea');
-    waitForClues();
     sendDrawing.addEventListener('click', () => {
         const data = drawingBoard.toDataUrl();
-        const message = new NewDrawing(data);
+        const message = new sentDrawing(data);
         telephone.SendMessage(message);
         waitForStateChange(RoomState.WaitingForGuesses).subscribe(() => {
             transitionTo('guessArea');
@@ -97,15 +97,25 @@ function waitForStateChange(expectedState: RoomState): Observable<void> {
 }
 
 function waitForClues() {
-    console.log('waiting for clues');
     const clueSub = telephone.clues.subscribe((clue: string) => {
-        alert('Your clue is: "' + clue + '"');
+        const clueElement = document.getElementById('waitingClue');
+        clueElement.textContent=clue;
+        const playClueElement = document.getElementById('clue');
+        playClueElement.textContent = clue;
         clueSub.unsubscribe();
+        waitForMyTurn();
     });
 }
 
-function waitForNewRound() {
-    console.log('waiting for answer');
+function waitForMyTurn(): Observable<void> {
+    const subject = new Subject<void>();
+    const subscription = telephone.selectedUser.subscribe((user: string) => {
+        if (user == telephone.user) {
+            transitionTo('playArea');
+            subscription.unsubscribe();
+        }
+    });
+    return subject.asObservable();
 }
 
 function submitFinalGuess() {
@@ -117,6 +127,5 @@ function submitFinalGuess() {
         ) as HTMLInputElement;
         const guess = new Guess(guessElement.value);
         telephone.SendMessage(guess);
-        waitForNewRound();
     });
 }

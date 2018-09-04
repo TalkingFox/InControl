@@ -4,6 +4,9 @@ import { Room } from './models/room';
 import { GiveClue } from './models/events/giveClue';
 import { StateChanged, RoomState } from './models/events/stateChanged';
 import { Question } from './models/question';
+import { Observable, Subject } from 'rxjs';
+import { Util } from './util';
+import { UserSelected } from './models/events/userSelected';
 
 const switchboard: Switchboard = new Switchboard();
 let drawingBoard: HTMLCanvasElement;
@@ -33,9 +36,18 @@ function initialize() {
     });
 }
 
+function transitionTo(area: string) {
+    const allAreas = document.querySelectorAll('.container > div');
+    allAreas.forEach((value: Element) => {
+        if (value.id == area) {
+            value.removeAttribute('hidden');
+        } else {
+            value.setAttribute('hidden', '');
+        }
+    });
+}
+
 function createRoom(roomName: string) {
-    const roomContainer = document.getElementById('roomInformation');
-    roomContainer.setAttribute('hidden', '');
     initializeWaitingRoom(roomName);
 }
 
@@ -55,6 +67,7 @@ function userJoined(user: string) {
 }
 
 function initializeWaitingRoom(roomName: string) {
+	transitionTo('waitingArea');
     switchboard.startListening().subscribe((id: string) => {
         const idHaver = document.getElementById('roomId') as HTMLInputElement;
         idHaver.value = id;
@@ -66,8 +79,6 @@ function initializeWaitingRoom(roomName: string) {
         switchboard.users.subscribe((user: string) => {
             userJoined(user);
         });
-        const waitingRoom = document.getElementById('waitingRoom');
-        waitingRoom.removeAttribute('hidden');
         const startGameOk = document.getElementById('startGame');
         startGameOk.addEventListener('click', () => {
             startGame();
@@ -75,25 +86,49 @@ function initializeWaitingRoom(roomName: string) {
     });
 }
 
-function startGame() {
-    switchboard.getQuestions().subscribe((newQuestions: Question[]) => {
-		console.log(newQuestions);
+function getQuestions(): Observable<Question[]> {
+	const subject = new Subject<Question[]>();
+	if (questions) {
+		subject.next(questions);
+		subject.complete();
+	}
+	switchboard.getQuestions().subscribe((newQuestions: Question[]) => {
 		questions = newQuestions;
-        waitingRoom.setAttribute('hidden', '');
-        const drawingRoom = document.getElementById('drawingRoom');
-        drawingRoom.removeAttribute('hidden');
-        switchboard.stopAcceptingNewUsers();
+		subject.next(questions);
+		subject.complete();
+	});
+	return subject;
+}
+
+function startGame() {
+	switchboard.stopAcceptingNewUsers();
+    getQuestions().subscribe((newQuestions: Question[]) => {
+		questions = newQuestions;
+		Util.Shuffle(questions);
+		room.question = questions.pop();
+		transitionTo('drawingArea');
+		for (let index = 0; index < room.users.length; index++) {
+			const user = room.users[index];
+			const clue = room.question.clues[index];
+			switchboard.dispatchMessage(user, new GiveClue(clue));
+		}
+		
+		const clonedUsers = room.users.slice(0);
+		let selectedUser = Util.RandomElement(clonedUsers)
+		clonedUsers.splice(clonedUsers.indexOf(selectedUser),1);
+		switchboard.dispatchMessageToAll(new UserSelected(selectedUser));
         const waitForDrawings = switchboard.drawings.subscribe(
             (dataUrl: string) => {
-                console.log('drawing receieved');
-                copyToCanvas(dataUrl);
-                waitForGuesses();
-                waitForDrawings.unsubscribe();
+				copyToCanvas(dataUrl);
+				if (clonedUsers.length === 0) {
+					waitForGuesses();
+					waitForDrawings.unsubscribe();
+					return;
+				}
+				selectedUser = Util.RandomElement(clonedUsers);
+				clonedUsers.splice(clonedUsers.indexOf(selectedUser),1);
+				switchboard.dispatchMessageToAll(new UserSelected(selectedUser));
             }
-        );
-        switchboard.dispatchMessage(
-            room.users[0],
-            new GiveClue('Animal with four legs.')
         );
     });
 }
