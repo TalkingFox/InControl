@@ -28,9 +28,7 @@ function initialize() {
 
     const login = document.getElementById('login');
     login.addEventListener('click', () => {
-        const username = document.getElementById(
-            'username'
-        ) as HTMLInputElement;
+        const username = document.getElementById('username') as HTMLInputElement;
         if (!username.value) {
             alert('It would be really cool if you entered a name.');
             return;

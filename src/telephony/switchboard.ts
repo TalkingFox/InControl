@@ -1,6 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { DataMessage, DataMessageType } from '../models/events/message';
 import "peer";
+import { Question } from '../models/question';
 
 export class Switchboard {
     public users: Observable<string>;
@@ -53,7 +54,22 @@ export class Switchboard {
             subject.complete();
         });
         return subject.asObservable();
-    }   
+    }
+    
+    public getQuestions(): Observable<Question[]> {
+        const http = new XMLHttpRequest();
+        const questionSubject = new Subject<Question[]>();
+        http.onreadystatechange = () => {
+            if (http.readyState == 4 && http.status == 200) {
+                const response = JSON.parse(http.response) as Question[];
+                questionSubject.next(response);
+                questionSubject.complete();
+            }
+        };
+        http.open('GET', './content/data.json', true);
+        http.send();
+        return questionSubject.asObservable();
+    }
 
     private registerNewConnections(peer: PeerJs.Peer) {
         peer.on('connection', (newConnection: PeerJs.DataConnection) => {

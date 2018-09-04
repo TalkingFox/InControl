@@ -1,0 +1,22 @@
+[
+    {
+        "name": "camel",
+        "clues": [
+            "It is a four-legged animal",            
+            "It also has uniquely shaped back for storing fat",
+            "Has an elongated neck and thick eyelashes",
+            "The tail is thin and inconspicuous",
+            "Its coat is brown and generally patternless"
+        ]
+    },
+    {
+        "name": "teenage mutant ninja turtles",
+        "clues": [
+            "A famous group of brothers",
+            "This collective has a famous love of italian food",
+            "This group is also traditionally color-coordinated",
+            "They are also strongly associated with reptiles",
+            "A rodent acts as a father figure."
+        ]
+    }
+]
