@@ -18,7 +18,7 @@ export class Scanner {
         this.scanSuccessful = new Subject<Room>();
     }
 
-    public scanForQrCode(): Observable<Room> {
+    public scanForQrCode(): Promise<Room> {
         this.scanner = document.getElementById(this.elementId) as HTMLCanvasElement;
         this.scannerContext = this.scanner.getContext('2d');
         this.video = document.createElement('video') as HTMLVideoElement;
@@ -31,7 +31,7 @@ export class Scanner {
             this.video.play();
             return requestAnimationFrame(() => this.analyzeFrame());
         });
-        return this.scanSuccessful.asObservable();
+        return this.scanSuccessful.toPromise();
     }
 
         private analyzeFrame(): number {

@@ -132,11 +132,8 @@ function startGame() {
 	startNextRound();
 }
 
-function displayGuess(guess: Guess): void {
-	alert('bananas');
-}
-
 function startNextRound(): void{
+    console.log('starting the next round');
 	if (room.cluelessUsers.length === 0) {
 		return endGame();
 	}
@@ -153,31 +150,41 @@ function startNextRound(): void{
 		switchboard.dispatchMessageToAll(player);
 		const subscription = waitForDrawings().subscribe((dataUrl: string) => {
 			copyToCanvas(dataUrl);
-			subscription.add(waitForGuesses().subscribe((guess: Guess) => {
-				room.guessedUsers.push(guess.user);
-				displayGuess(guess);
-				if (room.guessedUsers.length === room.users.length-1){
-					subscription.unsubscribe();
-					return startNextRound();
-				}
-			}));		
+            waitForGuesses()
+                .then((guess: Guess[]) => startNextRound())
 		});
     });
 }
 
 function endGame() {
-	displayAnswer();
+    const stateChange = new StateChanged(RoomState.FinalGuess);
+    switchboard.dispatchMessageToAll(stateChange);
+    waitForGuesses()
+        .then((guesses: Guess[]) => displayAnswer());
 }
 
-function waitForGuesses(): Observable<Guess> {
-    const stateChange = new StateChanged(RoomState.WaitingForGuesses);
-    switchboard.dispatchMessageToAll(stateChange);
-    return switchboard.guesses;
+function waitForGuesses(): Promise<Guess[]> {
+    const promise = new Subject<Guess[]>();
+    const guesses: Guess[] = [];
+    switchboard.guesses.subscribe((guess: Guess) => {
+        guesses.push(guess);
+        console.log(guess);
+        console.log(room);
+        console.log(guesses.length, console.log(room.users.length));
+        console.log(room.users);
+        console.log(room.users.length);
+        if (guesses.length === room.users.length - 1) {
+            console.log('promise kept');
+            promise.next(guesses);
+            promise.complete();
+        }
+    });
+    return promise.toPromise();
 }
 
 function displayAnswer() {
     const answerField = document.getElementById('answer');
-    answerField.textContent = 'The thing was ZEBRA!!!';
+    answerField.textContent = 'The answer was '+room.question.name;
     revealRoom.removeAttribute('hidden');
 }
 

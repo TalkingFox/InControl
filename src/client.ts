@@ -1,4 +1,3 @@
-import { Point } from 'jsqr/dist/locator';
 import { Room } from './models/room';
 import { Telephone } from './telephony/telephone';
 import { DrawingBoard } from './drawing-board';
@@ -6,11 +5,11 @@ import { sentDrawing } from './models/events/sentDrawing';
 import { SendGuess } from './models/events/guess';
 import { RoomState } from './models/events/stateChanged';
 import { Subject, Observable } from 'rxjs';
-import { Scanner } from './scanner';
+import { StateTransition } from './stateTransition';
 
 let drawingBoard: DrawingBoard;
 let telephone: Telephone;
-let scanner: Scanner = new Scanner('scanner');
+let stateTransition: StateTransition;
 
 let loadingMessage: HTMLElement;
 let sendDrawing: HTMLElement;
@@ -20,11 +19,25 @@ window.onload = () => {
 };
 
 function initialize() {
+    stateTransition = new StateTransition();
     drawingBoard = new DrawingBoard('drawingBoard');
-    const waitingDrawingBoard = new DrawingBoard('waitingDrawingBoard');
     loadingMessage = document.getElementById('loadingMessage');
     const connect = document.getElementById('connect');
     sendDrawing = document.getElementById('sendDrawing');
+    sendDrawing.addEventListener('click', () => {
+        const data = drawingBoard.toDataUrl();
+        const message = new sentDrawing(data);
+        telephone.SendMessage(message);
+        stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
+    });
+
+    const sendGuess = document.getElementById('sendGuess');
+    sendGuess.addEventListener('click', () => {
+        const guessElement = document.getElementById('guess') as HTMLInputElement;
+        const message = new SendGuess(telephone.user, guessElement.value);
+        telephone.SendMessage(message);
+        stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
+    });
 
     const login = document.getElementById('login');
     login.addEventListener('click', () => {
@@ -33,12 +46,11 @@ function initialize() {
             alert('It would be really cool if you entered a name.');
             return;
         }
-        transitionTo('scanningArea');
         telephone = new Telephone(username.value);
-        const subscription = scanner.scanForQrCode().subscribe((room: Room) => {
-            joinRoom(room);
-            subscription.unsubscribe();
-        });
+                
+        stateTransition.toScanningArea()
+            .then((room: Room) => joinRoom(room))
+            .then(() => stateTransition.toWaitingArea());
     });
 
     connect.addEventListener('click', () => {
@@ -46,86 +58,54 @@ function initialize() {
             'connectId'
         ) as HTMLInputElement;
         const id = idElement.value;
-        joinRoom(new Room(id, 'butts'));
+        joinRoom(new Room(id, 'butts'))
+            .then(() => stateTransition.toWaitingArea());
     });
 }
 
-function joinRoom(room: Room) {
+function joinRoom(room: Room): Promise<void> {
     if (!confirm('Is it ok to join room "' + room.name + '"?')) {
-        return;
+        return Promise.reject();
     }
-    telephone.connectTo(room).subscribe(() => {
-        transitionTo('waitingArea');
-        waitForClues();
+    stateTransition.room = room;
+    const promise = new Subject<void>();
+    const subscription = telephone.connectTo(room).subscribe(() => {
+        listenForClues();
+        listenToStateChanges();
+        promise.next();
+        promise.complete();
+        subscription.unsubscribe();
     });
+    return promise.toPromise();
 }
 
-function preparePlayArea() {
-    transitionTo('playArea');
-    sendDrawing.addEventListener('click', () => {
-        const data = drawingBoard.toDataUrl();
-        const message = new sentDrawing(data);
-        telephone.SendMessage(message);
-        waitForStateChange(RoomState.WaitingForGuesses).subscribe(() => {
-            transitionTo('guessArea');
-            submitFinalGuess();
-        });
-    });
-}
-
-function transitionTo(area: string) {
-    const allAreas = document.querySelectorAll('body > div');
-    allAreas.forEach((value: Element) => {
-        if (value.id == area) {
-            value.removeAttribute('hidden');
-        } else {
-            value.setAttribute('hidden', '');
-        }
-    });
-}
-
-function waitForStateChange(expectedState: RoomState): Observable<void> {
-    const waiter = new Subject<void>();
-    const subscription = telephone.roomState.subscribe(state => {
-        if (state != expectedState) {
-            console.log('skipping ', state);
-        }
-        waiter.next();
-        waiter.complete();
-    });
-    return waiter.asObservable();
-}
-
-function waitForClues() {
-    const clueSub = telephone.clues.subscribe((clue: string) => {
+function listenForClues(): void {
+    telephone.clues.subscribe((clue: string) => {
         const clueElement = document.getElementById('waitingClue');
         clueElement.textContent=clue;
         const playClueElement = document.getElementById('clue');
         playClueElement.textContent = clue;
-        clueSub.unsubscribe();
-        waitForMyTurn();
     });
 }
 
-function waitForMyTurn(): Observable<void> {
-    const subject = new Subject<void>();
-    const subscription = telephone.selectedUser.subscribe((user: string) => {
-        if (user == telephone.user) {
-            transitionTo('playArea');
-            subscription.unsubscribe();
+function listenToStateChanges(): void {
+    telephone.roomState.subscribe((state: RoomState) => {
+        console.log('state change ',state);
+        switch (state) {
+            case RoomState.FinalGuess:
+                stateTransition.toGuessArea();
+                break;
+            case RoomState.GameEnded:
+                stateTransition.toWaitingArea();
+                break;
+            case RoomState.MyTurn:
+                stateTransition.toPlayArea();
+                break;
+            case RoomState.OtherPlayerSelected:
+                stateTransition.toGuessArea();
+                break;
+            default:
+                console.log(state);
         }
-    });
-    return subject.asObservable();
-}
-
-function submitFinalGuess() {
-    transitionTo('guessArea');
-    const sendGuess = document.getElementById('sendGuess');
-    sendGuess.addEventListener('click', () => {
-        const guessElement = document.getElementById(
-            'guess'
-        ) as HTMLInputElement;
-        const guess = new SendGuess(telephone.user, guessElement.value);
-        telephone.SendMessage(guess);
     });
 }

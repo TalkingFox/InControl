@@ -11,5 +11,10 @@ export class StateChanged implements Message<RoomState>
 }
 
 export enum RoomState {
-    WaitingForGuesses
+    FinalGuess,
+    GameEnded,
+    MyTurn,
+    OtherPlayerSelected,
+    RoundEnded,
+    WaitingForRoundEnd
 }

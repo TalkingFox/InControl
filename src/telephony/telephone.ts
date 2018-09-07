@@ -55,9 +55,17 @@ export class Telephone {
                     this.cluesSubject.next(<string>data.body);
                     break;
                 case DataMessageType.StateChange:
+                    console.log('received state change from host ', data.body);
                     this.roomStateSubject.next(<RoomState>data.body);
                     break;
                 case DataMessageType.PlayerSelected:
+                    const selectedPlayer = <string>data.body;
+                    const newRoomState = (selectedPlayer == this.user) ? 
+                        RoomState.MyTurn : 
+                        RoomState.OtherPlayerSelected;
+                    console.log("selected", data.body);
+                    console.log('state', newRoomState);
+                    this.roomStateSubject.next(newRoomState);
                     this.selectedUserSubject.next(<string>data.body);
                     break;
                 default:
