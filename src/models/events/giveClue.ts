@@ -1,10 +1,14 @@
 import { Message, DataMessageType } from "./message";
 
-export class GiveClue implements Message<string> {
+export class GiveClue implements Message<ClueEnvelope> {
     public type: string = DataMessageType.GiveClue;
-    public body: string;
+    public body: ClueEnvelope;
 
-    constructor(clue: string) {
-        this.body = clue;
+    constructor(user: string, clue: string) {
+        this.body = new ClueEnvelope(user, clue);
     }
+}
+
+export class ClueEnvelope{
+    constructor(public player: string, public clue: string){}
 }

@@ -3,7 +3,7 @@ import { Room } from './models/room';
 import { Telephone } from './telephony/telephone';
 import { DrawingBoard } from './drawing-board';
 import { sentDrawing } from './models/events/sentDrawing';
-import { Guess } from './models/events/guess';
+import { SendGuess } from './models/events/guess';
 import { RoomState } from './models/events/stateChanged';
 import { Subject, Observable } from 'rxjs';
 import { Scanner } from './scanner';
@@ -125,7 +125,7 @@ function submitFinalGuess() {
         const guessElement = document.getElementById(
             'guess'
         ) as HTMLInputElement;
-        const guess = new Guess(guessElement.value);
+        const guess = new SendGuess(telephone.user, guessElement.value);
         telephone.SendMessage(guess);
     });
 }

@@ -7,8 +7,13 @@ export class Util {
         return array;
     }
 
-    public static RandomElement(array: any[]) {
+    public static PopRandomElement<T>(array: T[]): T {
+        if (array.length === 0) {
+            return null;
+        }
         const index = Math.floor(Math.random() * array.length);
-        return array[index];
+        const element = array[index];
+        array = array.splice(array.indexOf(element),1);
+        return element;
     }
 }

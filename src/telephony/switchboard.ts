@@ -2,21 +2,22 @@ import { Observable, Subject } from 'rxjs';
 import { DataMessage, DataMessageType } from '../models/events/message';
 import "peer";
 import { Question } from '../models/question';
+import { Guess } from '../models/events/guess';
 
 export class Switchboard {
     public users: Observable<string>;
     public drawings: Observable<string>;
-    public guesses: Observable<string>;
+    public guesses: Observable<Guess>;
 
     private drawingQueue: Subject<string>;
-    private guessQueue: Subject<string>;
+    private guessQueue: Subject<Guess>;
     private userQueue: Subject<string>;
     private connections: PeerJs.DataConnection[];
     private isOpenToNewUsers: boolean = true;
     private peer: PeerJs.Peer;
 
     constructor() {
-        this.guessQueue = new Subject<string>();
+        this.guessQueue = new Subject<Guess>();
         this.guesses = this.guessQueue.asObservable();
         this.drawingQueue = new Subject<string>();
         this.drawings = this.drawingQueue.asObservable();
@@ -91,7 +92,7 @@ export class Switchboard {
                     this.drawingQueue.next(<string>data.body);
                     break;
                 case DataMessageType.Guess:
-                    this.guessQueue.next(<string>data.body);
+                    this.guessQueue.next(<Guess>data.body);
                 default:
                     console.log(data);
             }

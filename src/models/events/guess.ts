@@ -1,10 +1,14 @@
 import { DataMessageType, Message } from "./message";
 
-export class Guess implements Message<string> {
+export class SendGuess implements Message<Guess> {
     public type: string = DataMessageType.Guess;
-    public body: string;
+    public body: Guess;
 
-    constructor(guess: string) {
-        this.body = guess.trim();
+    constructor(user: string, guess: string) {
+        this.body = new Guess(user, guess);
     }
+}
+
+export class Guess {
+    constructor(public user: string, public guess: string){}
 }

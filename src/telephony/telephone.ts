@@ -57,7 +57,7 @@ export class Telephone {
                 case DataMessageType.StateChange:
                     this.roomStateSubject.next(<RoomState>data.body);
                     break;
-                case DataMessageType.UserSelected:
+                case DataMessageType.PlayerSelected:
                     this.selectedUserSubject.next(<string>data.body);
                     break;
                 default:

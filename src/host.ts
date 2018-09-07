@@ -6,7 +6,9 @@ import { StateChanged, RoomState } from './models/events/stateChanged';
 import { Question } from './models/question';
 import { Observable, Subject } from 'rxjs';
 import { Util } from './util';
-import { UserSelected } from './models/events/userSelected';
+import { PlayerSelected } from './models/events/playerSelected';
+import { sentDrawing } from './models/events/sentDrawing';
+import { Guess } from './models/events/guess';
 
 const switchboard: Switchboard = new Switchboard();
 let drawingBoard: HTMLCanvasElement;
@@ -100,46 +102,77 @@ function getQuestions(): Observable<Question[]> {
 	return subject;
 }
 
+function takeClues(): GiveClue[] {
+	const clues = room.users.map((user: string) => {
+		const clue = Util.PopRandomElement(room.question.clues);
+		room.usedClues.push(clue);
+		return new GiveClue(user, clue);
+	});	
+	return clues;
+}
+
+function takeQuestion(): Question {
+	Util.Shuffle(questions);
+	return questions.pop();
+}
+
+function selectPlayer(): PlayerSelected {
+	Util.Shuffle(room.cluelessUsers);
+	const player = Util.PopRandomElement(room.cluelessUsers);
+	return new PlayerSelected(player);
+}
+
+function waitForDrawings(): Observable<string> {
+	return switchboard.drawings;
+}
+
 function startGame() {
 	switchboard.stopAcceptingNewUsers();
+	room.cluelessUsers = room.users.slice();
+	startNextRound();
+}
+
+function displayGuess(guess: Guess): void {
+	alert('bananas');
+}
+
+function startNextRound(): void{
+	if (room.cluelessUsers.length === 0) {
+		return endGame();
+	}
     getQuestions().subscribe((newQuestions: Question[]) => {
 		questions = newQuestions;
-		Util.Shuffle(questions);
-		room.question = questions.pop();
+		room.question = takeQuestion();		
 		transitionTo('drawingArea');
-		for (let index = 0; index < room.users.length; index++) {
-			const user = room.users[index];
-			const clue = room.question.clues[index];
-			switchboard.dispatchMessage(user, new GiveClue(clue));
-		}
+		takeClues().map((clue: GiveClue) => {
+			console.log('dispatching clues');
+			switchboard.dispatchMessage(clue.body.player, clue);
+		});
 		
-		const clonedUsers = room.users.slice(0);
-		let selectedUser = Util.RandomElement(clonedUsers)
-		clonedUsers.splice(clonedUsers.indexOf(selectedUser),1);
-		switchboard.dispatchMessageToAll(new UserSelected(selectedUser));
-        const waitForDrawings = switchboard.drawings.subscribe(
-            (dataUrl: string) => {
-				copyToCanvas(dataUrl);
-				if (clonedUsers.length === 0) {
-					waitForGuesses();
-					waitForDrawings.unsubscribe();
-					return;
+		const player = selectPlayer();
+		switchboard.dispatchMessageToAll(player);
+		const subscription = waitForDrawings().subscribe((dataUrl: string) => {
+			copyToCanvas(dataUrl);
+			subscription.add(waitForGuesses().subscribe((guess: Guess) => {
+				room.guessedUsers.push(guess.user);
+				displayGuess(guess);
+				if (room.guessedUsers.length === room.users.length-1){
+					subscription.unsubscribe();
+					return startNextRound();
 				}
-				selectedUser = Util.RandomElement(clonedUsers);
-				clonedUsers.splice(clonedUsers.indexOf(selectedUser),1);
-				switchboard.dispatchMessageToAll(new UserSelected(selectedUser));
-            }
-        );
+			}));		
+		});
     });
 }
 
-function waitForGuesses() {
+function endGame() {
+	displayAnswer();
+}
+
+function waitForGuesses(): Observable<Guess> {
     const stateChange = new StateChanged(RoomState.WaitingForGuesses);
     switchboard.dispatchMessageToAll(stateChange);
-    switchboard.guesses.subscribe((guess: string) => {
-        alert('received guess ' + guess);
-        displayAnswer();
-    });
+    return switchboard.guesses;
 }
 
 function displayAnswer() {
