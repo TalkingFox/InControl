@@ -88,7 +88,7 @@ function initializeWaitingRoom(roomName: string) {
     });
 }
 
-function getQuestions(): Observable<Question[]> {
+function getQuestions(): Promise<Question[]> {
 	const subject = new Subject<Question[]>();
 	if (questions) {
 		subject.next(questions);
@@ -99,7 +99,7 @@ function getQuestions(): Observable<Question[]> {
 		subject.next(questions);
 		subject.complete();
 	});
-	return subject;
+	return subject.toPromise();
 }
 
 function takeClues(): GiveClue[] {
@@ -127,9 +127,14 @@ function waitForDrawings(): Observable<string> {
 }
 
 function startGame() {
-	switchboard.stopAcceptingNewUsers();
-	room.cluelessUsers = room.users.slice();
-	startNextRound();
+    switchboard.stopAcceptingNewUsers();
+    getQuestions()
+        .then((newQuestions: Question[]) => {
+            questions = newQuestions;
+            room.question = takeQuestion();		
+            room.cluelessUsers = room.users.slice();
+            startNextRound();
+        });	
 }
 
 function startNextRound(): void{
@@ -137,22 +142,19 @@ function startNextRound(): void{
 	if (room.cluelessUsers.length === 0) {
 		return endGame();
 	}
-    getQuestions().subscribe((newQuestions: Question[]) => {
-		questions = newQuestions;
-		room.question = takeQuestion();		
-		transitionTo('drawingArea');
-		takeClues().map((clue: GiveClue) => {
-			console.log('dispatching clues');
-			switchboard.dispatchMessage(clue.body.player, clue);
-		});
-		
-		const player = selectPlayer();
-		switchboard.dispatchMessageToAll(player);
-		const subscription = waitForDrawings().subscribe((dataUrl: string) => {
-			copyToCanvas(dataUrl);
-            waitForGuesses()
-                .then((guess: Guess[]) => startNextRound())
-		});
+    transitionTo('drawingArea');
+    takeClues().map((clue: GiveClue) => {
+        console.log('dispatching clues');
+        switchboard.dispatchMessage(clue.body.player, clue);
+    });
+    
+    const player = selectPlayer();
+    switchboard.dispatchMessageToAll(player);
+    const subscription = waitForDrawings().subscribe((dataUrl: string) => {
+        subscription.unsubscribe();
+        copyToCanvas(dataUrl);
+        waitForGuesses()
+            .then((guess: Guess[]) => startNextRound())
     });
 }
 
