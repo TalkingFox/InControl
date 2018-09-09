@@ -1,15 +1,18 @@
 import { Point } from "./point";
+import { DrawingBoardSettings } from "./models/drawing-board-settings";
 
 export class DrawingBoard {
     private isMouseDown: boolean = false;
     private canvas: HTMLCanvasElement;
-    private canvasContext: any;
+    private canvasContext: CanvasRenderingContext2D;
     private lastPosition: Point = new Point(0, 0);
 
-    public constructor(elementId: string) {
-        this.canvas = document.getElementById(elementId) as HTMLCanvasElement;
+    public constructor(settings: DrawingBoardSettings) {
+        this.canvas = document.getElementById(settings.elementId) as HTMLCanvasElement;
         this.canvasContext = this.canvas.getContext("2d");
-        this.setEvents(this.canvas);
+        if (!settings.isReadOnly) {
+            this.setEvents(this.canvas);
+        }
     }
 
     public ClearCanvas() {
@@ -18,6 +21,14 @@ export class DrawingBoard {
 
     public toDataUrl() {
         return this.canvas.toDataURL();
+    }
+
+    public loadDataUrl(url: string) {
+        const image: HTMLImageElement = new Image();
+        image.onload = () => {
+            this.canvasContext.drawImage(image, 0, 0);
+        }
+        image.src = url;
     }
 
     private setEvents(canvas: HTMLCanvasElement): void {

@@ -21,7 +21,7 @@ window.onload = () => {
 
 function initialize() {
     stateTransition = new StateTransition();
-    drawingBoard = new DrawingBoard('drawingBoard');
+    drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
     loadingMessage = document.getElementById('loadingMessage');
     const connect = document.getElementById('connect');
     sendDrawing = document.getElementById('sendDrawing');
@@ -30,6 +30,7 @@ function initialize() {
         const message = new sentDrawing(data);
         telephone.SendMessage(message);
         stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
+        drawingBoard.ClearCanvas();
     });
 
     const sendGuess = document.getElementById('sendGuess');

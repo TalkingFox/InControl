@@ -9,10 +9,10 @@ import { Util } from './util';
 import { PlayerSelected } from './models/events/playerSelected';
 import { Guess } from './models/events/guess';
 import { TalkativeArray } from './models/talkative-array';
+import { DrawingBoard } from './drawing-board';
 
 const switchboard: Switchboard = new Switchboard();
-let drawingBoard: HTMLCanvasElement;
-let drawingBoardContext: CanvasRenderingContext2D;
+let drawingBoard: DrawingBoard;
 let room: Room;
 let questions: Question[];
 let waitingRoom: HTMLElement;
@@ -22,11 +22,10 @@ let guesses: TalkativeArray<Guess>;
 
 function initialize() {
     guesses = new TalkativeArray<Guess>();
+    drawingBoard = new DrawingBoard({elementId: 'drawingBoard', isReadOnly: true});
     switchboard.guesses.subscribe((guess: Guess) => guesses.Push(guess));
     revealRoom = document.getElementById('revealArea');
     waitingRoom = document.getElementById('waitingRoom');
-    drawingBoard = document.getElementById('drawingBoard') as HTMLCanvasElement;
-    drawingBoardContext = drawingBoard.getContext('2d');
     users = document.getElementById('users');
     const roomMaker = document.getElementById('createRoom');
     roomMaker.addEventListener('click', () => {
@@ -42,6 +41,7 @@ function initialize() {
 
     const replay = document.getElementById('replay');
     replay.addEventListener('click', () => {
+        drawingBoard.ClearCanvas();
         startGame();
     });
 }
@@ -59,14 +59,6 @@ function transitionTo(area: string) {
 
 function createRoom(roomName: string) {
     initializeWaitingRoom(roomName);
-}
-
-function copyToCanvas(dataUrl: string) {
-    const image: HTMLImageElement = new Image();
-    image.onload = () => {
-        drawingBoardContext.drawImage(image, 0, 0);
-    };
-    image.src = dataUrl;
 }
 
 function userJoined(user: string) {
@@ -162,7 +154,7 @@ function startNextRound(): void{
     switchboard.dispatchMessageToAll(player);
     const subscription = waitForDrawings().subscribe((dataUrl: string) => {
         subscription.unsubscribe();
-        copyToCanvas(dataUrl);
+        drawingBoard.loadDataUrl(dataUrl);
         waitForGuesses()
             .then((guess: Guess[]) => startNextRound())
     });
