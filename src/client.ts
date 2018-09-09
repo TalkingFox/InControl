@@ -54,11 +54,9 @@ function initialize() {
     });
 
     connect.addEventListener('click', () => {
-        const idElement = document.getElementById(
-            'connectId'
-        ) as HTMLInputElement;
-        const id = idElement.value;
-        joinRoom(new Room(id, 'butts'))
+        const id = document.getElementById('connectId') as HTMLInputElement;
+        const roomName = document.getElementById('roomName') as HTMLInputElement;        
+        joinRoom(new Room(id.value, roomName.value))
             .then(() => stateTransition.toWaitingArea());
     });
 
