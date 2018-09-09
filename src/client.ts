@@ -63,14 +63,12 @@ function initialize() {
     });
 
     const beginScan = document.getElementById('beginScan');
-    stateTransition.toScanningArea();
     beginScan.addEventListener('click', () => {
         scanner.scanForQrCode().then((room: Room) => {
             const id = document.getElementById('connectId') as HTMLInputElement;
             const roomName = document.getElementById('roomName') as HTMLInputElement;
             id.value = room.id;
             roomName.value = room.name;
-            console.log(room);
         }, (error) => {
             const scanError = document.getElementById('scanError');
             scanError.textContent = error;
