@@ -122,7 +122,7 @@ function takeQuestion(): Question {
 function selectPlayer(): PlayerSelected {
 	Util.Shuffle(room.cluelessUsers);
 	const player = Util.PopRandomElement(room.cluelessUsers);
-	return new PlayerSelected(player);
+	return new PlayerSelected(player, drawingBoard.toDataUrl());
 }
 
 function waitForDrawings(): Observable<string> {

@@ -72,6 +72,7 @@ function joinRoom(room: Room): Promise<void> {
     const promise = new Subject<void>();
     const subscription = telephone.connectTo(room).subscribe(() => {
         listenForClues();
+        listenForCanvasUpdates();
         listenToStateChanges();
         promise.next();
         promise.complete();
@@ -87,6 +88,12 @@ function listenForClues(): void {
         clueElement.removeAttribute('hidden');
         const clueHelper = document.getElementById('clue-help');
         clueHelper.removeAttribute('hidden');
+    });
+}
+
+function listenForCanvasUpdates(): void {
+    stateTransition.room.canvas.subscribe((data) => {
+        drawingBoard.loadDataUrl(data);
     });
 }
 

@@ -4,18 +4,17 @@ import { DataMessage, DataMessageType } from "../models/events/message";
 import "peer";
 import { RoomState } from "../models/events/stateChanged";
 import { ClueEnvelope } from "../models/ClueEnvelope";
+import { PlayerState } from "../models/events/playerSelected";
 
 export class Telephone {
     public user: string;
     public messages: Observable<DataMessage>;
     public clues: Observable<string>;
-    public selectedUser: Observable<string>;
 
     private messageSubject: Subject<DataMessage>;
     private cluesSubject: Subject<string>;
     private peer: PeerJs.Peer;
     private connection: PeerJs.DataConnection;
-    private selectedUserSubject: Subject<string>;
     private room: Room;
     
     constructor(user: string) {
@@ -24,8 +23,6 @@ export class Telephone {
         this.messages = this.messageSubject.asObservable();
         this.cluesSubject = new Subject<string>();
         this.clues = this.cluesSubject.asObservable();
-        this.selectedUserSubject = new Subject<string>();
-        this.selectedUser = this.selectedUserSubject.asObservable();
     }
 
     public connectTo(room: Room): Observable<void> {
@@ -56,12 +53,12 @@ export class Telephone {
                     this.room.setRoomState(<RoomState>data.body);
                     break;
                 case DataMessageType.PlayerSelected:
-                    const selectedPlayer = <string>data.body;
-                    const newRoomState = (selectedPlayer == this.user) ? 
+                    const selectedPlayer = <PlayerState>data.body;
+                    const newRoomState = (selectedPlayer.player == this.user) ? 
                         RoomState.MyTurn : 
                         RoomState.OtherPlayerSelected;
                     this.room.setRoomState(newRoomState);
-                    this.selectedUserSubject.next(<string>data.body);
+                    this.room.setCanvasData(selectedPlayer.canvasUrl);
                     break;
                 default:
                     console.log(data);
