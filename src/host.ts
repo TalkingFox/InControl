@@ -7,8 +7,8 @@ import { Question } from './models/question';
 import { Observable, Subject } from 'rxjs';
 import { Util } from './util';
 import { PlayerSelected } from './models/events/playerSelected';
-import { sentDrawing } from './models/events/sentDrawing';
 import { Guess } from './models/events/guess';
+import { TalkativeArray } from './models/talkative-array';
 
 const switchboard: Switchboard = new Switchboard();
 let drawingBoard: HTMLCanvasElement;
@@ -18,8 +18,11 @@ let questions: Question[];
 let waitingRoom: HTMLElement;
 let revealRoom: HTMLElement;
 let users: HTMLElement;
+let guesses: TalkativeArray<Guess>;
 
 function initialize() {
+    guesses = new TalkativeArray<Guess>();
+    switchboard.guesses.subscribe((guess: Guess) => guesses.Push(guess));
     revealRoom = document.getElementById('revealArea');
     waitingRoom = document.getElementById('waitingRoom');
     drawingBoard = document.getElementById('drawingBoard') as HTMLCanvasElement;
@@ -176,19 +179,21 @@ function endGame() {
 }
 
 function waitForGuesses(): Promise<Guess[]> {
+    console.log('waiting for guesses');
+    if (guesses.length === room.users.length - 1) {
+        const resolution = Promise.resolve(guesses.elements.splice(0));
+        guesses.clear();
+        console.log('returning resolution');
+        return resolution;
+    }
     const promise = new Subject<Guess[]>();
-    const guesses: Guess[] = [];
-    switchboard.guesses.subscribe((guess: Guess) => {
-        guesses.push(guess);
-        console.log(guess);
-        console.log(room);
-        console.log(guesses.length, console.log(room.users.length));
-        console.log(room.users);
-        console.log(room.users.length);
+    const subscription = guesses.Subscribe(() => {
         if (guesses.length === room.users.length - 1) {
             console.log('promise kept');
-            promise.next(guesses);
+            promise.next(guesses.clone());
+            guesses.clear();
             promise.complete();
+            subscription.unsubscribe();
         }
     });
     return promise.toPromise();
