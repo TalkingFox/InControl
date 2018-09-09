@@ -7,6 +7,8 @@
   </head>
   <body>
     <H3>CLIENT</H3>
+    <p id="clue" hidden></p> 
+    <p id="clue-help" hidden>Try thinking about how it will fit into the bigger picture.</p>
     <div id="userArea">
       <label>Enter your name</label>
       <input type="text" id="username"/>
@@ -23,11 +25,7 @@
       <p>You can practice drawing in the meantime...</p>
       <canvas id="waitingDrawingBoard"></canvas>
     </div>    
-    <div id="clueArea" hidden>
-      <p>Your clue is <p id="waitingClue"></p>. Try thinking about how it will fit into the bigger picture.</p>
-    </div>
     <div id="playArea" hidden>
-      <p>Your clue was </p><p id="clue"></p>
       <canvas id="drawingBoard"></canvas>
       <button id="sendDrawing">Submit</button>
     </div>

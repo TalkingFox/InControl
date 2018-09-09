@@ -3,15 +3,16 @@ import { Subject, Observable } from "rxjs";
 import { DataMessage, DataMessageType } from "../models/events/message";
 import "peer";
 import { RoomState } from "../models/events/stateChanged";
+import { ClueEnvelope } from "../models/events/giveClue";
 
 export class Telephone {
     public user: string;
     public messages: Observable<DataMessage>;
-    public clues: Observable<string>;
+    public clues: Observable<ClueEnvelope>;
     public selectedUser: Observable<string>;
 
     private messageSubject: Subject<DataMessage>;
-    private cluesSubject: Subject<string>;
+    private cluesSubject: Subject<ClueEnvelope>;
     private peer: PeerJs.Peer;
     private connection: PeerJs.DataConnection;
     private selectedUserSubject: Subject<string>;
@@ -21,7 +22,7 @@ export class Telephone {
         this.user = user;
         this.messageSubject = new Subject<DataMessage>();
         this.messages = this.messageSubject.asObservable();
-        this.cluesSubject = new Subject<string>();
+        this.cluesSubject = new Subject<ClueEnvelope>();
         this.clues = this.cluesSubject.asObservable();
         this.selectedUserSubject = new Subject<string>();
         this.selectedUser = this.selectedUserSubject.asObservable();
@@ -50,7 +51,7 @@ export class Telephone {
             const data = JSON.parse(message) as DataMessage;
             switch (data.type) {
                 case DataMessageType.GiveClue:
-                    this.cluesSubject.next(<string>data.body);
+                    this.cluesSubject.next(<ClueEnvelope>data.body);
                     break;
                 case DataMessageType.StateChange:
                     console.log('received state change from host ', data.body);
