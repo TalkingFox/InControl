@@ -98,12 +98,11 @@ function initializeWaitingRoom(roomName: string) {
 
 function getQuestions(): Promise<Question[]> {
     console.log('getting questions');
-	const subject = new Subject<Question[]>();
 	if (questions) {
-		subject.next(questions);
-        subject.complete();
-        return subject.toPromise();
-	}
+        console.log('returning early');
+        return Promise.resolve(questions);
+    }
+	const subject = new Subject<Question[]>();
 	switchboard.getQuestions().subscribe((newQuestions: Question[]) => {
 		questions = newQuestions;
 		subject.next(questions);
