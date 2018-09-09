@@ -4,11 +4,9 @@ import { RoomState } from "./models/events/stateChanged";
 import { Scanner } from "./scanner";
 
 export class StateTransition {
-    private scanner: Scanner;
     public room: Room;
 
     constructor(){
-        this.scanner = new Scanner('scanner');
     }
 
     public toGuessArea(): void {
@@ -19,9 +17,8 @@ export class StateTransition {
         this.transitionTo('playArea');
     }
 
-    public toScanningArea(): Promise<Room>{
+    public toScanningArea(): void{
         this.transitionTo('scanningArea');
-        return this.scanner.scanForQrCode();
     }
 
     public toWaitingArea(): void {

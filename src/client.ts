@@ -6,11 +6,12 @@ import { SendGuess } from './models/events/guess';
 import { RoomState } from './models/events/stateChanged';
 import { Subject, Observable } from 'rxjs';
 import { StateTransition } from './stateTransition';
+import { Scanner } from './scanner';
 
 let drawingBoard: DrawingBoard;
 let telephone: Telephone;
 let stateTransition: StateTransition;
-
+let scanner: Scanner;
 let loadingMessage: HTMLElement;
 let sendDrawing: HTMLElement;
 
@@ -19,6 +20,7 @@ window.onload = () => {
 };
 
 function initialize() {
+    scanner = new Scanner('scanner');
     stateTransition = new StateTransition();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
     loadingMessage = document.getElementById('loadingMessage');
@@ -48,10 +50,7 @@ function initialize() {
             return;
         }
         telephone = new Telephone(username.value);
-                
-        stateTransition.toScanningArea()
-            .then((room: Room) => joinRoom(room))
-            .then(() => stateTransition.toWaitingArea());
+        stateTransition.toScanningArea();
     });
 
     connect.addEventListener('click', () => {
@@ -61,6 +60,22 @@ function initialize() {
         const id = idElement.value;
         joinRoom(new Room(id, 'butts'))
             .then(() => stateTransition.toWaitingArea());
+    });
+
+    const beginScan = document.getElementById('beginScan');
+    stateTransition.toScanningArea();
+    beginScan.addEventListener('click', () => {
+        scanner.scanForQrCode().then((room: Room) => {
+            const id = document.getElementById('connectId') as HTMLInputElement;
+            const roomName = document.getElementById('roomName') as HTMLInputElement;
+            id.value = room.id;
+            roomName.value = room.name;
+            console.log(room);
+        }, (error) => {
+            const scanError = document.getElementById('scanError');
+            scanError.textContent = error;
+            scanError.removeAttribute('hidden');
+        })        
     });
 }
 

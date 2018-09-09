@@ -12,16 +12,15 @@ export class Scanner {
     private video: HTMLVideoElement;
     private scanner: HTMLCanvasElement;
     private scannerContext: CanvasRenderingContext2D;
-    private scanSuccessful: Subject<Room>;
 
     constructor(private elementId: string) {
-        this.scanSuccessful = new Subject<Room>();
+        this.video = document.createElement('video');
     }
 
     public scanForQrCode(): Promise<Room> {
+        const scanSuccessful = new Subject<Room>();
         this.scanner = document.getElementById(this.elementId) as HTMLCanvasElement;
         this.scannerContext = this.scanner.getContext('2d');
-        this.video = document.createElement('video') as HTMLVideoElement;
         // use facingMode: environment to get front camera on phones
         navigator.mediaDevices.getUserMedia(this.mediaConstraints)
         .then((stream: MediaStream) => {
@@ -29,14 +28,14 @@ export class Scanner {
             // required for ios safari
             this.video.setAttribute('playsinline', 'true');
             this.video.play();
-            return requestAnimationFrame(() => this.analyzeFrame());
+            return requestAnimationFrame(() => this.analyzeFrame(scanSuccessful));
         });
-        return this.scanSuccessful.toPromise();
+        return scanSuccessful.toPromise();
     }
 
-        private analyzeFrame(): number {
+        private analyzeFrame(subject: Subject<Room>): number {
         if (this.video.readyState !== this.video.HAVE_ENOUGH_DATA) {
-            return requestAnimationFrame(() => this.analyzeFrame());
+            return requestAnimationFrame(() => this.analyzeFrame(subject));
         }
     
         this.scanner.height = this.video.videoHeight;
@@ -45,7 +44,7 @@ export class Scanner {
         const imageData = this.scannerContext.getImageData(0, 0, this.scanner.width, this.scanner.height);
         const code: QRCode = jsQR(imageData.data, imageData.width, imageData.height);
         if (!code) {
-            return requestAnimationFrame(() => this.analyzeFrame());
+            return requestAnimationFrame(() => this.analyzeFrame(subject));
         }
     
         this.drawLine(code.location.topLeftCorner, code.location.topRightCorner);
@@ -56,8 +55,15 @@ export class Scanner {
         streams.getTracks().forEach((track) => {
             track.stop();
         });
-        const room = JSON.parse(code.data) as Room;
-        this.scanSuccessful.next(room);
+        try {
+            const room = JSON.parse(code.data) as Room;
+            subject.next(room);
+            subject.complete();  
+        } catch (error) {
+            subject.error('Failed to parse QR code. Received '+code.data);
+            subject.complete();
+        }
+        
     }
 
     private drawLine(start: Point, end: Point): void {
