@@ -1,7 +1,6 @@
 import * as QRious from 'qrious';
 import { Switchboard } from './telephony/switchboard';
 import { Room } from './models/room';
-import { GiveClue } from './models/events/giveClue';
 import { StateChanged, RoomState } from './models/events/stateChanged';
 import { Question } from './models/question';
 import { Observable, Subject } from 'rxjs';
@@ -10,6 +9,7 @@ import { PlayerSelected } from './models/events/playerSelected';
 import { Guess } from './models/events/guess';
 import { TalkativeArray } from './models/talkative-array';
 import { DrawingBoard } from './drawing-board';
+import { ClueEnvelope } from './models/ClueEnvelope';
 
 const switchboard: Switchboard = new Switchboard();
 let drawingBoard: DrawingBoard;
@@ -107,11 +107,11 @@ function getQuestions(): Promise<Question[]> {
 	return subject.toPromise();
 }
 
-function takeClues(): GiveClue[] {
+function takeClues(): ClueEnvelope[] {
 	const clues = room.users.map((user: string) => {
 		const clue = Util.PopRandomElement(room.question.clues);
-		room.usedClues.push(clue);
-		return new GiveClue(user, clue);
+        room.usedClues.push(clue);
+		return new ClueEnvelope(user, clue);
 	});	
 	return clues;
 }
@@ -152,9 +152,9 @@ function startNextRound(): void{
 		return endGame();
 	}
     transitionTo('drawingArea');
-    takeClues().map((clue: GiveClue) => {
+    takeClues().map((envelope: ClueEnvelope) => {
         console.log('dispatching clues');
-        switchboard.dispatchMessage(clue.body.player, clue);
+        switchboard.dispatchMessage(envelope.player, envelope.clue);
     });
     
     const player = selectPlayer();

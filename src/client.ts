@@ -6,7 +6,6 @@ import { SendGuess } from './models/events/guess';
 import { RoomState } from './models/events/stateChanged';
 import { Subject, Observable } from 'rxjs';
 import { StateTransition } from './stateTransition';
-import { ClueEnvelope } from './models/events/giveClue';
 
 let drawingBoard: DrawingBoard;
 let telephone: Telephone;
@@ -82,9 +81,9 @@ function joinRoom(room: Room): Promise<void> {
 }
 
 function listenForClues(): void {
-    telephone.clues.subscribe((clue: ClueEnvelope) => {
+    telephone.clues.subscribe((clue: string) => {
         const clueElement = document.getElementById('clue');
-        clueElement.textContent='Clue: '+clue.clue;
+        clueElement.textContent='Clue: '+clue;
         clueElement.removeAttribute('hidden');
         const clueHelper = document.getElementById('clue-help');
         clueHelper.removeAttribute('hidden');
