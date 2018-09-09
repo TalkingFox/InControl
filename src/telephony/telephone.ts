@@ -8,20 +8,17 @@ export class Telephone {
     public user: string;
     public messages: Observable<DataMessage>;
     public clues: Observable<string>;
-    public roomState: Observable<RoomState>;
     public selectedUser: Observable<string>;
 
-    private roomStateSubject: Subject<RoomState>;
     private messageSubject: Subject<DataMessage>;
     private cluesSubject: Subject<string>;
     private peer: PeerJs.Peer;
     private connection: PeerJs.DataConnection;
     private selectedUserSubject: Subject<string>;
+    private room: Room;
     
     constructor(user: string) {
         this.user = user;
-        this.roomStateSubject = new Subject<RoomState>();
-        this.roomState = this.roomStateSubject.asObservable();
         this.messageSubject = new Subject<DataMessage>();
         this.messages = this.messageSubject.asObservable();
         this.cluesSubject = new Subject<string>();
@@ -31,6 +28,7 @@ export class Telephone {
     }
 
     public connectTo(room: Room): Observable<void> {
+        this.room = room;
         const peer: PeerJs.Peer = new Peer({});
         this.connection = peer.connect(room.id, {label: this.user});
         const established: Subject<void> = new Subject<void>();
@@ -56,7 +54,7 @@ export class Telephone {
                     break;
                 case DataMessageType.StateChange:
                     console.log('received state change from host ', data.body);
-                    this.roomStateSubject.next(<RoomState>data.body);
+                    this.room.setRoomState(<RoomState>data.body);
                     break;
                 case DataMessageType.PlayerSelected:
                     const selectedPlayer = <string>data.body;
@@ -65,7 +63,7 @@ export class Telephone {
                         RoomState.OtherPlayerSelected;
                     console.log("selected", data.body);
                     console.log('state', newRoomState);
-                    this.roomStateSubject.next(newRoomState);
+                    this.room.setRoomState(newRoomState);
                     this.selectedUserSubject.next(<string>data.body);
                     break;
                 default:

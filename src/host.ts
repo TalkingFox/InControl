@@ -20,7 +20,7 @@ let revealRoom: HTMLElement;
 let users: HTMLElement;
 
 function initialize() {
-    revealRoom = document.getElementById('revealRoom');
+    revealRoom = document.getElementById('revealArea');
     waitingRoom = document.getElementById('waitingRoom');
     drawingBoard = document.getElementById('drawingBoard') as HTMLCanvasElement;
     drawingBoardContext = drawingBoard.getContext('2d');
@@ -35,6 +35,11 @@ function initialize() {
             return;
         }
         createRoom(roomElement.value);
+    });
+
+    const replay = document.getElementById('replay');
+    replay.addEventListener('click', () => {
+        startGame();
     });
 }
 
@@ -89,10 +94,12 @@ function initializeWaitingRoom(roomName: string) {
 }
 
 function getQuestions(): Promise<Question[]> {
+    console.log('getting questions');
 	const subject = new Subject<Question[]>();
 	if (questions) {
 		subject.next(questions);
-		subject.complete();
+        subject.complete();
+        return subject.toPromise();
 	}
 	switchboard.getQuestions().subscribe((newQuestions: Question[]) => {
 		questions = newQuestions;
@@ -130,6 +137,7 @@ function startGame() {
     switchboard.stopAcceptingNewUsers();
     getQuestions()
         .then((newQuestions: Question[]) => {
+            console.log('got questions');
             questions = newQuestions;
             room.question = takeQuestion();		
             room.cluelessUsers = room.users.slice();
@@ -159,8 +167,10 @@ function startNextRound(): void{
 }
 
 function endGame() {
+    console.log("entering final guess!");
     const stateChange = new StateChanged(RoomState.FinalGuess);
     switchboard.dispatchMessageToAll(stateChange);
+    console.log('sent state to all');
     waitForGuesses()
         .then((guesses: Guess[]) => displayAnswer());
 }
@@ -185,6 +195,7 @@ function waitForGuesses(): Promise<Guess[]> {
 }
 
 function displayAnswer() {
+    console.log('displaying answer');
     const answerField = document.getElementById('answer');
     answerField.textContent = 'The answer was '+room.question.name;
     revealRoom.removeAttribute('hidden');

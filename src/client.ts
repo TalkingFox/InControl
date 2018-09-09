@@ -89,8 +89,7 @@ function listenForClues(): void {
 }
 
 function listenToStateChanges(): void {
-    telephone.roomState.subscribe((state: RoomState) => {
-        console.log('state change ',state);
+    stateTransition.room.roomState.subscribe((state: RoomState) => {
         switch (state) {
             case RoomState.FinalGuess:
                 stateTransition.toGuessArea();
@@ -103,6 +102,9 @@ function listenToStateChanges(): void {
                 break;
             case RoomState.OtherPlayerSelected:
                 stateTransition.toGuessArea();
+                break;
+            case RoomState.WaitingForRoundEnd:
+                stateTransition.toWaitingArea();
                 break;
             default:
                 console.log(state);
