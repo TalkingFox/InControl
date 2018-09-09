@@ -44,6 +44,10 @@ function initialize() {
         drawingBoard.ClearCanvas();
         startGame();
     });
+    replay.addEventListener('click', () => {
+        questions = null;
+        startGame();
+    });
 }
 
 function transitionTo(area: string) {
@@ -131,7 +135,10 @@ function startGame() {
     switchboard.stopAcceptingNewUsers();
     getQuestions()
         .then((newQuestions: Question[]) => {
-            console.log('got questions');
+            if (newQuestions.length === 0) {
+                transitionTo('outOfQuestions');
+                return;
+            }
             questions = newQuestions;
             room.question = takeQuestion();		
             room.cluelessUsers = room.users.slice();
