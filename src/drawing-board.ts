@@ -36,12 +36,14 @@ export class DrawingBoard {
             this.isMouseDown = true;
             const coordinates = this.GetCurrentCoordinates(e, canvas);
             this.SetLastCoordinates(coordinates);
+            this.Dot(coordinates);
         });
 
         canvas.addEventListener('touchstart', (e) => {
             this.isMouseDown = true;
             const coordinates = this.GetTouchCoordinates(e, canvas);
             this.SetLastCoordinates(coordinates);
+            this.Dot(coordinates);
         });
 
         canvas.addEventListener('mousemove', (e) => {
@@ -97,6 +99,10 @@ export class DrawingBoard {
         this.canvasContext.closePath();
 
         this.SetLastCoordinates(newCoordinates);
+    }
+
+    private Dot(coordinates: Point) {
+        this.canvasContext.strokeRect(coordinates.x, coordinates.y, 1,1);
     }
 
     
