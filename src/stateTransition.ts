@@ -29,7 +29,6 @@ export class StateTransition {
     }
 
     private transitionTo(area: string) {
-        console.log('transitioning to ', area);
         const allAreas = document.querySelectorAll('body > div');
         allAreas.forEach((value: Element) => {
             if (value.id == area) {

@@ -93,9 +93,7 @@ function initializeWaitingRoom(roomName: string) {
 }
 
 function getQuestions(): Promise<Question[]> {
-    console.log('getting questions');
 	if (questions) {
-        console.log('returning early');
         return Promise.resolve(questions);
     }
 	const subject = new Subject<Question[]>();
@@ -147,13 +145,11 @@ function startGame() {
 }
 
 function startNextRound(): void{
-    console.log('starting the next round');
 	if (room.cluelessUsers.length === 0) {
 		return endGame();
 	}
     transitionTo('drawingArea');
     takeClues().map((envelope: ClueEnvelope) => {
-        console.log('dispatching clues');
         switchboard.dispatchMessage(envelope.player, envelope.clue);
     });
     
@@ -168,26 +164,21 @@ function startNextRound(): void{
 }
 
 function endGame() {
-    console.log("entering final guess!");
     const stateChange = new StateChanged(RoomState.FinalGuess);
     switchboard.dispatchMessageToAll(stateChange);
-    console.log('sent state to all');
     waitForGuesses()
         .then((guesses: Guess[]) => displayAnswer());
 }
 
 function waitForGuesses(): Promise<Guess[]> {
-    console.log('waiting for guesses');
     if (guesses.length === room.users.length - 1) {
         const resolution = Promise.resolve(guesses.elements.splice(0));
         guesses.clear();
-        console.log('returning resolution');
         return resolution;
     }
     const promise = new Subject<Guess[]>();
     const subscription = guesses.Subscribe(() => {
         if (guesses.length === room.users.length - 1) {
-            console.log('promise kept');
             promise.next(guesses.clone());
             guesses.clear();
             promise.complete();

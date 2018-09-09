@@ -30,9 +30,7 @@ export class Switchboard {
         const matchedUser = this.connections.find((connection: PeerJs.DataConnection) => {
             return connection.label == user;
         });
-        console.log('sending message ',message);
         matchedUser.send(JSON.stringify(message));
-        console.log('message sent to ',matchedUser);
 
     }
 
@@ -74,7 +72,6 @@ export class Switchboard {
 
     private registerNewConnections(peer: PeerJs.Peer) {
         peer.on('connection', (newConnection: PeerJs.DataConnection) => {
-            console.log('new connection')
             if (!this.isOpenToNewUsers) {
                 return;
             }

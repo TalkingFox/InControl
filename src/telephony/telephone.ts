@@ -34,7 +34,6 @@ export class Telephone {
         this.connection = peer.connect(room.id, {label: this.user});
         const established: Subject<void> = new Subject<void>();
         this.connection.on('open', () => {
-            console.log('connection established');
             established.next();
             established.complete();
             this.listenForMessages(this.connection);
@@ -54,7 +53,6 @@ export class Telephone {
                     this.cluesSubject.next(<string>data.body);
                     break;
                 case DataMessageType.StateChange:
-                    console.log('received state change from host ', data.body);
                     this.room.setRoomState(<RoomState>data.body);
                     break;
                 case DataMessageType.PlayerSelected:
@@ -62,8 +60,6 @@ export class Telephone {
                     const newRoomState = (selectedPlayer == this.user) ? 
                         RoomState.MyTurn : 
                         RoomState.OtherPlayerSelected;
-                    console.log("selected", data.body);
-                    console.log('state', newRoomState);
                     this.room.setRoomState(newRoomState);
                     this.selectedUserSubject.next(<string>data.body);
                     break;
