@@ -7,8 +7,11 @@ import { RoomState } from './models/events/stateChanged';
 import { Subject, Observable } from 'rxjs';
 import { StateTransition } from './stateTransition';
 import { Scanner } from './scanner';
+import { PlayerLogin } from './models/events/playerLogin';
+import { Player } from './models/player';
 
 let drawingBoard: DrawingBoard;
+let avatarBoard: DrawingBoard;
 let telephone: Telephone;
 let stateTransition: StateTransition;
 let scanner: Scanner;
@@ -23,6 +26,7 @@ function initialize() {
     scanner = new Scanner('scanner');
     stateTransition = new StateTransition();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
+    avatarBoard = new DrawingBoard({elementId: 'avatar'});
     loadingMessage = document.getElementById('loadingMessage');
     const connect = document.getElementById('connect');
     sendDrawing = document.getElementById('sendDrawing');
@@ -37,7 +41,7 @@ function initialize() {
     const sendGuess = document.getElementById('sendGuess');
     sendGuess.addEventListener('click', () => {
         const guessElement = document.getElementById('guess') as HTMLInputElement;
-        const message = new SendGuess(telephone.user, guessElement.value);
+        const message = new SendGuess(telephone.player.name, guessElement.value);
         telephone.SendMessage(message);
         stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
     });
@@ -45,11 +49,9 @@ function initialize() {
     const login = document.getElementById('login');
     login.addEventListener('click', () => {
         const username = document.getElementById('username') as HTMLInputElement;
-        if (!username.value) {
-            alert('It would be really cool if you entered a name.');
-            return;
-        }
-        telephone = new Telephone(username.value);
+        const avatarUrl = avatarBoard.toDataUrl();
+        const player = new Player(username.value, avatarUrl);
+        telephone = new Telephone(player);
         stateTransition.toScanningArea();
     });
 

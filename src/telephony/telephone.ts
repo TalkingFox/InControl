@@ -5,9 +5,11 @@ import "peer";
 import { RoomState } from "../models/events/stateChanged";
 import { ClueEnvelope } from "../models/ClueEnvelope";
 import { PlayerState } from "../models/events/playerSelected";
+import { Player } from "../models/player";
+import { PlayerLogin } from "../models/events/playerLogin";
 
 export class Telephone {
-    public user: string;
+    public player: Player;
     public messages: Observable<DataMessage>;
     public clues: Observable<string>;
 
@@ -17,8 +19,8 @@ export class Telephone {
     private connection: PeerJs.DataConnection;
     private room: Room;
     
-    constructor(user: string) {
-        this.user = user;
+    constructor(player: Player) {
+        this.player = player;
         this.messageSubject = new Subject<DataMessage>();
         this.messages = this.messageSubject.asObservable();
         this.cluesSubject = new Subject<string>();
@@ -28,12 +30,14 @@ export class Telephone {
     public connectTo(room: Room): Observable<void> {
         this.room = room;
         const peer: PeerJs.Peer = new Peer({});
-        this.connection = peer.connect(room.id, {label: this.user});
+        this.connection = peer.connect(room.id, {label: this.player.name});
         const established: Subject<void> = new Subject<void>();
         this.connection.on('open', () => {
             established.next();
             established.complete();
             this.listenForMessages(this.connection);
+            const login = new PlayerLogin(this.player);
+            this.SendMessage(login);
         });
         return established.asObservable();
     }
@@ -54,7 +58,7 @@ export class Telephone {
                     break;
                 case DataMessageType.PlayerSelected:
                     const selectedPlayer = <PlayerState>data.body;
-                    const newRoomState = (selectedPlayer.player == this.user) ? 
+                    const newRoomState = (selectedPlayer.player == this.player.name) ? 
                         RoomState.MyTurn : 
                         RoomState.OtherPlayerSelected;
                     this.room.setRoomState(newRoomState);

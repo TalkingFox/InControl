@@ -10,6 +10,7 @@ import { Guess } from './models/events/guess';
 import { TalkativeArray } from './models/talkative-array';
 import { DrawingBoard } from './drawing-board';
 import { ClueEnvelope } from './models/ClueEnvelope';
+import { Player } from './models/player';
 
 const switchboard: Switchboard = new Switchboard();
 let drawingBoard: DrawingBoard;
@@ -65,11 +66,18 @@ function createRoom(roomName: string) {
     initializeWaitingRoom(roomName);
 }
 
-function userJoined(user: string) {
-    room.users.push(user);
-    let newUser = document.createElement('li');
-    newUser.textContent = user;
-    users.appendChild(newUser);
+function playerJoined(user: Player) {
+    room.users.push(user.name);
+    const userGroup = document.createElement('div');
+    const userName = document.createElement('li');
+    const avatar = document.createElement('img') as HTMLImageElement;
+
+    avatar.src = user.avatar;
+    userName.textContent = user.name;
+
+    userGroup.appendChild(userName);
+    userGroup.appendChild(avatar);
+    users.appendChild(userGroup);
 }
 
 function initializeWaitingRoom(roomName: string) {
@@ -82,8 +90,8 @@ function initializeWaitingRoom(roomName: string) {
             element: document.getElementById('qrCode'),
             value: JSON.stringify(room)
         });
-        switchboard.users.subscribe((user: string) => {
-            userJoined(user);
+        switchboard.players.subscribe((user: Player) => {
+            playerJoined(user);
         });
         const startGameOk = document.getElementById('startGame');
         startGameOk.addEventListener('click', () => {

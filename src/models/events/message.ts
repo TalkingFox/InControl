@@ -3,6 +3,7 @@ import { GiveClue } from "./giveClue";
 import { StateChanged } from "./stateChanged";
 import { PlayerSelected } from "./playerSelected";
 import { SendGuess } from "./guess";
+import { PlayerLogin } from "./playerLogin";
 
 export interface Message<T> { 
     type: string;
@@ -11,7 +12,7 @@ export interface Message<T> {
 
 export type DataMessage = sentDrawing | GiveClue 
             | StateChanged | PlayerSelected
-            | SendGuess
+            | SendGuess | PlayerLogin
 
 export class DataMessageType {
     public static UserLogin = 'UserLogin';

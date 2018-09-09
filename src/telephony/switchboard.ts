@@ -3,15 +3,16 @@ import { DataMessage, DataMessageType } from '../models/events/message';
 import "peer";
 import { Question } from '../models/question';
 import { Guess } from '../models/events/guess';
+import { Player } from '../models/player';
 
 export class Switchboard {
-    public users: Observable<string>;
+    public players: Observable<Player>;
     public drawings: Observable<string>;
     public guesses: Observable<Guess>;
 
     private drawingQueue: Subject<string>;
     private guessQueue: Subject<Guess>;
-    private userQueue: Subject<string>;
+    private playerQueue: Subject<Player>;
     private connections: PeerJs.DataConnection[];
     private isOpenToNewUsers: boolean = true;
     private peer: PeerJs.Peer;
@@ -21,8 +22,8 @@ export class Switchboard {
         this.guesses = this.guessQueue.asObservable();
         this.drawingQueue = new Subject<string>();
         this.drawings = this.drawingQueue.asObservable();
-        this.userQueue = new Subject<string>();
-        this.users = this.userQueue.asObservable();
+        this.playerQueue = new Subject<Player>();
+        this.players = this.playerQueue.asObservable();
         this.connections = [];
     }
 
@@ -75,7 +76,6 @@ export class Switchboard {
             if (!this.isOpenToNewUsers) {
                 return;
             }
-            this.userQueue.next(newConnection.label)
             this.connections.push(newConnection);
             this.listenForMessages(newConnection);
         });
@@ -90,6 +90,9 @@ export class Switchboard {
                     break;
                 case DataMessageType.Guess:
                     this.guessQueue.next(<Guess>data.body);
+                case DataMessageType.UserLogin:
+                    this.playerQueue.next(<Player>data.body);
+                    break;
                 default:
                     console.log(data);
             }
