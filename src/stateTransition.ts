@@ -29,9 +29,9 @@ export class StateTransition {
         const allAreas = document.querySelectorAll('body > div');
         allAreas.forEach((value: Element) => {
             if (value.id == area) {
-                value.removeAttribute('hidden');
+                value.classList.remove('hidden');
             } else {
-                value.setAttribute('hidden', '');
+                value.classList.add('hidden');
             }
         });
     }

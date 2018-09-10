@@ -1,42 +1,67 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" type="text/css" href="styles/css/styles.css">
-    <script src="build/client.entry.js"></script>
-  </head>
-  <body>
-    <H3>CLIENT</H3>
-    <p id="clue" hidden></p> 
-    <p id="clue-help" hidden>Try thinking about how it will fit into the bigger picture.</p>
-    <div id="userArea">
-      <label>Enter your name</label>
-      <input type="text" id="username"/>
-      <canvas id="avatar"></canvas>
-      <button id="login">Next</button>
-    </div>
-    <div id="scanningArea" hidden>
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" type="text/css" href="content/style.css">
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+  <script src="build/client.entry.js"></script>
+</head>
+
+<body>
+  <H3 id="header">CLIENT</H3>
+  <p id="clue" class="hidden"></p>
+  <p id="clue-help" class="hidden">Try thinking about how it will fit into the bigger picture.</p>
+  <div id="scanningArea">
+    <div class="container">
       <div id="loadingMessage">Unable to access video stream. (Please make sure it is enabled)</div>
-      <canvas id="scanner"></canvas>
-      <input type="text" id="connectId" disabled>
-      <input type="text" id="roomName" disabled>
-      <p id="scanError" hidden></p>
-      <button id="beginScan">Begin Scanning</button>
-      <button id="connect">Connect</button>
+      <div>
+        <div>
+          <canvas id="scanner" class="outline"></canvas>
+        </div>
+        <button id="beginScan">Begin Scanning</button>
+        <p id="scanError" class="hidden"></p>
+      </div>
     </div>
-    <div id="waitingArea" hidden>
-      <p>Waiting for the game to begin.</p>
-      <p>You can practice drawing in the meantime...</p>
-      <canvas id="waitingDrawingBoard"></canvas>
-    </div>    
-    <div id="playArea" hidden>
-      <canvas id="drawingBoard"></canvas>
-      <button id="sendDrawing">Submit</button>
+    <div class="container table">
+      <div>
+        <label>Room Id</label>
+        <input type="text" id="connectId" disabled>
+      </div>
+      <div>
+        <label>Room Name</label>
+        <input type="text" id="roomName" disabled>
+      </div>      
+      <button id="connect">Join Room</button>
     </div>
-    <div id="guessArea" hidden>
-      <label>Submit your guess</label>
-      <input type="text" id="guess"/>
-      <button id="sendGuess">Send Guess</button>
+  </div>
+  <div id="userArea" class="container hidden">
+    <div>
+      <label>Enter your name</label>
+      <input type="text" id="username" />
     </div>
-  </body>
+    <button id="login">Next</button>
+  </div>
+  <div id="avatarArea" class="hidden">
+    <div>
+      <p>Draw yourself an avatar</p>
+      <canvas id="avatar"></canvas>
+    </div>
+  </div>
+  <div id="waitingArea" class="container hidden">
+    <p>Waiting for the game to begin.</p>
+    <p>You can practice drawing in the meantime...</p>
+    <canvas id="waitingDrawingBoard"></canvas>
+  </div>
+  <div id="playArea" class="container hidden">
+    <canvas id="drawingBoard"></canvas>
+    <button id="sendDrawing">Submit</button>
+  </div>
+  <div id="guessArea" class="container hidden">
+    <label>Submit your guess</label>
+    <input type="text" id="guess" />
+    <button id="sendGuess">Send Guess</button>
+  </div>
+</body>
+
 </html>
