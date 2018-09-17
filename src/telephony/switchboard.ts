@@ -1,9 +1,13 @@
 import { Observable, Subject } from 'rxjs';
 import { DataMessage, DataMessageType } from '../models/events/message';
-import "peer";
 import { Question } from '../models/question';
 import { Guess } from '../models/events/guess';
 import { Player } from '../models/player';
+import 'simple-peer';
+import {Instance, SimplePeerData} from 'simple-peer';
+import * as Peer from 'simple-peer';
+import * as SocketIo from 'socket.io-client';
+import { RoomEvent } from '../models/roomEvents';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -13,9 +17,10 @@ export class Switchboard {
     private drawingQueue: Subject<string>;
     private guessQueue: Subject<Guess>;
     private playerQueue: Subject<Player>;
-    private connections: PeerJs.DataConnection[];
+    private connections: Map<string,Instance>;
     private isOpenToNewUsers: boolean = true;
-    private peer: PeerJs.Peer;
+    private peer: Instance;
+    private socket: SocketIOClient.Socket;
 
     constructor() {
         this.guessQueue = new Subject<Guess>();
@@ -24,19 +29,17 @@ export class Switchboard {
         this.drawings = this.drawingQueue.asObservable();
         this.playerQueue = new Subject<Player>();
         this.players = this.playerQueue.asObservable();
-        this.connections = [];
+        this.connections = new Map<string, Instance>();
     }
 
     public dispatchMessage(user: string, message: DataMessage) {
-        const matchedUser = this.connections.find((connection: PeerJs.DataConnection) => {
-            return connection.label == user;
-        });
+        const matchedUser = this.connections.get(user);
         matchedUser.send(JSON.stringify(message));
 
     }
 
     public dispatchMessageToAll(message: DataMessage) {
-        this.connections.forEach((connection: PeerJs.DataConnection) => {
+        this.connections.forEach((connection: Instance) => {
             connection.send(JSON.stringify(message));
         });
     }
@@ -45,13 +48,23 @@ export class Switchboard {
         this.isOpenToNewUsers = false;
     }
     
-    public startListening(): Observable<string> {
+    public createRoom(): Observable<string> {
+        console.log('switchboard creating room');
         const subject: Subject<string> = new Subject();
-        this.peer = new Peer({});
-        this.peer.on('open', (id: string) => {
-            this.registerNewConnections(this.peer);            
-            subject.next(id);
-            subject.complete();
+        this.peer = new Peer({
+            initiator: true,
+            trickle: false,
+            config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }] }});
+        this.peer.on('signal', (id: Peer.SignalData) => {
+            console.log('signal created: ', id);
+            this.socket = SocketIo('localhost:8080');
+            this.socket.on(RoomEvent.RoomCreated, (room: string) => {
+                console.log('room created: ', room);
+                this.registerNewConnections(this.peer);  
+                subject.next(room);
+                subject.complete();                
+            });            
+            this.socket.emit(RoomEvent.Create, JSON.stringify(id));            
         });
         return subject.asObservable();
     }
@@ -71,17 +84,22 @@ export class Switchboard {
         return questionSubject.asObservable();
     }
 
-    private registerNewConnections(peer: PeerJs.Peer) {
-        peer.on('connection', (newConnection: PeerJs.DataConnection) => {
+    private registerNewConnections(peer: Instance) {
+        this.socket.on(RoomEvent.PlayerJoined, (offer: string) => {
+            console.log('player joined');
             if (!this.isOpenToNewUsers) {
                 return;
             }
-            this.connections.push(newConnection);
-            this.listenForMessages(newConnection);
+            this.peer.signal(JSON.parse(offer));
+            this.peer.on('connect', () => {
+                console.log('connection succeeded!');
+            });
+            //this.connections.set('abc', newConnection);
+            //this.listenForMessages(newConnection);
         });
     }
 
-    private listenForMessages(connection: PeerJs.DataConnection) {
+    private listenForMessages(connection: Instance) {
         connection.on('data', (message: string) => {
             const data = JSON.parse(message) as DataMessage;
             switch (data.type) {

@@ -20,13 +20,12 @@
     "webpack-dev-server": "3.1.4"
   },
   "dependencies": {
-    "@types/peerjs": "^0.0.29",
+    "@types/simple-peer": "^6.1.5",
+    "@types/socket.io-client": "^1.4.32",
     "babel-loader": "^7.1.5",
-    "jsqr": "^1.1.1",
-    "peerjs": "^0.3.16",
-    "phaser": "3.9.0",
-    "qrious": "^4.0.2",
     "rxjs": "^6.2.2",
+    "simple-peer": "^9.1.2",
+    "socket.io-client": "^2.1.1",
     "url-parse": "^1.4.3"
   },
   "scripts": {

@@ -1,12 +1,16 @@
 import { Room } from "../models/room";
 import { Subject, Observable } from "rxjs";
 import { DataMessage, DataMessageType } from "../models/events/message";
-import "peer";
 import { RoomState } from "../models/events/stateChanged";
 import { ClueEnvelope } from "../models/ClueEnvelope";
 import { PlayerState } from "../models/events/playerSelected";
 import { Player } from "../models/player";
 import { PlayerLogin } from "../models/events/playerLogin";
+import 'simple-peer';
+import * as Peer from 'simple-peer';
+import { Instance } from "simple-peer";
+import * as SocketIOClient from 'socket.io-client';
+import { RoomEvent } from "../models/roomEvents";
 
 export class Telephone {
     public player: Player;
@@ -15,9 +19,9 @@ export class Telephone {
 
     private messageSubject: Subject<DataMessage>;
     private cluesSubject: Subject<string>;
-    private peer: PeerJs.Peer;
-    private connection: PeerJs.DataConnection;
+    private peer: Instance;
     private room: Room;
+    private socket: SocketIOClient.Socket;
     
     constructor(player: Player) {
         this.player = player;
@@ -29,24 +33,46 @@ export class Telephone {
 
     public connectTo(room: Room): Observable<void> {
         this.room = room;
-        const peer: PeerJs.Peer = new Peer({});
-        this.connection = peer.connect(room.id, {label: this.player.name});
-        const established: Subject<void> = new Subject<void>();
-        this.connection.on('open', () => {
+        this.peer = new Peer({trickle: false});
+        this.peer.on('signal', (id: any) => {
+            console.log('signal: ', id);
+            this.socket.emit(RoomEvent.OfferGenerated, room.name, JSON.stringify(id));
+            console.log('emitted offer');
+        });
+
+        this.socket = SocketIOClient('localhost:8080');
+        const donezo = new Subject<void>();
+        this.socket.on(RoomEvent.JoinedRoom, (host: string) => {
+            console.log('joined room');
+            donezo.next();
+            donezo.complete();
+            console.log('host: ', host);
+            this.peer.signal(JSON.parse(host));            
+        });
+        this.socket.emit(RoomEvent.Join, room.name);
+        return donezo.asObservable();
+    }
+        
+        //peer.connect(room.id, {label: this.player.name});
+
+            /*this.connection.on('open', () => {
             established.next();
             established.complete();
             this.listenForMessages(this.connection);
             const login = new PlayerLogin(this.player);
             this.SendMessage(login);
         });
-        return established.asObservable();
-    }
+        })
+        const established: Subject<void> = new Subject<void>();
+        
+        return established.asObservable();*/
+    
 
     public SendMessage(message: DataMessage): void {
-        this.connection.send(JSON.stringify(message));
+        //this.connection.send(JSON.stringify(message));
     }
 
-    private listenForMessages(connection: PeerJs.DataConnection) {
+    private listenForMessages(connection: Instance) {
         connection.on('data', (message: string) => {
             const data = JSON.parse(message) as DataMessage;
             switch (data.type) {

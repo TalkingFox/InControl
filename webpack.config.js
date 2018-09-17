@@ -1,9 +1,6 @@
 var path = require('path');
 var pathToPhaser = path.join(__dirname, '/node_modules/phaser/');
-var phaser = path.join(pathToPhaser, 'dist/phaser.js');
-var peer = path.join(path.join(__dirname, '/node_modules/peerjs/dist/peer.js'))
-var qrious = path.join(__dirname, '/node_modules/qrious/dist/qrious.js')
-var jsqr = path.join(__dirname, '/node_modules/jsqr/dist/jsQR.js');
+const simplePeer = path.join(__dirname, '/node_modules/simple-peer/simplepeer.min.js');
 
 module.exports = {
   entry: {
@@ -24,9 +21,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'],
     alias: {
-      phaser: phaser,
-      peer: peer,
-      qrious: qrious
+      'simple-peer': simplePeer
     }
   },
   module: {

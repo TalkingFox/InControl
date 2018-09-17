@@ -1,4 +1,3 @@
-import * as QRious from 'qrious';
 import { Switchboard } from './telephony/switchboard';
 import { Room } from './models/room';
 import { StateChanged, RoomState } from './models/events/stateChanged';
@@ -30,14 +29,7 @@ function initialize() {
     users = document.getElementById('users');
     const roomMaker = document.getElementById('createRoom');
     roomMaker.addEventListener('click', () => {
-        const roomElement = document.getElementById(
-            'roomName'
-        ) as HTMLInputElement;
-        if (!roomElement.value) {
-            alert('Please enter a room name.');
-            return;
-        }
-        createRoom(roomElement.value);
+        createRoom();
     });
 
     const replay = document.getElementById('replay');
@@ -62,8 +54,9 @@ function transitionTo(area: string) {
     });
 }
 
-function createRoom(roomName: string) {
-    initializeWaitingRoom(roomName);
+function createRoom() {
+    console.log('creating room');
+    initializeWaitingRoom();
 }
 
 function playerJoined(user: Player) {
@@ -80,16 +73,12 @@ function playerJoined(user: Player) {
     users.appendChild(userGroup);
 }
 
-function initializeWaitingRoom(roomName: string) {
+function initializeWaitingRoom() {
 	transitionTo('waitingArea');
-    switchboard.startListening().subscribe((id: string) => {
+    switchboard.createRoom().subscribe((roomName: string) => {
         const idHaver = document.getElementById('roomId') as HTMLInputElement;
-        idHaver.value = id;
-        room = new Room(id, roomName);
-        const qr = new QRious({
-            element: document.getElementById('qrCode'),
-            value: JSON.stringify(room)
-        });
+        idHaver.value = 'id';
+        room = new Room('abc', roomName);
         switchboard.players.subscribe((user: Player) => {
             playerJoined(user);
         });

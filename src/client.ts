@@ -6,7 +6,6 @@ import { SendGuess } from './models/events/guess';
 import { RoomState } from './models/events/stateChanged';
 import { Subject, Observable } from 'rxjs';
 import { StateTransition } from './stateTransition';
-import { Scanner } from './scanner';
 import { PlayerLogin } from './models/events/playerLogin';
 import { Player } from './models/player';
 
@@ -14,7 +13,6 @@ let drawingBoard: DrawingBoard;
 let avatarBoard: DrawingBoard;
 let telephone: Telephone;
 let stateTransition: StateTransition;
-let scanner: Scanner;
 let loadingMessage: HTMLElement;
 let sendDrawing: HTMLElement;
 
@@ -23,7 +21,6 @@ window.onload = () => {
 };
 
 function initialize() {
-    scanner = new Scanner('scanner');
     stateTransition = new StateTransition();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
     avatarBoard = new DrawingBoard({elementId: 'avatar'});
@@ -51,30 +48,19 @@ function initialize() {
         const username = document.getElementById('username') as HTMLInputElement;
         const avatarUrl = avatarBoard.toDataUrl();
         const player = new Player(username.value, avatarUrl);
-        telephone = new Telephone(player);
+        telephone.player = player;
         stateTransition.toScanningArea();
     });
 
     connect.addEventListener('click', () => {
-        const id = document.getElementById('connectId') as HTMLInputElement;
         const roomName = document.getElementById('roomName') as HTMLInputElement;        
-        joinRoom(new Room(id.value, roomName.value))
+        telephone = new Telephone(new Player('joe',''));
+        joinRoom(new Room('', roomName.value))
             .then(() => stateTransition.toWaitingArea());
     });
 
     const beginScan = document.getElementById('beginScan');
-    beginScan.addEventListener('click', () => {
-        scanner.scanForQrCode().then((room: Room) => {
-            const id = document.getElementById('connectId') as HTMLInputElement;
-            const roomName = document.getElementById('roomName') as HTMLInputElement;
-            id.value = room.id;
-            roomName.value = room.name;
-        }, (error) => {
-            const scanError = document.getElementById('scanError');
-            scanError.textContent = error;
-            scanError.removeAttribute('hidden');
-        })        
-    });
+    
 }
 
 function joinRoom(room: Room): Promise<void> {

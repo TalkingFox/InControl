@@ -1,7 +1,6 @@
 import { Subject } from "rxjs";
 import { Room } from "./models/room";
 import { RoomState } from "./models/events/stateChanged";
-import { Scanner } from "./scanner";
 
 export class StateTransition {
     public room: Room;
