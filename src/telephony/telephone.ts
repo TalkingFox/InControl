@@ -50,6 +50,10 @@ export class Telephone {
         this.socket.on(RoomEvent.PlayerAccepted, (host: string) => {
             this.peer.signal(host);            
         });
+        this.socket.on(RoomEvent.PlayerNameTaken,() => {
+            donezo.error('Sorry, that name is taken. Enter another one.');
+            donezo.complete();
+        });
         
         return donezo.asObservable();
     }

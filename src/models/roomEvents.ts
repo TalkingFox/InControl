@@ -4,6 +4,7 @@ export enum RoomEvent {
     Disconnect = 'disconnect',
     Join = 'join',
     PlayerAccepted = 'playerAccepted',
+    PlayerNameTaken = 'playerNameTaken',
     PlayerJoined = 'playerJoined',
     RoomCreated = 'roomCreated',
     RoomDoesNotExist = 'roomDoesNotExist'

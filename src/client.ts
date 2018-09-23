@@ -49,15 +49,26 @@ function initialize() {
         const avatarUrl = avatarBoard.toDataUrl();
         const player = new Player(username.value, avatarUrl);
         telephone.player = player;
-        stateTransition.toScanningArea();
+        stateTransition.toJoinArea();
     });
 
     connect.addEventListener('click', () => {
         console.log('joining room');
-        const roomName = document.getElementById('roomName') as HTMLInputElement;        
-        telephone = new Telephone(new Player('joe',''));
+        const roomName = document.getElementById('roomName') as HTMLInputElement;
+        const playerName = document.getElementById('username')as HTMLInputElement;
+        if (!roomName.value) {
+            alert('Enter a room name.')
+            return;
+        }
+        if (!playerName.value) {
+            alert('Please enter a name');
+            return;
+        }
+        
+        telephone = new Telephone(new Player(playerName.value,''));
         joinRoom(new Room(roomName.value))
-            .then(() => stateTransition.toPlayerInfoArea());
+            .then(() => stateTransition.toAvatarArea(),
+                  (error: string) => alert('Failed to join room. Reason: '+error));
     });
 
     const beginScan = document.getElementById('beginScan');
@@ -78,6 +89,8 @@ function joinRoom(room: Room): Promise<void> {
         promise.complete();
         subscription.unsubscribe();
         console.log('joined room');
+    }, (error: string) => {
+        promise.error(error);
     });
     return promise.toPromise();
 }

@@ -16,12 +16,12 @@ export class StateTransition {
         this.transitionTo('playArea');
     }
 
-    public toScanningArea(): void{
-        this.transitionTo('scanningArea');
+    public toJoinArea(): void{
+        this.transitionTo('joinArea');
     }
 
-    public toPlayerInfoArea(): void {
-        this.transitionTo('playerInfoArea');
+    public toAvatarArea(): void {
+        this.transitionTo('avatarArea');
     }
 
     public toWaitingArea(): void {
