@@ -44,6 +44,7 @@ export class Telephone {
         this.peer.on('connect', () => {
             donezo.next();
             donezo.complete();
+            this.listenForMessages(this.peer);
         });        
         this.socket = SocketIOClient('localhost:8080');
         const donezo = new Subject<void>();
@@ -59,7 +60,7 @@ export class Telephone {
     }
         
     public SendMessage(message: DataMessage): void {
-        //this.connection.send(JSON.stringify(message));
+        this.peer.send(JSON.stringify(message));
     }
 
     private listenForMessages(connection: Instance) {

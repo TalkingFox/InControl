@@ -100,6 +100,7 @@ export class Switchboard {
                 this.socket.emit(RoomEvent.PlayerAccepted, JSON.stringify(acceptance));
             });
             newPeer.on('connect', () =>{
+                console.log('player connected');
                 this.connections.set(joinRequest.player, newPeer);
                 this.listenForMessages(newPeer);
             });            
@@ -119,7 +120,8 @@ export class Switchboard {
                 case DataMessageType.Guess:
                     this.guessQueue.next(<Guess>data.body);
                 case DataMessageType.UserLogin:
-                    this.playerQueue.next(<Player>data.body);
+                    const player = <Player>data.body;
+                    this.playerQueue.next(player);
                     break;
                 default:
                     console.log(data);

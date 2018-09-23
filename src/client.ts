@@ -49,6 +49,7 @@ function initialize() {
         const avatarUrl = avatarBoard.toDataUrl();
         const player = new Player(username.value, avatarUrl);
         telephone.player = player;
+        telephone.SendMessage(new PlayerLogin(player));
         stateTransition.toWaitingArea();
     });
 
@@ -70,8 +71,6 @@ function initialize() {
             .then(() => stateTransition.toAvatarArea(),
                   (error: string) => alert('Failed to join room. Reason: '+error));
     });
-
-    const beginScan = document.getElementById('beginScan');
     
 }
 

@@ -57,6 +57,7 @@ function transitionTo(area: string) {
 function createRoom() {
     transitionTo('waitingArea');
     switchboard.createRoom().subscribe((roomName: string) => {
+        room = new Room(roomName);
         const idHaver = document.getElementById('roomId') as HTMLInputElement;
         idHaver.value = roomName;        
         switchboard.players.subscribe((user: Player) => {
