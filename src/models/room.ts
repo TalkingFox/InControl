@@ -15,7 +15,7 @@ export class Room {
     public canvas: Observable<string>;
     private canvasSubject: Subject<string>;
 
-    constructor(public id, public name){
+    constructor(public name){
         this.roomStateSubject = new Subject<RoomState>();
         this.roomState = this.roomStateSubject.asObservable();
 

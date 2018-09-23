@@ -13,7 +13,6 @@
   <p id="clue" class="hidden"></p>
   <p id="clue-help" class="hidden">Try thinking about how it will fit into the bigger picture.</p>
   <div id="scanningArea">
-    <div class="container">
     <div class="container table">
       <div>
         <label>Room Name</label>
@@ -22,18 +21,16 @@
       <button id="connect">Join Room</button>
     </div>
   </div>
-  <div id="userArea" class="container hidden">
+  <div id="playerInfoArea" class="container hidden">
     <div>
       <label>Enter your name</label>
       <input type="text" id="username" />
     </div>
-    <button id="login">Next</button>
-  </div>
-  <div id="avatarArea" class="hidden">
     <div>
       <p>Draw yourself an avatar</p>
       <canvas id="avatar"></canvas>
     </div>
+    <button id="login">Next</button>
   </div>
   <div id="waitingArea" class="container hidden">
     <p>Waiting for the game to begin.</p>

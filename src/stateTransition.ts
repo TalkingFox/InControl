@@ -20,6 +20,10 @@ export class StateTransition {
         this.transitionTo('scanningArea');
     }
 
+    public toPlayerInfoArea(): void {
+        this.transitionTo('playerInfoArea');
+    }
+
     public toWaitingArea(): void {
         this.transitionTo('waitingArea');
     }

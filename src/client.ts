@@ -53,10 +53,11 @@ function initialize() {
     });
 
     connect.addEventListener('click', () => {
+        console.log('joining room');
         const roomName = document.getElementById('roomName') as HTMLInputElement;        
         telephone = new Telephone(new Player('joe',''));
-        joinRoom(new Room('', roomName.value))
-            .then(() => stateTransition.toWaitingArea());
+        joinRoom(new Room(roomName.value))
+            .then(() => stateTransition.toPlayerInfoArea());
     });
 
     const beginScan = document.getElementById('beginScan');
@@ -76,6 +77,7 @@ function joinRoom(room: Room): Promise<void> {
         promise.next();
         promise.complete();
         subscription.unsubscribe();
+        console.log('joined room');
     });
     return promise.toPromise();
 }

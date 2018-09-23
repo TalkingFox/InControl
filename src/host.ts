@@ -58,8 +58,7 @@ function createRoom() {
     transitionTo('waitingArea');
     switchboard.createRoom().subscribe((roomName: string) => {
         const idHaver = document.getElementById('roomId') as HTMLInputElement;
-        idHaver.value = 'id';
-        room = new Room('abc', roomName);
+        idHaver.value = roomName;        
         switchboard.players.subscribe((user: Player) => {
             playerJoined(user);
         });

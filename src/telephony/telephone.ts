@@ -41,16 +41,16 @@ export class Telephone {
             };
             this.socket.emit(RoomEvent.Join, JSON.stringify(request));
         });
-
+        this.peer.on('connect', () => {
+            donezo.next();
+            donezo.complete();
+        });        
         this.socket = SocketIOClient('localhost:8080');
         const donezo = new Subject<void>();
         this.socket.on(RoomEvent.PlayerAccepted, (host: string) => {
             this.peer.signal(host);            
         });
-        this.peer.on('connected', () => {
-            donezo.next();
-            donezo.complete();
-        });
+        
         return donezo.asObservable();
     }
         
