@@ -55,8 +55,19 @@ function transitionTo(area: string) {
 }
 
 function createRoom() {
-    console.log('creating room');
-    initializeWaitingRoom();
+    transitionTo('waitingArea');
+    switchboard.createRoom().subscribe((roomName: string) => {
+        const idHaver = document.getElementById('roomId') as HTMLInputElement;
+        idHaver.value = 'id';
+        room = new Room('abc', roomName);
+        switchboard.players.subscribe((user: Player) => {
+            playerJoined(user);
+        });
+        const startGameOk = document.getElementById('startGame');
+        startGameOk.addEventListener('click', () => {
+            startGame();
+        });
+    });
 }
 
 function playerJoined(user: Player) {
@@ -73,21 +84,6 @@ function playerJoined(user: Player) {
     users.appendChild(userGroup);
 }
 
-function initializeWaitingRoom() {
-	transitionTo('waitingArea');
-    switchboard.createRoom().subscribe((roomName: string) => {
-        const idHaver = document.getElementById('roomId') as HTMLInputElement;
-        idHaver.value = 'id';
-        room = new Room('abc', roomName);
-        switchboard.players.subscribe((user: Player) => {
-            playerJoined(user);
-        });
-        const startGameOk = document.getElementById('startGame');
-        startGameOk.addEventListener('click', () => {
-            startGame();
-        });
-    });
-}
 
 function getQuestions(): Promise<Question[]> {
 	if (questions) {
@@ -186,7 +182,6 @@ function waitForGuesses(): Promise<Guess[]> {
 }
 
 function displayAnswer() {
-    console.log('displaying answer');
     const answerField = document.getElementById('answer');
     answerField.textContent = 'The answer was '+room.question.name;
     revealRoom.removeAttribute('hidden');

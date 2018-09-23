@@ -51,11 +51,9 @@ export class Switchboard {
     }
     
     public createRoom(): Observable<string> {
-        console.log('switchboard creating room');
         const subject: Subject<string> = new Subject();
         this.socket = SocketIo('localhost:8080');
             this.socket.on(RoomEvent.RoomCreated, (room: string) => {
-                console.log('room created: ', room);
                 this.registerNewConnections();  
                 subject.next(room);
                 subject.complete();  
@@ -90,13 +88,10 @@ export class Switchboard {
 
     private registerNewConnections() {
         this.socket.on(RoomEvent.PlayerJoined, (request: string) => {
-            console.log('player joined');
             const joinRequest: {room: string, player: string, offer: string} = JSON.parse(request);
             const newPeer = new Peer({initiator: false, trickle: false});
-            console.log(joinRequest.offer);
             newPeer.signal(JSON.parse(joinRequest.offer));
             newPeer.on('signal', (id: any) => {
-                console.log('player accepted');
                 const acceptance: PlayerAccepted = {
                     hostOffer: id,
                     player: joinRequest.player,
@@ -105,18 +100,12 @@ export class Switchboard {
                 this.socket.emit(RoomEvent.PlayerAccepted, JSON.stringify(acceptance));
             });
             newPeer.on('connect', () =>{
-                console.log('newpeer connection succeeded');
                 this.connections.set(joinRequest.player, newPeer);
+                this.listenForMessages(newPeer);
             });            
             if (!this.isOpenToNewUsers) {
                 return;
             }
-            //this.peer.signal(JSON.parse(offer));
-            //this.peer.on('connect', () => {
-            //    console.log('connection succeeded!');
-            //});
-            //this.connections.set('abc', newConnection);
-            //this.listenForMessages(newConnection);
         });
     }
 
