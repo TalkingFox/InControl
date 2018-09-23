@@ -49,7 +49,7 @@ function initialize() {
         const avatarUrl = avatarBoard.toDataUrl();
         const player = new Player(username.value, avatarUrl);
         telephone.player = player;
-        stateTransition.toJoinArea();
+        stateTransition.toWaitingArea();
     });
 
     connect.addEventListener('click', () => {
