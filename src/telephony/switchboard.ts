@@ -8,11 +8,13 @@ import {Instance, SimplePeerData} from 'simple-peer';
 import * as Peer from 'simple-peer';
 import * as SocketIo from 'socket.io-client';
 import { RoomEvent } from '../models/roomEvents';
+import { PlayerAccepted } from './playerAccepted';
 
 export class Switchboard {
     public players: Observable<Player>;
     public drawings: Observable<string>;
     public guesses: Observable<Guess>;
+    public room: string;
 
     private drawingQueue: Subject<string>;
     private guessQueue: Subject<Guess>;
@@ -51,22 +53,24 @@ export class Switchboard {
     public createRoom(): Observable<string> {
         console.log('switchboard creating room');
         const subject: Subject<string> = new Subject();
-        this.peer = new Peer({
-            initiator: true,
-            trickle: false,
-            config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }] }});
-        this.peer.on('signal', (id: Peer.SignalData) => {
-            console.log('signal created: ', id);
-            this.socket = SocketIo('localhost:8080');
+        this.socket = SocketIo('localhost:8080');
             this.socket.on(RoomEvent.RoomCreated, (room: string) => {
                 console.log('room created: ', room);
-                this.registerNewConnections(this.peer);  
+                this.registerNewConnections();  
                 subject.next(room);
-                subject.complete();                
-            });            
-            this.socket.emit(RoomEvent.Create, JSON.stringify(id));            
-        });
-        return subject.asObservable();
+                subject.complete();  
+                this.room = room;              
+            });
+        this.socket.emit(RoomEvent.Create);
+        return subject.asObservable();        
+        //this.peer = new Peer({
+        //    initiator: true,
+         //   trickle: false,
+          //  config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }] }});
+        //this.peer.on('signal', (id: Peer.SignalData) => {
+            
+        //});
+                        
     }
     
     public getQuestions(): Observable<Question[]> {
@@ -84,16 +88,33 @@ export class Switchboard {
         return questionSubject.asObservable();
     }
 
-    private registerNewConnections(peer: Instance) {
-        this.socket.on(RoomEvent.PlayerJoined, (offer: string) => {
+    private registerNewConnections() {
+        this.socket.on(RoomEvent.PlayerJoined, (request: string) => {
             console.log('player joined');
+            const joinRequest: {room: string, player: string, offer: string} = JSON.parse(request);
+            const newPeer = new Peer({initiator: false, trickle: false});
+            console.log(joinRequest.offer);
+            newPeer.signal(JSON.parse(joinRequest.offer));
+            newPeer.on('signal', (id: any) => {
+                console.log('player accepted');
+                const acceptance: PlayerAccepted = {
+                    hostOffer: id,
+                    player: joinRequest.player,
+                    room: this.room
+                };
+                this.socket.emit(RoomEvent.PlayerAccepted, JSON.stringify(acceptance));
+            });
+            newPeer.on('connect', () =>{
+                console.log('newpeer connection succeeded');
+                this.connections.set(joinRequest.player, newPeer);
+            });            
             if (!this.isOpenToNewUsers) {
                 return;
             }
-            this.peer.signal(JSON.parse(offer));
-            this.peer.on('connect', () => {
-                console.log('connection succeeded!');
-            });
+            //this.peer.signal(JSON.parse(offer));
+            //this.peer.on('connect', () => {
+            //    console.log('connection succeeded!');
+            //});
             //this.connections.set('abc', newConnection);
             //this.listenForMessages(newConnection);
         });

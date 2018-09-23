@@ -11,6 +11,7 @@ import * as Peer from 'simple-peer';
 import { Instance } from "simple-peer";
 import * as SocketIOClient from 'socket.io-client';
 import { RoomEvent } from "../models/roomEvents";
+import { JoinRoomRequest } from "./joinRoomRequest";
 
 export class Telephone {
     public player: Player;
@@ -33,23 +34,30 @@ export class Telephone {
 
     public connectTo(room: Room): Observable<void> {
         this.room = room;
-        this.peer = new Peer({trickle: false});
+        this.peer = new Peer({initiator: true, trickle: false});
         this.peer.on('signal', (id: any) => {
             console.log('signal: ', id);
-            this.socket.emit(RoomEvent.OfferGenerated, room.name, JSON.stringify(id));
+            const request: JoinRoomRequest = {
+                offer: JSON.stringify(id),
+                player: this.player.name,
+                room: room.name
+            };
+            console.log(JSON.stringify(request));
+            this.socket.emit(RoomEvent.Join, JSON.stringify(request));
             console.log('emitted offer');
         });
 
         this.socket = SocketIOClient('localhost:8080');
         const donezo = new Subject<void>();
-        this.socket.on(RoomEvent.JoinedRoom, (host: string) => {
-            console.log('joined room');
+        this.socket.on(RoomEvent.PlayerAccepted, (host: string) => {
+            console.log('joined room');            
+            console.log('host: ', host);
+            this.peer.signal(host);            
+        });
+        this.peer.on('connected', () => {
             donezo.next();
             donezo.complete();
-            console.log('host: ', host);
-            this.peer.signal(JSON.parse(host));            
         });
-        this.socket.emit(RoomEvent.Join, room.name);
         return donezo.asObservable();
     }
         
