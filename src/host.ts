@@ -15,7 +15,6 @@ const switchboard: Switchboard = new Switchboard();
 let drawingBoard: DrawingBoard;
 let room: Room;
 let questions: Question[];
-let waitingRoom: HTMLElement;
 let revealRoom: HTMLElement;
 let users: HTMLElement;
 let guesses: TalkativeArray<Guess>;
@@ -25,7 +24,6 @@ function initialize() {
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard', isReadOnly: true});
     switchboard.guesses.subscribe((guess: Guess) => guesses.Push(guess));
     revealRoom = document.getElementById('revealArea');
-    waitingRoom = document.getElementById('waitingRoom');
     users = document.getElementById('users');
     const roomMaker = document.getElementById('createRoom');
     roomMaker.addEventListener('click', () => {
@@ -43,13 +41,13 @@ function initialize() {
     });
 }
 
-function transitionTo(area: string) {
-    const allAreas = document.querySelectorAll('.container > div');
+function transitionTo(area: string) {    
+    const allAreas = document.querySelectorAll('body > div');
     allAreas.forEach((value: Element) => {
         if (value.id == area) {
-            value.removeAttribute('hidden');
+            value.classList.remove('hidden');
         } else {
-            value.setAttribute('hidden', '');
+            value.classList.add('hidden');
         }
     });
 }
