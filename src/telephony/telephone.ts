@@ -10,6 +10,7 @@ import { Instance } from "simple-peer";
 import * as SocketIOClient from 'socket.io-client';
 import { RoomEvent } from "../models/roomEvents";
 import { JoinRoomRequest } from "./joinRoomRequest";
+import { environment } from "../environment/environment";
 
 export class Telephone {
     public player: Player;
@@ -46,7 +47,7 @@ export class Telephone {
             donezo.complete();
             this.listenForMessages(this.peer);
         });        
-        this.socket = SocketIOClient('localhost:8080');
+        this.socket = SocketIOClient(environment.signalServer);
         const donezo = new Subject<void>();
         this.socket.on(RoomEvent.PlayerAccepted, (host: string) => {
             this.peer.signal(host);            

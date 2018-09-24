@@ -9,6 +9,7 @@ import * as Peer from 'simple-peer';
 import * as SocketIo from 'socket.io-client';
 import { RoomEvent } from '../models/roomEvents';
 import { PlayerAccepted } from './playerAccepted';
+import { environment } from '../environment/environment';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -52,7 +53,7 @@ export class Switchboard {
     
     public createRoom(): Observable<string> {
         const subject: Subject<string> = new Subject();
-        this.socket = SocketIo('localhost:8080');
+        this.socket = SocketIo(environment.signalServer);
             this.socket.on(RoomEvent.RoomCreated, (room: string) => {
                 this.registerNewConnections();  
                 subject.next(room);
