@@ -3,10 +3,17 @@
     color: #cc9913;
 }
 
+h3 {
+    color: #cc9913;
+    text-align: center;
+    font-family: 'Roboto', sans-serif;
+}
+
 body {
     background: #251D2D;
     margin: 0%;
     font-family: 'Roboto', sans-serif;
+    font-size: 18pt;
     text-shadow: 0 1px 3px rgba(0,0,0,0.5)
 }
 
@@ -62,4 +69,11 @@ button {
 
 input, label {
     display: block;
+}
+
+input {
+    font-size: 4em;
+    width: 100%;
+    text-align: center;
+    border-radius: 1em;
 }

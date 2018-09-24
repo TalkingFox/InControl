@@ -1,39 +1,44 @@
 <!doctype html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="stylesheet" type="text/css" href="styles/css/styles.css">
-    <script src="build/host.entry.js"></script>
-  </head>
-  <body>
-    <h3>TITLE</h3>
-    <div class="container">
-      <div id="roomArea">        
-        <button id="createRoom">Create Room</button>        
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="stylesheet" type="text/css" href="content/style.css">
+  <script src="build/host.entry.js"></script>
+</head>
+
+<body>
+  <h3>Camel by Committee</h3>
+  <div class="container">
+    <div id="roomArea">
+      <button id="createRoom">Create Room</button>
+    </div>
+    <div id="waitingArea" hidden>
+      <div>
+        <label>Room Name</label>
+        <input id="roomId" readonly />
       </div>
-      <div id="waitingArea" hidden>        
-          <canvas id="qrCode"></canvas>
-          <input id="roomId" readonly/>
-          <button id="startGame">Start Game</button>
-          <div id="usersArea" >
-              <ul id="users"></ul>
-            </div>
-      </div>
-      <div id="drawingArea" hidden>
-        <p>Let's watch your clues come together</p>
-        <p id="currentUser"></p>
-        <canvas id="drawingBoard"></canvas>
-      </div>
-      <div id="revealArea" hidden>
-        <p id="answer"></p>
-        <button id="replay">Play again?</button>
-      </div>
-      <div id="outOfQuestions" hidden>
-        <p>Sorry, but there aren't any questions left.</p>
-        <p>You played them all.</p>
-        <p>If you want to keep playing ones you want to you can click this button, but it probably won't be as fun.</p>
-        <button id="reallyPlayAgain">Play again with the same questions</button>
+      <button id="startGame">Start Game</button>
+      <div id="usersArea">
+        <ul id="users"></ul>
       </div>
     </div>
-  </body>
+    <div id="drawingArea" hidden>
+      <p>Let's watch your clues come together</p>
+      <p id="currentUser"></p>
+      <canvas id="drawingBoard"></canvas>
+    </div>
+    <div id="revealArea" hidden>
+      <p id="answer"></p>
+      <button id="replay">Play again?</button>
+    </div>
+    <div id="outOfQuestions" hidden>
+      <p>Sorry, but there aren't any questions left.</p>
+      <p>You played them all.</p>
+      <p>If you want to keep playing ones you want to you can click this button, but it probably won't be as fun.</p>
+      <button id="reallyPlayAgain">Play again with the same questions</button>
+    </div>
+  </div>
+</body>
+
 </html>
