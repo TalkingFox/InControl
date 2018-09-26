@@ -4,7 +4,7 @@ import { Question } from '../models/question';
 import { Guess } from '../models/events/guess';
 import { Player } from '../models/player';
 import 'simple-peer';
-import {Instance, SimplePeerData} from 'simple-peer';
+import {Instance} from 'simple-peer';
 import * as Peer from 'simple-peer';
 import * as SocketIo from 'socket.io-client';
 import { RoomEvent } from '../models/roomEvents';

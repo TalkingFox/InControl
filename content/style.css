@@ -77,3 +77,7 @@ input {
     text-align: center;
     border-radius: 1em;
 }
+
+canvas {
+    background: white;
+}

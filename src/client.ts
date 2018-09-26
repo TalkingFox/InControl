@@ -4,7 +4,7 @@ import { DrawingBoard } from './drawing-board';
 import { sentDrawing } from './models/events/sentDrawing';
 import { SendGuess } from './models/events/guess';
 import { RoomState } from './models/events/stateChanged';
-import { Subject, Observable } from 'rxjs';
+import { Subject } from 'rxjs';
 import { StateTransition } from './stateTransition';
 import { PlayerLogin } from './models/events/playerLogin';
 import { Player } from './models/player';
@@ -75,9 +75,6 @@ function initialize() {
 }
 
 function joinRoom(room: Room): Promise<void> {
-    if (!confirm('Is it ok to join room "' + room.name + '"?')) {
-        return Promise.reject();
-    }
     stateTransition.room = room;
     const promise = new Subject<void>();
     const subscription = telephone.connectTo(room).subscribe(() => {
