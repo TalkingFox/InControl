@@ -23,7 +23,6 @@ window.onload = () => {
 function initialize() {
     stateTransition = new StateTransition();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
-    avatarBoard = new DrawingBoard({elementId: 'avatar'});
     loadingMessage = document.getElementById('loadingMessage');
     const connect = document.getElementById('connect');
     sendDrawing = document.getElementById('sendDrawing');
@@ -68,7 +67,11 @@ function initialize() {
         
         telephone = new Telephone(new Player(playerName.value,''));
         joinRoom(new Room(roomName.value))
-            .then(() => stateTransition.toAvatarArea(),
+            .then(() => {
+                stateTransition.toAvatarArea()
+                avatarBoard = new DrawingBoard({elementId: 'avatar'});
+
+            },
                   (error: string) => alert('Failed to join room. Reason: '+error));
     });
     

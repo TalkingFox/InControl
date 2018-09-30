@@ -10,6 +10,8 @@ export class DrawingBoard {
     public constructor(settings: DrawingBoardSettings) {
         this.canvas = document.getElementById(settings.elementId) as HTMLCanvasElement;
         this.canvasContext = this.canvas.getContext("2d");
+        this.canvas.width = 500;
+        this.canvas.height = 500;
         if (!settings.isReadOnly) {
             this.setEvents(this.canvas);
         }
@@ -92,7 +94,7 @@ export class DrawingBoard {
         this.canvasContext.moveTo(this.lastPosition.x, this.lastPosition.y);
         this.canvasContext.lineTo(newCoordinates.x, newCoordinates.y);
         this.canvasContext.strokeStyle = 'black';
-        this.canvasContext.lineWidth = 2;
+        this.canvasContext.lineWidth = 4;
         this.canvasContext.lineJoin = 'round';
         this.canvasContext.lineCap = 'round';
         this.canvasContext.stroke();
@@ -102,7 +104,7 @@ export class DrawingBoard {
     }
 
     private Dot(coordinates: Point) {
-        this.canvasContext.strokeRect(coordinates.x, coordinates.y, 1,1);
+        this.canvasContext.strokeRect(coordinates.x, coordinates.y, 2,2);
     }
 
     

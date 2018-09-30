@@ -3,6 +3,10 @@
     color: #cc9913;
 }
 
+ul {
+    list-style: none;
+}
+
 h3 {
     color: #cc9913;
     text-align: center;
@@ -14,7 +18,11 @@ body {
     margin: 0%;
     font-family: 'Roboto', sans-serif;
     font-size: 18pt;
-    text-shadow: 0 1px 3px rgba(0,0,0,0.5)
+    text-shadow: 0 1px 3px rgba(0,0,0,0.5);
+}
+
+#users {
+    display: flex;
 }
 
 div.container{
@@ -80,4 +88,25 @@ input {
 
 canvas {
     background: white;
+    border-radius: 5px;
+}
+
+.avatar {
+    background: white;
+    border-radius: 25%;
+}
+
+.player { 
+    border: 3px solid gold;
+    border-radius: 5px;
+    background: white;
+    color: black;
+    width: 50%;
+}
+
+.player > img {
+    background: white;
+    width: 50%;
+    height: 50%;
+    margin-bottom: -10%;
 }

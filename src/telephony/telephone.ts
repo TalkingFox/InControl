@@ -62,20 +62,23 @@ export class Telephone {
         
     public SendMessage(message: DataMessage): void {
         this.peer.send(JSON.stringify(message));
+        console.log('sent drawing');
     }
 
     private listenForMessages(connection: Instance) {
         connection.on('data', (message: string) => {
             const data = JSON.parse(message) as DataMessage;
+            console.log('received: ', data);
             switch (data.type) {
                 case DataMessageType.GiveClue:
                     this.cluesSubject.next(<string>data.body);
                     break;
-                case DataMessageType.StateChange:
+                case DataMessageType.StateChange:                    
                     this.room.setRoomState(<RoomState>data.body);
                     break;
                 case DataMessageType.PlayerSelected:
                     const selectedPlayer = <PlayerState>data.body;
+                    console.log(data.body);
                     const newRoomState = (selectedPlayer.player == this.player.name) ? 
                         RoomState.MyTurn : 
                         RoomState.OtherPlayerSelected;

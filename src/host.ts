@@ -69,16 +69,18 @@ function createRoom() {
 }
 
 function playerJoined(user: Player) {
+    console.log('adding: ', user);
     room.users.push(user.name);
     const userGroup = document.createElement('div');
-    const userName = document.createElement('li');
+    userGroup.classList.add('player');
+    const userName = document.createElement('p');
     const avatar = document.createElement('img') as HTMLImageElement;
 
     avatar.src = user.avatar;
     userName.textContent = user.name;
 
-    userGroup.appendChild(userName);
     userGroup.appendChild(avatar);
+    userGroup.appendChild(userName);
     users.appendChild(userGroup);
 }
 
@@ -131,20 +133,25 @@ function startGame() {
             questions = newQuestions;
             room.question = takeQuestion();		
             room.cluelessUsers = room.users.slice();
+            console.log('slice: ', room.users);
+            takeClues().map((envelope: ClueEnvelope) => {
+                console.log('sending new clues');
+                switchboard.dispatchMessage(envelope.player, envelope.clue);
+            });
             startNextRound();
         });	
 }
 
 function startNextRound(): void{
+    console.log('starting a new round');
 	if (room.cluelessUsers.length === 0) {
+        console.log('ending game');
 		return endGame();
 	}
-    transitionTo('drawingArea');
-    takeClues().map((envelope: ClueEnvelope) => {
-        switchboard.dispatchMessage(envelope.player, envelope.clue);
-    });
-    
+    transitionTo('drawingArea');    
+    console.log('player time');
     const player = selectPlayer();
+    console.log('telling the new playing that it is their turn: ', player);
     switchboard.dispatchMessageToAll(player);
     const subscription = waitForDrawings().subscribe((dataUrl: string) => {
         subscription.unsubscribe();
@@ -169,20 +176,27 @@ function waitForGuesses(): Promise<Guess[]> {
     }
     const promise = new Subject<Guess[]>();
     const subscription = guesses.Subscribe(() => {
+        console.log('got a new guess');
         if (guesses.length === room.users.length - 1) {
             promise.next(guesses.clone());
             guesses.clear();
             promise.complete();
+            console.log('promise kept');
             subscription.unsubscribe();
+        } else {
+            console.log('the fuck?');
+            console.log(guesses);
+            console.log(room);
         }
     });
     return promise.toPromise();
 }
 
 function displayAnswer() {
+    console.log('displaying answer');
     const answerField = document.getElementById('answer');
     answerField.textContent = 'The answer was '+room.question.name;
-    revealRoom.removeAttribute('hidden');
+    transitionTo('revealArea');
 }
 
 window.onload = () => {

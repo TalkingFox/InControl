@@ -37,8 +37,10 @@ export class Switchboard {
 
     public dispatchMessage(user: string, message: DataMessage) {
         const matchedUser = this.connections.get(user);
+        console.log('sending: ', message);
         matchedUser.send(JSON.stringify(message));
-
+        console.log('sent to: ', user);
+        console.log(matchedUser);
     }
 
     public dispatchMessageToAll(message: DataMessage) {
@@ -120,6 +122,7 @@ export class Switchboard {
                     break;
                 case DataMessageType.Guess:
                     this.guessQueue.next(<Guess>data.body);
+                    break;
                 case DataMessageType.UserLogin:
                     const player = <Player>data.body;
                     this.playerQueue.next(player);

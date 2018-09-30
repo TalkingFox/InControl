@@ -4,7 +4,7 @@
 <head>
   <meta charset="UTF-8" />
   <link rel="stylesheet" type="text/css" href="content/style.css">
-  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet"> 
+  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
   <script src="build/client.entry.js"></script>
 </head>
 
@@ -15,20 +15,20 @@
   <div id="joinArea">
     <div class="container table">
       <div>
-          <label>Enter your name</label>
-          <input type="text" id="username" />
-        </div>
+        <label>Enter your name</label>
+        <input type="text" id="username" />
+      </div>
       <div>
         <label>Room Name</label>
         <input type="text" id="roomName">
-      </div>      
+      </div>
       <button id="connect">Join Room</button>
     </div>
   </div>
-  <div id="avatarArea" class="container hidden">    
+  <div id="avatarArea" class="container hidden">
     <div>
       <p>Draw yourself an avatar</p>
-      <canvas id="avatar"></canvas>
+      <canvas width=500 height=500 id="avatar"></canvas>
     </div>
     <button id="login">Next</button>
   </div>
@@ -38,8 +38,11 @@
     <canvas id="waitingDrawingBoard"></canvas>
   </div>
   <div id="playArea" class="container hidden">
-    <canvas id="drawingBoard"></canvas>
-    <button id="sendDrawing">Submit</button>
+    <div>
+      <canvas id="drawingBoard"></canvas>
+      <br/>
+      <button id="sendDrawing">Submit</button>
+    </div>
   </div>
   <div id="guessArea" class="container hidden">
     <label>Submit your guess</label>
