@@ -120,7 +120,7 @@ function listenToStateChanges(): void {
                 stateTransition.toPlayArea();
                 break;
             case RoomState.OtherPlayerSelected:
-                stateTransition.toGuessArea();
+                stateTransition.toWaitingArea();
                 break;
             case RoomState.WaitingForRoundEnd:
                 stateTransition.toWaitingArea();

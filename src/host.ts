@@ -18,15 +18,21 @@ let questions: Question[];
 let users: HTMLElement;
 let guesses: TalkativeArray<Guess>;
 let currentPlayer: HTMLElement;
+let tagline: HTMLElement;
+let turnMessage: HTMLElement;
 
 function initialize() {
     guesses = new TalkativeArray<Guess>();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard', isReadOnly: true});
     switchboard.guesses.subscribe((guess: Guess) => guesses.Push(guess));
     users = document.getElementById('users');
-    
+    tagline = document.getElementById('tagline');
+    turnMessage = document.getElementById('turnMessage');
+
     const replay = document.getElementById('replay');
     replay.addEventListener('click', () => {
+        tagline.classList.remove('glow');
+        turnMessage.classList.remove('hidden');
         drawingBoard.ClearCanvas();
         startGame();
     });
@@ -145,7 +151,6 @@ function startGame() {
 function startNextRound(): void{
     console.log('starting a new round');
 	if (room.cluelessUsers.length === 0) {
-        console.log('ending game');
 		return endGame();
 	}
     transitionTo('drawingArea');    
@@ -154,37 +159,35 @@ function startNextRound(): void{
     const subscription = waitForDrawings().subscribe((dataUrl: string) => {
         subscription.unsubscribe();
         drawingBoard.loadDataUrl(dataUrl);
-        waitForGuesses()
-            .then((guess: Guess[]) => startNextRound())
+        startNextRound();
+        /*waitForGuesses()
+            .then((guess: Guess[]) => startNextRound())*/
     });
 }
 
-function endGame() {
+function endGame() {    
     const stateChange = new StateChanged(RoomState.FinalGuess);
     switchboard.dispatchMessageToAll(stateChange);
+    tagline.textContent = "Submit Your Guesses!";
+    tagline.classList.add('glow');
+    turnMessage.classList.add('hidden');
     waitForGuesses()
         .then((guesses: Guess[]) => displayAnswer());
 }
 
 function waitForGuesses(): Promise<Guess[]> {
-    if (guesses.length === room.users.length - 1) {
+    if (guesses.length === room.users.length) {
         const resolution = Promise.resolve(guesses.elements.splice(0));
         guesses.clear();
         return resolution;
     }
     const promise = new Subject<Guess[]>();
     const subscription = guesses.Subscribe(() => {
-        console.log('got a new guess');
-        if (guesses.length === room.users.length - 1) {
+        if (guesses.length === room.users.length) {
             promise.next(guesses.clone());
             guesses.clear();
             promise.complete();
-            console.log('promise kept');
             subscription.unsubscribe();
-        } else {
-            console.log('the fuck?');
-            console.log(guesses);
-            console.log(room);
         }
     });
     return promise.toPromise();
