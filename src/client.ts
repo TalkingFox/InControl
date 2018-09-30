@@ -13,7 +13,6 @@ let drawingBoard: DrawingBoard;
 let avatarBoard: DrawingBoard;
 let telephone: Telephone;
 let stateTransition: StateTransition;
-let loadingMessage: HTMLElement;
 let sendDrawing: HTMLElement;
 
 window.onload = () => {
@@ -23,7 +22,6 @@ window.onload = () => {
 function initialize() {
     stateTransition = new StateTransition();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
-    loadingMessage = document.getElementById('loadingMessage');
     const connect = document.getElementById('connect');
     sendDrawing = document.getElementById('sendDrawing');
     sendDrawing.addEventListener('click', () => {
@@ -96,11 +94,10 @@ function joinRoom(room: Room): Promise<void> {
 
 function listenForClues(): void {
     telephone.clues.subscribe((clue: string) => {
+        console.log('got clue');
         const clueElement = document.getElementById('clue');
         clueElement.textContent='Clue: '+clue;
-        clueElement.removeAttribute('hidden');
-        const clueHelper = document.getElementById('clue-help');
-        clueHelper.removeAttribute('hidden');
+        clueElement.classList.remove('hidden');
     });
 }
 

@@ -15,21 +15,16 @@ const switchboard: Switchboard = new Switchboard();
 let drawingBoard: DrawingBoard;
 let room: Room;
 let questions: Question[];
-let revealRoom: HTMLElement;
 let users: HTMLElement;
 let guesses: TalkativeArray<Guess>;
+let currentPlayer: HTMLElement;
 
 function initialize() {
     guesses = new TalkativeArray<Guess>();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard', isReadOnly: true});
     switchboard.guesses.subscribe((guess: Guess) => guesses.Push(guess));
-    revealRoom = document.getElementById('revealArea');
     users = document.getElementById('users');
-    const roomMaker = document.getElementById('createRoom');
-    roomMaker.addEventListener('click', () => {
-        createRoom();
-    });
-
+    
     const replay = document.getElementById('replay');
     replay.addEventListener('click', () => {
         drawingBoard.ClearCanvas();
@@ -39,6 +34,8 @@ function initialize() {
         questions = null;
         startGame();
     });
+    currentPlayer = document.getElementById('currentPlayer');
+    createRoom();
 }
 
 function transitionTo(area: string) {    
@@ -112,10 +109,13 @@ function takeQuestion(): Question {
 	return questions.pop();
 }
 
-function selectPlayer(): PlayerSelected {
+function selectPlayer(): void {
 	Util.Shuffle(room.cluelessUsers);
 	const player = Util.PopRandomElement(room.cluelessUsers);
-	return new PlayerSelected(player, drawingBoard.toDataUrl());
+    const selected = new PlayerSelected(player, drawingBoard.toDataUrl());    
+    console.log('telling the new playing that it is their turn: ', selected);
+    switchboard.dispatchMessageToAll(selected);
+    currentPlayer.textContent = player;
 }
 
 function waitForDrawings(): Observable<string> {
@@ -150,9 +150,7 @@ function startNextRound(): void{
 	}
     transitionTo('drawingArea');    
     console.log('player time');
-    const player = selectPlayer();
-    console.log('telling the new playing that it is their turn: ', player);
-    switchboard.dispatchMessageToAll(player);
+    selectPlayer();
     const subscription = waitForDrawings().subscribe((dataUrl: string) => {
         subscription.unsubscribe();
         drawingBoard.loadDataUrl(dataUrl);

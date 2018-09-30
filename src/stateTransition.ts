@@ -1,6 +1,4 @@
-import { Subject } from "rxjs";
 import { Room } from "./models/room";
-import { RoomState } from "./models/events/stateChanged";
 
 export class StateTransition {
     public room: Room;
@@ -31,6 +29,9 @@ export class StateTransition {
     private transitionTo(area: string) {
         const allAreas = document.querySelectorAll('body > div');
         allAreas.forEach((value: Element) => {
+            if (!value.id) {
+                return;
+            }
             if (value.id == area) {
                 value.classList.remove('hidden');
             } else {

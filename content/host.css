@@ -1,0 +1,30 @@
+@keyframes glow {
+    0% {
+        text-shadow: none;
+    } 
+    50% {
+        text-shadow: -2px 2px 8px rgba(255, 255, 255, 0.6), 2px -2px 8px rgba(255, 255, 255, 0.6);
+    }
+}
+
+.player { 
+    border: 3px solid #cc9913;
+    border-radius: 5px;
+    background: white;
+    color: black;
+    width: 50%;
+}
+
+.player > img {
+    background: white;
+    width: 50%;
+    height: 50%;
+    margin-bottom: -10%;
+}
+
+#currentPlayer {
+    color: #cc9913;
+    text-transform: capitalize;
+    animation: glow 5000ms infinite;
+}
+
