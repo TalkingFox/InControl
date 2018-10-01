@@ -207,6 +207,12 @@ function displayAnswer(finalGuesses: Guess[]) {
         guessElement.textContent = `${guess.user} said: ${guess.guess}`;        
         guessesList.appendChild(guessElement);
     });
+    const cluesList = document.getElementById('clues');
+    room.usedClues.map((clue: string) => {
+        const clueElement = document.createElement('p');
+        clueElement.textContent = clue;
+        cluesList.appendChild(clueElement);
+    });
     const answerField = document.getElementById('answer');
     answerField.textContent = room.question.name;
     finalDrawing.src = drawingBoard.toDataUrl();    

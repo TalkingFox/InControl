@@ -31,11 +31,14 @@ img {
     background: white;    
 }
 
-.padding {
-    width: 25%;
+#guesses {
+    color: white;
 }
 
-#guesses {
-    padding-left: 5%;
-    color: white;
+.third {
+    width: 33%;
+}
+
+#revealArea > .flex {
+    padding: 2%;
 }

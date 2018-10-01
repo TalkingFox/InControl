@@ -28,10 +28,12 @@
     <p id="turnMessage"><span id="currentPlayer" class="glow"></span> is up!</p>
     <canvas id="drawingBoard"></canvas>
   </div>
-  <div id="revealArea" class="">
+  <div id="revealArea" class="hidden">
     <div class="flex">
-      <div id="guesses" class="guesses"></div>
-      <div class="container">
+      <div id="guesses" class="guesses third">
+        <h3>Your Guesses</h3>
+      </div>
+      <div class="container third">
         <p>
           We wanted <span id="answer" class="glow"></span>
         </p>
@@ -40,7 +42,9 @@
         <br />
         <button id="replay">Play again?</button>
       </div>
-      <div class="padding"></div>
+      <div id="clues" class="third">
+        <h3>Your Clues</h3>
+      </div>
     </div>
     <div id="outOfQuestions" class="container hidden">
       <p>Sorry, but there aren't any questions left.</p>
