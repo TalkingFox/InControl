@@ -16,7 +16,6 @@
 }
 
 .player > img {
-    background: white;
     width: 50%;
     height: 50%;
     margin-bottom: -10%;
@@ -28,3 +27,6 @@
     animation: glow 5000ms infinite;
 }
 
+img {
+    background: white;    
+}

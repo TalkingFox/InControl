@@ -21,7 +21,8 @@ export class DrawingBoard {
         this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
-    public toDataUrl() {
+    public toDataUrl(): string {
+        console.log('getting data url');
         return this.canvas.toDataURL();
     }
 

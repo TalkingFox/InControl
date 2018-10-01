@@ -20,6 +20,7 @@ let guesses: TalkativeArray<Guess>;
 let currentPlayer: HTMLElement;
 let tagline: HTMLElement;
 let turnMessage: HTMLElement;
+let finalDrawing: HTMLImageElement;
 
 function initialize() {
     guesses = new TalkativeArray<Guess>();
@@ -28,6 +29,7 @@ function initialize() {
     users = document.getElementById('users');
     tagline = document.getElementById('tagline');
     turnMessage = document.getElementById('turnMessage');
+    finalDrawing = document.getElementById('finalDrawing') as HTMLImageElement;
 
     const replay = document.getElementById('replay');
     replay.addEventListener('click', () => {
@@ -44,7 +46,8 @@ function initialize() {
     createRoom();
 }
 
-function transitionTo(area: string) {    
+function transitionTo(area: string) {
+    console.log('transitionTo: ', area);
     const allAreas = document.querySelectorAll('body > div');
     allAreas.forEach((value: Element) => {
         if (value.id == area) {
@@ -194,9 +197,10 @@ function waitForGuesses(): Promise<Guess[]> {
 }
 
 function displayAnswer() {
-    console.log('displaying answer');
     const answerField = document.getElementById('answer');
-    answerField.textContent = 'The answer was '+room.question.name;
+    answerField.textContent = room.question.name;
+    console.log(finalDrawing);
+    finalDrawing.src = drawingBoard.toDataUrl();    
     transitionTo('revealArea');
 }
 
