@@ -31,12 +31,13 @@ img {
     background: white;    
 }
 
-#guesses {
+#guesses,#clues {
     color: white;
+    text-align: center;
 }
 
 .third {
-    width: 33%;
+    width: 30%;
 }
 
 #revealArea > .flex {
