@@ -15,34 +15,39 @@
   <div class="" id="waitingArea">
     <div class="container">
       <label>Room Name</label>
-      <input id="roomId" value="Loading..." readonly/>
+      <input id="roomId" value="Loading..." readonly />
       <button id="startGame">Start Game</button>
-    </div>    
+    </div>
     <div id="usersArea" class="container">
       <label>Waiting for Players</label>
       <div id="users"></div>
     </div>
   </div>
-  <div id="drawingArea" class="container hidden">    
+  <div id="drawingArea" class="container hidden">
     <p id="tagline">Let's watch your clues come together</p>
     <p id="turnMessage"><span id="currentPlayer" class="glow"></span> is up!</p>
     <canvas id="drawingBoard"></canvas>
   </div>
-  <div id="revealArea" class="container hidden">
-    <p>
-      We wanted <span id="answer" class="glow"></span>
-    </p>
-    <p>You gave us</p>
-    <img id="finalDrawing"/>
-    <br/>
-    <button id="replay">Play again?</button>
-  </div>
-  <div id="outOfQuestions" class="container hidden">
-    <p>Sorry, but there aren't any questions left.</p>
-    <p>You played them all.</p>
-    <p>If you want to keep playing ones you want to you can click this button, but it probably won't be as fun.</p>
-    <button id="reallyPlayAgain">Play again with the same questions</button>
-  </div>
+  <div id="revealArea" class="">
+    <div class="flex">
+      <div id="guesses" class="guesses"></div>
+      <div class="container">
+        <p>
+          We wanted <span id="answer" class="glow"></span>
+        </p>
+        <p>You gave us</p>
+        <img id="finalDrawing" />
+        <br />
+        <button id="replay">Play again?</button>
+      </div>
+      <div class="padding"></div>
+    </div>
+    <div id="outOfQuestions" class="container hidden">
+      <p>Sorry, but there aren't any questions left.</p>
+      <p>You played them all.</p>
+      <p>If you want to keep playing ones you want to you can click this button, but it probably won't be as fun.</p>
+      <button id="reallyPlayAgain">Play again with the same questions</button>
+    </div>
 </body>
 
 </html>

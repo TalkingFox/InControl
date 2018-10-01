@@ -179,7 +179,7 @@ function endGame() {
     tagline.classList.add('glow');
     turnMessage.classList.add('hidden');
     waitForGuesses()
-        .then((guesses: Guess[]) => displayAnswer());
+        .then((finalGuesses: Guess[]) => displayAnswer(finalGuesses));
 }
 
 function waitForGuesses(): Promise<Guess[]> {
@@ -200,10 +200,15 @@ function waitForGuesses(): Promise<Guess[]> {
     return promise.toPromise();
 }
 
-function displayAnswer() {
+function displayAnswer(finalGuesses: Guess[]) {
+    const guessesList = document.getElementById('guesses');
+    finalGuesses.map((guess: Guess) => {
+        const guessElement = document.createElement('p');
+        guessElement.textContent = `${guess.user} said: ${guess.guess}`;        
+        guessesList.appendChild(guessElement);
+    });
     const answerField = document.getElementById('answer');
     answerField.textContent = room.question.name;
-    console.log(finalDrawing);
     finalDrawing.src = drawingBoard.toDataUrl();    
     transitionTo('revealArea');
 }

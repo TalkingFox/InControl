@@ -30,3 +30,12 @@
 img {
     background: white;    
 }
+
+.padding {
+    width: 25%;
+}
+
+#guesses {
+    padding-left: 5%;
+    color: white;
+}

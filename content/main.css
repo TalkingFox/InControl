@@ -63,3 +63,7 @@ canvas {
 #users {
     display: flex;
 }
+
+.flex {
+    display: flex;
+}
