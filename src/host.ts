@@ -25,6 +25,10 @@ let finalDrawing: HTMLImageElement;
 function initialize() {
     guesses = new TalkativeArray<Guess>();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard', isReadOnly: true});
+    switchboard.drawingUpdates.subscribe((dataUrl: string) => {
+        console.log('updated');
+        drawingBoard.loadDataUrl(dataUrl);
+    });
     switchboard.guesses.subscribe((guess: Guess) => guesses.Push(guess));
     users = document.getElementById('users');
     tagline = document.getElementById('tagline');

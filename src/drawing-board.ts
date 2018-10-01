@@ -1,13 +1,19 @@
 import { Point } from "./point";
 import { DrawingBoardSettings } from "./models/drawing-board-settings";
+import { Observable, Subject } from "rxjs";
 
 export class DrawingBoard {
+    public mouseUp: Observable<void>;
+
+    private mouseUpSubject: Subject<void>;
     private isMouseDown: boolean = false;
     private canvas: HTMLCanvasElement;
     private canvasContext: CanvasRenderingContext2D;
     private lastPosition: Point = new Point(0, 0);
 
     public constructor(settings: DrawingBoardSettings) {
+        this.mouseUpSubject = new Subject<void>();
+        this.mouseUp = this.mouseUpSubject.asObservable();
         this.canvas = document.getElementById(settings.elementId) as HTMLCanvasElement;
         this.canvasContext = this.canvas.getContext("2d");
         this.canvas.width = 500;
@@ -64,12 +70,14 @@ export class DrawingBoard {
 
         canvas.addEventListener('mouseup', (e) => {
             this.isMouseDown = false;
+            this.mouseUpSubject.next();
         });
         canvas.addEventListener('mouseleave', (e) => {
             this.isMouseDown = false;
         });
         canvas.addEventListener('touchend', (e) => {
             this.isMouseDown = false;
+            this.mouseUpSubject.next();
         });
     }
 

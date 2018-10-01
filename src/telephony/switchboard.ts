@@ -16,13 +16,14 @@ export class Switchboard {
     public drawings: Observable<string>;
     public guesses: Observable<Guess>;
     public room: string;
+    public drawingUpdates: Observable<string>;
 
     private drawingQueue: Subject<string>;
+    private drawingUpdatesQueue: Subject<string>;
     private guessQueue: Subject<Guess>;
     private playerQueue: Subject<Player>;
     private connections: Map<string,Instance>;
     private isOpenToNewUsers: boolean = true;
-    private peer: Instance;
     private socket: SocketIOClient.Socket;
 
     constructor() {
@@ -33,6 +34,8 @@ export class Switchboard {
         this.playerQueue = new Subject<Player>();
         this.players = this.playerQueue.asObservable();
         this.connections = new Map<string, Instance>();
+        this.drawingUpdatesQueue = new Subject<string>();
+        this.drawingUpdates = this.drawingUpdatesQueue.asObservable();
     }
 
     public dispatchMessage(user: string, message: DataMessage) {
@@ -126,6 +129,10 @@ export class Switchboard {
                 case DataMessageType.UserLogin:
                     const player = <Player>data.body;
                     this.playerQueue.next(player);
+                    break;
+                case DataMessageType.DrawingUpdate:
+                    console.log('received update');
+                    this.drawingUpdatesQueue.next(<string>data.body);
                     break;
                 default:
                     console.log(data);

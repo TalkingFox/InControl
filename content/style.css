@@ -3,9 +3,7 @@
     color: #cc9913;
 }
 
-#users {
-    display: flex;
-}
+
 
 
 .table {
@@ -26,27 +24,10 @@
 }
 
 
-canvas {
-    background: white;
-    border-radius: 5px;
-}
+
 
 .avatar {
     background: white;
     border-radius: 25%;
 }
 
-.player { 
-    border: 3px solid gold;
-    border-radius: 5px;
-    background: white;
-    color: black;
-    width: 50%;
-}
-
-.player > img {
-    background: white;
-    width: 50%;
-    height: 50%;
-    margin-bottom: -10%;
-}

@@ -8,6 +8,7 @@ import { Subject } from 'rxjs';
 import { StateTransition } from './stateTransition';
 import { PlayerLogin } from './models/events/playerLogin';
 import { Player } from './models/player';
+import { DrawingUpdate } from './models/events/drawingUpdate';
 
 let drawingBoard: DrawingBoard;
 let avatarBoard: DrawingBoard;
@@ -22,6 +23,9 @@ window.onload = () => {
 function initialize() {
     stateTransition = new StateTransition();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
+    drawingBoard.mouseUp.subscribe(() => {
+        sendDrawingUpdate();
+    });
     const connect = document.getElementById('connect');
     sendDrawing = document.getElementById('sendDrawing');
     sendDrawing.addEventListener('click', () => {
@@ -73,6 +77,12 @@ function initialize() {
                   (error: string) => alert('Failed to join room. Reason: '+error));
     });
     
+}
+
+function sendDrawingUpdate() {
+    const dataUrl = drawingBoard.toDataUrl();
+    const update = new DrawingUpdate(dataUrl);
+    telephone.SendMessage(update);
 }
 
 function joinRoom(room: Room): Promise<void> {
