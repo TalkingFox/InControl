@@ -1,7 +1,7 @@
 import { Observable, Subject } from 'rxjs';
 import { DataMessage, DataMessageType } from '../models/events/message';
 import { Question } from '../models/question';
-import { Guess } from '../models/events/guess';
+import { Guess } from '../models/guess';
 import { Player } from '../models/player';
 import 'simple-peer';
 import {Instance} from 'simple-peer';
@@ -10,6 +10,7 @@ import * as SocketIo from 'socket.io-client';
 import { RoomEvent } from '../models/roomEvents';
 import { PlayerAccepted } from './playerAccepted';
 import { environment } from '../environment/environment';
+import { RoomState, StateChanged } from '../models/events/stateChanged';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -50,6 +51,11 @@ export class Switchboard {
         this.connections.forEach((connection: Instance) => {
             connection.send(JSON.stringify(message));
         });
+    }
+
+    public dispatchStateChange(state: RoomState) {
+        const stateChange = new StateChanged(state);
+        this.dispatchMessageToAll(stateChange);
     }
 
     public stopAcceptingNewUsers() {

@@ -2,13 +2,13 @@ import { Room } from './models/room';
 import { Telephone } from './telephony/telephone';
 import { DrawingBoard } from './drawing-board';
 import { sentDrawing } from './models/events/sentDrawing';
-import { SendGuess } from './models/events/guess';
 import { RoomState } from './models/events/stateChanged';
 import { Subject } from 'rxjs';
 import { StateTransition } from './stateTransition';
 import { PlayerLogin } from './models/events/playerLogin';
 import { Player } from './models/player';
 import { DrawingUpdate } from './models/events/drawingUpdate';
+import { SendGuess } from './models/guess';
 
 let drawingBoard: DrawingBoard;
 let avatarBoard: DrawingBoard;
@@ -120,7 +120,7 @@ function listenForCanvasUpdates(): void {
 function listenToStateChanges(): void {
     stateTransition.room.roomState.subscribe((state: RoomState) => {
         switch (state) {
-            case RoomState.FinalGuess:
+            case RoomState.GiveGuesses:
                 stateTransition.toGuessArea();
                 break;
             case RoomState.GameEnded:

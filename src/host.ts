@@ -5,11 +5,14 @@ import { Question } from './models/question';
 import { Observable, Subject } from 'rxjs';
 import { Util } from './util';
 import { PlayerSelected } from './models/events/playerSelected';
-import { Guess } from './models/events/guess';
+import { Guess } from './models/guess';
 import { TalkativeArray } from './models/talkative-array';
 import { DrawingBoard } from './drawing-board';
 import { ClueEnvelope } from './models/ClueEnvelope';
 import { Player } from './models/player';
+import { GuessScore } from './models/guessScore';
+import { GuessScoreCard } from './models/guessScoreCard';
+import { GiveGuesses } from './models/events/giveGuesses';
 
 const switchboard: Switchboard = new Switchboard();
 let drawingBoard: DrawingBoard;
@@ -17,6 +20,7 @@ let room: Room;
 let questions: Question[];
 let users: HTMLElement;
 let guesses: TalkativeArray<Guess>;
+let scoredGuesses: TalkativeArray<GuessScore>;
 let currentPlayer: HTMLElement;
 let tagline: HTMLElement;
 let turnMessage: HTMLElement;
@@ -167,22 +171,21 @@ function startNextRound(): void{
         subscription.unsubscribe();
         drawingBoard.loadDataUrl(dataUrl);
         startNextRound();
-        /*waitForGuesses()
-            .then((guess: Guess[]) => startNextRound())*/
     });
 }
 
-function endGame() {    
-    const stateChange = new StateChanged(RoomState.FinalGuess);
-    switchboard.dispatchMessageToAll(stateChange);
-    tagline.textContent = "Submit Your Guesses!";
-    tagline.classList.add('glow');
-    turnMessage.classList.add('hidden');
+function endGame() {
     waitForGuesses()
-        .then((finalGuesses: Guess[]) => displayAnswer(finalGuesses));
+        .then((finalGuesses: Guess[]) => waitForScores(finalGuesses))
+        .then((newlyScoredGuesses: GuessScore[]) => displayAnswer(newlyScoredGuesses));
 }
 
 function waitForGuesses(): Promise<Guess[]> {
+    switchboard.dispatchStateChange(RoomState.GiveGuesses);
+    tagline.textContent = "Submit Your Guesses!";
+    tagline.classList.add('glow');
+    turnMessage.classList.add('hidden');
+
     if (guesses.length === room.users.length) {
         const resolution = Promise.resolve(guesses.elements.splice(0));
         guesses.clear();
@@ -200,12 +203,65 @@ function waitForGuesses(): Promise<Guess[]> {
     return promise.toPromise();
 }
 
-function displayAnswer(finalGuesses: Guess[]) {
+function waitForScores(finalGuesses: Guess[]): Promise<GuessScore[]> {
+    tagline.textContent = 'Waiting for Your Scores!'
+    const guessesMessage = new GiveGuesses(finalGuesses);
+    switchboard.dispatchMessageToAll(guessesMessage);
+    
+    if (scoredGuesses.length === room.users.length) {
+        const resolution = Promise.resolve(scoredGuesses.elements.splice(0));
+        scoredGuesses.clear();
+        return resolution;
+    }
+
+    const promise = new Subject<GuessScore[]>();
+    const subscription = scoredGuesses.Subscribe(() => {
+        if (guesses.length === room.users.length) {
+            promise.next(scoredGuesses.clone());
+            scoredGuesses.clear();
+            promise.complete();
+            subscription.unsubscribe();
+        }
+        return promise.toPromise();
+    });
+}
+
+function displayAnswer(newlyScoredGuesses: GuessScore[]) {
+    const finalGuesses = new Map<string, GuessScoreCard>();
+    newlyScoredGuesses.map((guessScore: GuessScore) => {
+        if (!finalGuesses.has(guessScore.guess.user)) {
+            const newCard = new GuessScoreCard(guessScore.guess);
+            finalGuesses.set(guessScore.guess.user, newCard);
+        }
+
+        const card = finalGuesses.get(guessScore.guess.user);
+        if (guessScore.isFunny) {
+            card.funnies++;
+        }
+        if (guessScore.isLiked) {
+            card.likes++;
+        }
+    });
     const guessesList = document.getElementById('guesses');
-    finalGuesses.map((guess: Guess) => {
+    finalGuesses.forEach((scoreCard: GuessScoreCard) => {
+        const span = document.createElement('span');
+        span.classList.add('clueScore');
+        
         const guessElement = document.createElement('p');
-        guessElement.textContent = `${guess.user} said: ${guess.guess}`;        
-        guessesList.appendChild(guessElement);
+        guessElement.textContent = `${scoreCard.guess.user} said: ${scoreCard.guess.guess}`;
+        
+        const likesElement = document.createElement('p');
+        likesElement.classList.add('likes');
+        likesElement.textContent = scoreCard.likes.toString();
+        
+        const funnyElement = document.createElement('p');
+        funnyElement.classList.add('funny');
+        funnyElement.textContent = scoreCard.funnies.toString();
+
+        span.appendChild(guessElement);
+        span.appendChild(likesElement);
+        span.appendChild(funnyElement);
+        guessesList.appendChild(span);
     });
     const cluesList = document.getElementById('clues');
     room.usedClues.map((clue: string) => {

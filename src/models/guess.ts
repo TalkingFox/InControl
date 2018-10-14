@@ -1,4 +1,4 @@
-import { DataMessageType, Message } from "./message";
+import { DataMessageType, Message } from "./events/message";
 
 export class SendGuess implements Message<Guess> {
     public type: string = DataMessageType.Guess;
