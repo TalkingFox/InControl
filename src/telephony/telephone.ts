@@ -11,14 +11,17 @@ import * as SocketIOClient from 'socket.io-client';
 import { RoomEvent } from "../models/roomEvents";
 import { JoinRoomRequest } from "./joinRoomRequest";
 import { environment } from "../environment/environment";
+import { Guess } from "../models/guess";
 
 export class Telephone {
     public player: Player;
     public messages: Observable<DataMessage>;
     public clues: Observable<string>;
+    public guesses: Observable<Guess[]>;
 
     private messageSubject: Subject<DataMessage>;
     private cluesSubject: Subject<string>;
+    private guessesSubject: Subject<Guess[]>;
     private peer: Instance;
     private room: Room;
     private socket: SocketIOClient.Socket;
@@ -29,6 +32,8 @@ export class Telephone {
         this.messages = this.messageSubject.asObservable();
         this.cluesSubject = new Subject<string>();
         this.clues = this.cluesSubject.asObservable();
+        this.guessesSubject = new Subject<Guess[]>();
+        this.guesses = this.guessesSubject.asObservable();
     }
 
     public connectTo(room: Room): Observable<void> {

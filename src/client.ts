@@ -8,7 +8,7 @@ import { StateTransition } from './stateTransition';
 import { PlayerLogin } from './models/events/playerLogin';
 import { Player } from './models/player';
 import { DrawingUpdate } from './models/events/drawingUpdate';
-import { SendGuess } from './models/guess';
+import { SendGuess, Guess } from './models/guess';
 
 let drawingBoard: DrawingBoard;
 let avatarBoard: DrawingBoard;
@@ -92,6 +92,7 @@ function joinRoom(room: Room): Promise<void> {
         listenForClues();
         listenForCanvasUpdates();
         listenToStateChanges();
+        listenForGuesses();
         promise.next();
         promise.complete();
         subscription.unsubscribe();
@@ -104,7 +105,6 @@ function joinRoom(room: Room): Promise<void> {
 
 function listenForClues(): void {
     telephone.clues.subscribe((clue: string) => {
-        console.log('got clue');
         const clueElement = document.getElementById('clue');
         clueElement.textContent='Clue: '+clue;
         clueElement.classList.remove('hidden');
@@ -114,6 +114,12 @@ function listenForClues(): void {
 function listenForCanvasUpdates(): void {
     stateTransition.room.canvas.subscribe((data) => {
         drawingBoard.loadDataUrl(data);
+    });
+}
+
+function listenForGuesses(): void {
+    telephone.guesses.subscribe((newGuesses: Guess[]) => {
+        stateTransition.toScoringArea(newGuesses);
     });
 }
 

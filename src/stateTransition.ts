@@ -1,4 +1,5 @@
 import { Room } from "./models/room";
+import { Guess } from "./models/guess";
 
 export class StateTransition {
     public room: Room;
@@ -20,6 +21,18 @@ export class StateTransition {
 
     public toAvatarArea(): void {
         this.transitionTo('avatarArea');
+    }
+
+    public toScoringArea(newGuesses: Guess[]): void {
+        const guesses = document.getElementById('guesses');
+        while(guesses.firstChild) {
+            // clear guesses
+            guesses.removeChild(guesses.firstChild);
+        }
+        newGuesses.map((guess: Guess) => {
+
+        });
+        this.transitionTo('scoringArea');        
     }
 
     public toWaitingArea(): void {
