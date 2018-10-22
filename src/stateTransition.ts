@@ -24,13 +24,14 @@ export class StateTransition {
     }
 
     public toScoringArea(newGuesses: Guess[]): void {
+        console.log('scoring area');
         const guesses = document.getElementById('guesses');
         while(guesses.firstChild) {
             // clear guesses
             guesses.removeChild(guesses.firstChild);
         }
         newGuesses.map((guess: Guess) => {
-
+            
         });
         this.transitionTo('scoringArea');        
     }

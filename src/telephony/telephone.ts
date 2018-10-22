@@ -81,6 +81,9 @@ export class Telephone {
                 case DataMessageType.StateChange:                    
                     this.room.setRoomState(<RoomState>data.body);
                     break;
+                case DataMessageType.GiveGuesses:
+                    this.guessesSubject.next(<Guess[]>data.body);
+                    break;
                 case DataMessageType.PlayerSelected:
                     const selectedPlayer = <PlayerState>data.body;
                     console.log(data.body);
