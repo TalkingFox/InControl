@@ -1,8 +1,10 @@
 import { Room } from "./models/room";
 import { Guess } from "./models/guess";
+import { ScoreComponent } from "./components/scoreComponent";
 
 export class StateTransition {
     public room: Room;
+    private score: ScoreComponent;
 
     constructor(){
     }
@@ -24,15 +26,8 @@ export class StateTransition {
     }
 
     public toScoringArea(newGuesses: Guess[]): void {
-        console.log('scoring area');
-        const guesses = document.getElementById('guesses');
-        while(guesses.firstChild) {
-            // clear guesses
-            guesses.removeChild(guesses.firstChild);
-        }
-        newGuesses.map((guess: Guess) => {
-            
-        });
+        this.score = new ScoreComponent();
+        this.score.initialize(newGuesses);
         this.transitionTo('scoringArea');        
     }
 
