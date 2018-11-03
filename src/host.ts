@@ -235,10 +235,12 @@ function waitForScores(finalGuesses: Guess[]): Promise<GuessScore[]> {
             promise.next(flattenedGuesses.splice(0));
             scoredGuesses.clear();
             promise.complete();
+            console.log('promise completed')
+
             subscription.unsubscribe();
         }
-        return promise.toPromise();
     });
+    return promise.toPromise();
 }
 
 function displayAnswer(newlyScoredGuesses: GuessScore[]) {
