@@ -26,8 +26,7 @@ export class Telephone {
     private room: Room;
     private socket: SocketIOClient.Socket;
     
-    constructor(player: Player) {
-        this.player = player;
+    constructor() {
         this.messageSubject = new Subject<DataMessage>();
         this.messages = this.messageSubject.asObservable();
         this.cluesSubject = new Subject<string>();
@@ -36,7 +35,8 @@ export class Telephone {
         this.guesses = this.guessesSubject.asObservable();
     }
 
-    public connectTo(room: Room): Observable<void> {
+    public connect(player: Player, room: Room): Observable<void> {
+        this.player = player;
         this.room = room;
         this.peer = new Peer({initiator: true, trickle: false});
         this.peer.on('signal', (id: any) => {
@@ -86,7 +86,6 @@ export class Telephone {
                     break;
                 case DataMessageType.PlayerSelected:
                     const selectedPlayer = <PlayerState>data.body;
-                    console.log(data.body);
                     const newRoomState = (selectedPlayer.player == this.player.name) ? 
                         RoomState.MyTurn : 
                         RoomState.OtherPlayerSelected;

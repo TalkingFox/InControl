@@ -15,13 +15,15 @@ let avatarBoard: DrawingBoard;
 let telephone: Telephone;
 let stateTransition: StateTransition;
 let sendDrawing: HTMLElement;
+let player: Player;
 
 window.onload = () => {
     initialize();
 };
 
 function initialize() {
-    stateTransition = new StateTransition();
+    telephone = new Telephone();
+    stateTransition = new StateTransition(telephone);
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
     drawingBoard.mouseUp.subscribe(() => {
         sendDrawingUpdate();
@@ -39,17 +41,15 @@ function initialize() {
     const sendGuess = document.getElementById('sendGuess');
     sendGuess.addEventListener('click', () => {
         const guessElement = document.getElementById('guess') as HTMLInputElement;
-        const message = new SendGuess(telephone.player.name, guessElement.value);
+        const message = new SendGuess(player.name, guessElement.value);
         telephone.SendMessage(message);
         stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
     });
 
     const login = document.getElementById('login');
     login.addEventListener('click', () => {
-        const username = document.getElementById('username') as HTMLInputElement;
         const avatarUrl = avatarBoard.toDataUrl();
-        const player = new Player(username.value, avatarUrl);
-        telephone.player = player;
+        player.avatar = avatarUrl;
         telephone.SendMessage(new PlayerLogin(player));
         stateTransition.toWaitingArea();
     });
@@ -67,7 +67,7 @@ function initialize() {
             return;
         }
         
-        telephone = new Telephone(new Player(playerName.value,''));
+        player = new Player(playerName.value);
         joinRoom(new Room(roomName.value))
             .then(() => {
                 stateTransition.toAvatarArea()
@@ -88,7 +88,7 @@ function sendDrawingUpdate() {
 function joinRoom(room: Room): Promise<void> {
     stateTransition.room = room;
     const promise = new Subject<void>();
-    const subscription = telephone.connectTo(room).subscribe(() => {
+    const subscription = telephone.connect(player, room).subscribe(() => {
         listenForClues();
         listenForCanvasUpdates();
         listenToStateChanges();

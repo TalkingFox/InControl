@@ -6,6 +6,7 @@ import { SendGuess } from "../guess";
 import { PlayerLogin } from "./playerLogin";
 import { DrawingUpdate } from "./drawingUpdate";
 import { GiveGuesses } from "./giveGuesses";
+import { GuessesScored } from "./guessesScored";
 
 export interface Message<T> { 
     type: string;
@@ -16,6 +17,7 @@ export type DataMessage = sentDrawing | GiveClue
             | StateChanged | PlayerSelected
             | SendGuess | PlayerLogin
             | DrawingUpdate | GiveGuesses
+            | GuessesScored
 
 export class DataMessageType {
     public static UserLogin = 'UserLogin';
@@ -26,4 +28,5 @@ export class DataMessageType {
     public static StateChange = 'StateChange';
     public static PlayerSelected = 'UserSelected;'
     public static DrawingUpdate = 'DrawingUpdate';
+    public static GuessesScored = 'GuessesScored';
 }

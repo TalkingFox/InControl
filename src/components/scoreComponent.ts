@@ -1,9 +1,17 @@
 import { Guess } from "../models/guess";
 import { GuessScore } from "../models/guessScore";
+import { Telephone } from "../telephony/telephone";
 
 export class ScoreComponent {
     private guessScore: Map<string, GuessScore>;
     private guessTable: HTMLElement;
+
+    constructor(private telephone: Telephone) {
+        const submit = document.getElementById('submitScores');
+        submit.addEventListener('click', () => {
+
+        });
+    }
 
     public initialize(newGuesses: Guess[]) {
         console.log('scoring area');

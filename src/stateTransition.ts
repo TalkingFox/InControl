@@ -1,12 +1,14 @@
 import { Room } from "./models/room";
 import { Guess } from "./models/guess";
 import { ScoreComponent } from "./components/scoreComponent";
+import { Telephone } from "./telephony/telephone";
 
 export class StateTransition {
     public room: Room;
     private score: ScoreComponent;
 
-    constructor(){
+    constructor(private telephone: Telephone){
+        this.score = new ScoreComponent(telephone);
     }
 
     public toGuessArea(): void {
@@ -26,7 +28,6 @@ export class StateTransition {
     }
 
     public toScoringArea(newGuesses: Guess[]): void {
-        this.score = new ScoreComponent();
         this.score.initialize(newGuesses);
         this.transitionTo('scoringArea');        
     }
