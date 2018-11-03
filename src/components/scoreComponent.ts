@@ -10,6 +10,7 @@ export class ScoreComponent {
     constructor(private telephone: Telephone) {
         const submit = document.getElementById('submitScores');
         submit.addEventListener('click', () => {
+            console.log('guesses', [...this.guessScore.values()]);
             const message = new GuessesScored([ ...this.guessScore.values()]);
             this.telephone.SendMessage(message);
             this.setWaiting(true);
@@ -20,7 +21,7 @@ export class ScoreComponent {
         this.setWaiting(false);
         this.guessScore = new Map<string,GuessScore>();
         newGuesses.map((guess: Guess) => {
-            this.guessScore.set(guess.user,new GuessScore());
+            this.guessScore.set(guess.user,new GuessScore(guess));
         });
         this.guessTable = document.getElementById('guesses');
         while(this.guessTable.firstChild) {

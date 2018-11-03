@@ -11,6 +11,7 @@ import { RoomEvent } from '../models/roomEvents';
 import { PlayerAccepted } from './playerAccepted';
 import { environment } from '../environment/environment';
 import { RoomState, StateChanged } from '../models/events/stateChanged';
+import { GuessScore } from '../models/guessScore';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -18,6 +19,7 @@ export class Switchboard {
     public guesses: Observable<Guess>;
     public room: string;
     public drawingUpdates: Observable<string>;
+    public scoredGuesses: Observable<GuessScore[]>;
 
     private drawingQueue: Subject<string>;
     private drawingUpdatesQueue: Subject<string>;
@@ -26,6 +28,7 @@ export class Switchboard {
     private connections: Map<string,Instance>;
     private isOpenToNewUsers: boolean = true;
     private socket: SocketIOClient.Socket;
+    private scoredGuessQueue: Subject<GuessScore[]>;
 
     constructor() {
         this.guessQueue = new Subject<Guess>();
@@ -37,6 +40,8 @@ export class Switchboard {
         this.connections = new Map<string, Instance>();
         this.drawingUpdatesQueue = new Subject<string>();
         this.drawingUpdates = this.drawingUpdatesQueue.asObservable();
+        this.scoredGuessQueue = new Subject<GuessScore[]>();
+        this.scoredGuesses = this.scoredGuessQueue.asObservable();
     }
 
     public dispatchMessage(user: string, message: DataMessage) {
@@ -137,8 +142,11 @@ export class Switchboard {
                     this.playerQueue.next(player);
                     break;
                 case DataMessageType.DrawingUpdate:
-                    console.log('received update');
                     this.drawingUpdatesQueue.next(<string>data.body);
+                    break;
+                case DataMessageType.GuessesScored:
+                    console.log('switchbrd', data.body);
+                    this.scoredGuessQueue.next(<GuessScore[]>data.body);
                     break;
                 default:
                     console.log(data);

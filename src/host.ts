@@ -20,7 +20,7 @@ let room: Room;
 let questions: Question[];
 let users: HTMLElement;
 let guesses: TalkativeArray<Guess>;
-let scoredGuesses: TalkativeArray<GuessScore>;
+let scoredGuesses: TalkativeArray<GuessScore[]>;
 let currentPlayer: HTMLElement;
 let tagline: HTMLElement;
 let turnMessage: HTMLElement;
@@ -28,12 +28,17 @@ let finalDrawing: HTMLImageElement;
 
 function initialize() {
     guesses = new TalkativeArray<Guess>();
+    scoredGuesses = new TalkativeArray<GuessScore[]>();
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard', isReadOnly: true});
     switchboard.drawingUpdates.subscribe((dataUrl: string) => {
         console.log('updated');
         drawingBoard.loadDataUrl(dataUrl);
     });
     switchboard.guesses.subscribe((guess: Guess) => guesses.Push(guess));
+    switchboard.scoredGuesses.subscribe((scores: GuessScore[]) => {
+        console.log('got new scores!');
+        scoredGuesses.Push(scores);
+    });
     users = document.getElementById('users');
     tagline = document.getElementById('tagline');
     turnMessage = document.getElementById('turnMessage');
@@ -209,15 +214,25 @@ function waitForScores(finalGuesses: Guess[]): Promise<GuessScore[]> {
     switchboard.dispatchMessageToAll(guessesMessage);
     
     if (scoredGuesses.length === room.users.length) {
-        const resolution = Promise.resolve(scoredGuesses.elements.splice(0));
+        const flattenedGuesses = scoredGuesses.elements.reduce((a,b) => {
+            return a.concat(b);
+        });
+        const resolution = Promise.resolve(flattenedGuesses.splice(0));
         scoredGuesses.clear();
         return resolution;
     }
 
     const promise = new Subject<GuessScore[]>();
     const subscription = scoredGuesses.Subscribe(() => {
-        if (guesses.length === room.users.length) {
-            promise.next(scoredGuesses.clone());
+        console.log('checking for shit');
+        if (scoredGuesses.length === room.users.length) {
+            console.log('hey, we got "em all');
+            console.log('before flattening', JSON.stringify(scoredGuesses.elements));
+            const flattenedGuesses = scoredGuesses.elements.reduce((a,b) => {
+                return a.concat(b);
+            });
+            console.log('flattened', JSON.stringify(flattenedGuesses));
+            promise.next(flattenedGuesses.splice(0));
             scoredGuesses.clear();
             promise.complete();
             subscription.unsubscribe();
@@ -227,6 +242,7 @@ function waitForScores(finalGuesses: Guess[]): Promise<GuessScore[]> {
 }
 
 function displayAnswer(newlyScoredGuesses: GuessScore[]) {
+    console.log('displaying answer!!!!!!!');
     const finalGuesses = new Map<string, GuessScoreCard>();
     newlyScoredGuesses.map((guessScore: GuessScore) => {
         if (!finalGuesses.has(guessScore.guess.user)) {
