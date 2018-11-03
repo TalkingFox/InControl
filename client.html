@@ -6,7 +6,8 @@
   <link rel="stylesheet" type="text/css" href="content/main.css">
   <link rel="stylesheet" type="text/css" href="content/client.css">
   <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU" crossorigin="anonymous">
+  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+    crossorigin="anonymous">
   <script src="build/client.entry.js"></script>
 </head>
 
@@ -41,7 +42,7 @@
   <div id="playArea" class="container hidden">
     <div>
       <canvas id="drawingBoard"></canvas>
-      <br/>
+      <br />
       <button id="sendDrawing">Submit</button>
     </div>
   </div>
@@ -51,10 +52,15 @@
     <button id="sendGuess">Send Guess</button>
   </div>
   <div id="scoringArea" class="container hidden">
-    <label>Score these guesses</label>
-    <table id="guesses">      
-    </table>
-    <button id="submitScores">Submit Scores</button>
+    <div id="scoringMain">
+      <label>Score these guesses</label>
+      <table id="guesses">
+      </table>
+      <button id="submitScores">Submit Scores</button>
+    </div>
+    <div id="scoringWait" class="hidden">
+      <h3>Waiting for all scores to come in...</h3>
+    </div>
   </div>
 </body>
 

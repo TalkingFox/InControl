@@ -12,11 +12,12 @@ export class ScoreComponent {
         submit.addEventListener('click', () => {
             const message = new GuessesScored([ ...this.guessScore.values()]);
             this.telephone.SendMessage(message);
+            this.setWaiting(true);
         });
     }
 
     public initialize(newGuesses: Guess[]) {
-        console.log('scoring area');
+        this.setWaiting(false);
         this.guessScore = new Map<string,GuessScore>();
         newGuesses.map((guess: Guess) => {
             this.guessScore.set(guess.user,new GuessScore());
@@ -27,6 +28,19 @@ export class ScoreComponent {
             this.guessTable.removeChild(this.guessTable.firstChild);
         }
         this.createGuessRows(newGuesses);
+    }
+
+    private setWaiting(isWaiting: boolean): void {
+        const activeArea = document.getElementById('scoringMain');
+        const waitArea = document.getElementById('scoringWait');
+        
+        if (isWaiting) {
+            activeArea.classList.add('hidden');
+            waitArea.classList.remove('hidden');
+        } else {
+            activeArea.classList.remove('hidden');
+            waitArea.classList.add('hidden');
+        }        
     }
 
     private createGuessRows(guesses: Guess[]): void{
