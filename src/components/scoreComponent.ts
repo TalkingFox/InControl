@@ -30,28 +30,26 @@ export class ScoreComponent {
             
             const likeBody = document.createElement('td');
             const likeElement = document.createElement('i');
-            likeElement.classList.add('fas', 'fa-thumbs-up');
+            likeElement.classList.add('fas', 'fa-thumbs-up', 'click');
             likeElement.addEventListener('click',() => {
-                const isLiked = !likeElement.classList.contains('isLiked');
-                likeElement.classList.remove('isLiked');
-                const score = this.guessScore.get(guess.user)
-                score.isLiked = isLiked;
-                if (isLiked) {
-                    funnyElement.classList.add('isLiked');
+                const score = this.guessScore.get(guess.user);
+                likeElement.classList.remove('selected');
+                score.isLiked = !score.isLiked;
+                if (score.isLiked) {                    
+                    likeElement.classList.add('selected');
                 }
             });
             likeBody.appendChild(likeElement);
 
             const funnyBody = document.createElement('td');
             const funnyElement = document.createElement('div')
-            funnyElement.classList.add('fas', 'fa-grin-squint');
+            funnyElement.classList.add('fas', 'fa-grin-squint', 'click');
             funnyElement.addEventListener('click',() => {
-                const isFunny = !funnyElement.classList.contains('isFunny');
-                funnyElement.classList.remove('isFunny');                
                 const score = this.guessScore.get(guess.user)
-                score.isFunny = isFunny;
-                if (isFunny){
-                    funnyElement.classList.add('isFunny');
+                funnyElement.classList.remove('selected');
+                score.isFunny = !score.isFunny;
+                if (score.isFunny){
+                    funnyElement.classList.add('selected');
                 }
             });
             funnyBody.appendChild(funnyElement);

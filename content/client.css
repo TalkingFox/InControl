@@ -1,0 +1,11 @@
+.click {
+    cursor: pointer;
+}
+
+.click:hover {
+    color: gray;
+}
+
+.selected {
+    color: #cc9913 !important;
+}
