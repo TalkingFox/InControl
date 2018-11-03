@@ -1,6 +1,7 @@
 import { Guess } from "../models/guess";
 import { GuessScore } from "../models/guessScore";
 import { Telephone } from "../telephony/telephone";
+import { GuessesScored } from "../models/events/guessesScored";
 
 export class ScoreComponent {
     private guessScore: Map<string, GuessScore>;
@@ -9,7 +10,8 @@ export class ScoreComponent {
     constructor(private telephone: Telephone) {
         const submit = document.getElementById('submitScores');
         submit.addEventListener('click', () => {
-
+            const message = new GuessesScored([ ...this.guessScore.values()]);
+            this.telephone.SendMessage(message);
         });
     }
 
