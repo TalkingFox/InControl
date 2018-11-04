@@ -95,19 +95,13 @@ export class HostComponent extends Component{
     
         const promise = new Subject<GuessScore[]>();
         const subscription = this.scoredGuesses.Subscribe(() => {
-            console.log('checking for shit');
             if (this.scoredGuesses.length === this.room.users.length) {
-                console.log('hey, we got "em all');
-                console.log('before flattening', JSON.stringify(this.scoredGuesses.elements));
                 const flattenedGuesses = this.scoredGuesses.elements.reduce((a,b) => {
                     return a.concat(b);
                 });
-                console.log('flattened', JSON.stringify(flattenedGuesses));
                 promise.next(flattenedGuesses.splice(0));
                 this.scoredGuesses.clear();
                 promise.complete();
-                console.log('promise completed')
-    
                 subscription.unsubscribe();
             }
         });

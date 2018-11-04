@@ -33,7 +33,6 @@ export class CreateRoomComponent extends Component {
     }
 
     public playerJoined(user: Player) {
-        console.log('adding: ', user);
         this.host.room.users.push(user.name);
         const userGroup = document.createElement('div');
         userGroup.classList.add('player');

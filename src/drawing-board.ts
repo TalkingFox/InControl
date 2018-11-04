@@ -28,7 +28,6 @@ export class DrawingBoard {
     }
 
     public toDataUrl(): string {
-        console.log('getting data url');
         return this.canvas.toDataURL();
     }
 

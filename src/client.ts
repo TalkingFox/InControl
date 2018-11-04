@@ -55,7 +55,6 @@ function initialize() {
     });
 
     connect.addEventListener('click', () => {
-        console.log('joining room');
         const roomName = document.getElementById('roomName') as HTMLInputElement;
         const playerName = document.getElementById('username')as HTMLInputElement;
         if (!roomName.value) {
@@ -96,7 +95,6 @@ function joinRoom(room: Room): Promise<void> {
         promise.next();
         promise.complete();
         subscription.unsubscribe();
-        console.log('joined room');
     }, (error: string) => {
         promise.error(error);
     });

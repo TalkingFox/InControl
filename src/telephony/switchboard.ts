@@ -46,10 +46,7 @@ export class Switchboard {
 
     public dispatchMessage(user: string, message: DataMessage) {
         const matchedUser = this.connections.get(user);
-        console.log('sending: ', message);
         matchedUser.send(JSON.stringify(message));
-        console.log('sent to: ', user);
-        console.log(matchedUser);
     }
 
     public dispatchMessageToAll(message: DataMessage) {
@@ -102,7 +99,6 @@ export class Switchboard {
                 this.socket.emit(RoomEvent.PlayerAccepted, JSON.stringify(acceptance));
             });
             newPeer.on('connect', () =>{
-                console.log('player connected');
                 this.connections.set(joinRequest.player, newPeer);
                 this.listenForMessages(newPeer);
             });            
@@ -130,7 +126,6 @@ export class Switchboard {
                     this.drawingUpdatesQueue.next(<string>data.body);
                     break;
                 case DataMessageType.GuessesScored:
-                    console.log('switchbrd', data.body);
                     this.scoredGuessQueue.next(<GuessScore[]>data.body);
                     break;
                 default:

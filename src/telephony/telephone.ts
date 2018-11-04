@@ -67,13 +67,11 @@ export class Telephone {
         
     public SendMessage(message: DataMessage): void {
         this.peer.send(JSON.stringify(message));
-        console.log('sent drawing');
     }
 
     private listenForMessages(connection: Instance) {
         connection.on('data', (message: string) => {
             const data = JSON.parse(message) as DataMessage;
-            console.log('received: ', data);
             switch (data.type) {
                 case DataMessageType.GiveClue:
                     this.cluesSubject.next(<string>data.body);
