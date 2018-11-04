@@ -32,9 +32,11 @@ export class AnswerComponent extends Component {
         });
         const cluesList = document.getElementById('clues');
         this.host.room.usedClues.map((clue: string) => {
-            const clueElement = document.createElement('p');
-            clueElement.textContent = clue;
-            cluesList.appendChild(clueElement);
+            const clueBody = document.createElement('tr');
+            const clueText = document.createElement('td');
+            clueText.textContent = clue;
+            clueBody.appendChild(clueText);
+            cluesList.appendChild(clueBody);
         });
         const answerField = document.getElementById('answer');
         answerField.textContent = this.host.room.question.name;

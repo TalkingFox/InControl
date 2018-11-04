@@ -36,6 +36,17 @@ img {
     text-align: center;
 }
 
+#clues {
+    margin-left: 5%;
+    background-color: #4C2254;
+    border: #cc9913 1px solid;
+    border-radius: 5px;
+}
+
+#clues td {
+    border-bottom: white 1px solid;
+}
+
 .third {
     width: 30%;
 }
@@ -58,6 +69,7 @@ i {
     border: white 1px solid;
     border-radius: 5px;
     background-color: #4C2254;
+    padding: 2px;
 }
 
 .icon-count {
