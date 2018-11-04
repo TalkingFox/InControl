@@ -24,8 +24,27 @@ export class AnswerComponent extends Component {
     }
 
     public initialize(scoredGuesses: GuessScore[]): void {
+        const finalGuesses = this.createScoreCards(scoredGuesses);
+        const guessedTable = document.getElementById('guesses');
+        finalGuesses.forEach((scoreCard: GuessScoreCard) => {
+            const row = this.createScoreRow(scoreCard);
+            guessedTable.appendChild(row);
+        });
+        const cluesList = document.getElementById('clues');
+        this.host.room.usedClues.map((clue: string) => {
+            const clueElement = document.createElement('p');
+            clueElement.textContent = clue;
+            cluesList.appendChild(clueElement);
+        });
+        const answerField = document.getElementById('answer');
+        answerField.textContent = this.host.room.question.name;
+        this.finalDrawing.src = this.host.drawingBoard.toDataUrl();
+        this.transitionTo('revealArea');
+    }
+
+    private createScoreCards(scores: GuessScore[]): Map<string, GuessScoreCard> {
         const finalGuesses = new Map<string, GuessScoreCard>();
-        scoredGuesses.map((guessScore: GuessScore) => {
+        scores.map((guessScore: GuessScore) => {
             if (!finalGuesses.has(guessScore.guess.user)) {
                 const newCard = new GuessScoreCard(guessScore.guess);
                 finalGuesses.set(guessScore.guess.user, newCard);
@@ -39,36 +58,44 @@ export class AnswerComponent extends Component {
                 card.likes++;
             }
         });
-        const guessesList = document.getElementById('guesses');
-        finalGuesses.forEach((scoreCard: GuessScoreCard) => {
-            const span = document.createElement('span');
-            span.classList.add('clueScore');
+        return finalGuesses;
+    }
 
-            const guessElement = document.createElement('p');
-            guessElement.textContent = `${scoreCard.guess.user} said: ${scoreCard.guess.guess}`;
+    private createScoreRow(card: GuessScoreCard): HTMLElement {
+        const row = document.createElement('tr');
+        
+        const playerBody = document.createElement('td');
+        const playerText = document.createElement('div');
+        playerText.textContent = card.guess.user;
+        playerBody.appendChild(playerText);
+        row.appendChild(playerBody);
 
-            const likesElement = document.createElement('p');
-            likesElement.classList.add('likes');
-            likesElement.textContent = scoreCard.likes.toString();
+        const guessBody = document.createElement('td');
+        const guessText = document.createElement('div');
+        guessText.textContent = card.guess.guess;
+        guessBody.appendChild(guessText);
+        row.appendChild(guessBody);
 
-            const funnyElement = document.createElement('p');
-            funnyElement.classList.add('funny');
-            funnyElement.textContent = scoreCard.funnies.toString();
+        const likeBody = document.createElement('td');
+        likeBody.classList.add('icon-count');
+        const likeText = document.createElement('span');
+        likeText.textContent = `${card.likes} × `;
+        const likeIcon = document.createElement('i');
+        likeIcon.classList.add('fas', 'fa-thumbs-up');
+        likeBody.appendChild(likeText);
+        likeBody.appendChild(likeIcon);
+        row.appendChild(likeBody);
 
-            span.appendChild(guessElement);
-            span.appendChild(likesElement);
-            span.appendChild(funnyElement);
-            guessesList.appendChild(span);
-        });
-        const cluesList = document.getElementById('clues');
-        this.host.room.usedClues.map((clue: string) => {
-            const clueElement = document.createElement('p');
-            clueElement.textContent = clue;
-            cluesList.appendChild(clueElement);
-        });
-        const answerField = document.getElementById('answer');
-        answerField.textContent = this.host.room.question.name;
-        this.finalDrawing.src = this.host.drawingBoard.toDataUrl();
-        this.transitionTo('revealArea');
+        const funnyBody = document.createElement('td');
+        funnyBody.classList.add('icon-count');
+        const funnyText = document.createElement('span');
+        funnyText.textContent = `${card.funnies} × `;
+        const funnyIcon = document.createElement('i');
+        funnyIcon.classList.add('fas', 'fa-grin-squint');
+        funnyBody.appendChild(funnyText);
+        funnyBody.appendChild(funnyIcon);
+        row.appendChild(funnyBody);
+
+        return row;
     }
 }

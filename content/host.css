@@ -43,3 +43,23 @@ img {
 #revealArea > .flex {
     padding: 2%;
 }
+
+i {
+    color: #cc9913;
+}
+
+#guesses {
+    width: 90%;
+    border: #cc9913 1px solid;
+    border-radius: 5px;
+}
+
+#guesses td {
+    border: white 1px solid;
+    border-radius: 5px;
+    background-color: #4C2254;
+}
+
+.icon-count {
+    min-width: 20%;
+}
