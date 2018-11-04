@@ -1,9 +1,6 @@
-import { Guess } from './models/guess';
-import { TalkativeArray } from './models/talkative-array';
 import { HostComponent } from './components/hostComponent';
 import { CreateRoomComponent } from './components/createRoomComponent';
 
-let guesses: TalkativeArray<Guess>;
 let hostComponent: HostComponent;
 let createRoomComponent: CreateRoomComponent;
 

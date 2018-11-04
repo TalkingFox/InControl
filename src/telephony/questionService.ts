@@ -12,6 +12,10 @@ export class QuestionService {
         return this.questions.length > 0;
     }
 
+    public reset(): void {
+        this.questions = null;
+    }
+
     public take(): Promise<Question> {
         const newQuestion = new Subject<Question>();
         this.get().then((questions: Question[]) => {

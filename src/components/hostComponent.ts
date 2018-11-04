@@ -23,6 +23,7 @@ export class HostComponent extends Component{
     private answerComponent: AnswerComponent;
     private scoredGuesses: TalkativeArray<GuessScore[]>;
     private guesses: TalkativeArray<Guess>;
+    private reallyPlayAgain: HTMLElement;
     
     public room: Room;
     public drawingBoard: DrawingBoard;
@@ -39,6 +40,7 @@ export class HostComponent extends Component{
         this.scoredGuesses = new TalkativeArray<GuessScore[]>();
         this.answerComponent = new AnswerComponent(this);
         this.guesses = new TalkativeArray<Guess>();
+        this.reallyPlayAgain = document.getElementById('reallyPlayAgain');
     }
 
     public initialize() {
@@ -48,6 +50,10 @@ export class HostComponent extends Component{
         this.switchboard.guesses.subscribe((guess: Guess) => this.guesses.Push(guess));
         this.switchboard.scoredGuesses.subscribe((scores: GuessScore[]) => {
             this.scoredGuesses.Push(scores);
+        });
+        this.reallyPlayAgain.addEventListener('click', () => {
+            this.questions.reset();
+            this.startGame();
         });
     }
 
