@@ -1,3 +1,3 @@
 export const environment = {
-    signalServer: 'ec2-184-73-13-44.compute-1.amazonaws.com'
+    signalServer: 'ec2-54-210-148-21.compute-1.amazonaws.com'
 }

@@ -88,21 +88,6 @@ export class Switchboard {
                         
     }
     
-    public getQuestions(): Observable<Question[]> {
-        const http = new XMLHttpRequest();
-        const questionSubject = new Subject<Question[]>();
-        http.onreadystatechange = () => {
-            if (http.readyState == 4 && http.status == 200) {
-                const response = JSON.parse(http.response) as Question[];
-                questionSubject.next(response);
-                questionSubject.complete();
-            }
-        };
-        http.open('GET', './content/data.json', true);
-        http.send();
-        return questionSubject.asObservable();
-    }
-
     private registerNewConnections() {
         this.socket.on(RoomEvent.PlayerJoined, (request: string) => {
             const joinRequest: {room: string, player: string, offer: string} = JSON.parse(request);
