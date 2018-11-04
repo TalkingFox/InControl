@@ -2,21 +2,42 @@
     {
         "name": "camel",
         "clues": [
-            "It is a four-legged animal",            
-            "It also has uniquely shaped back for storing fat",
+            "It has four horselike legs",            
+            "Its back is known to have numerous humps, for storing fat.",
             "Has an elongated neck and thick eyelashes",
             "The tail is thin and inconspicuous",
-            "Its coat is brown and generally patternless"
+            "It is notorious for spitting."
         ]
     },
     {
-        "name": "teenage mutant ninja turtles",
+        "name": "JAWS",
         "clues": [
-            "A famous group of brothers",
-            "This collective has a famous love of italian food",
-            "This group is also traditionally color-coordinated",
-            "They are also strongly associated with reptiles",
-            "A rodent acts as a father figure."
+            "A movie poster that shows the ocean",
+            "A movie poster with a shark ready to bite",
+            "A movie poster that has at the top the name of an organ used in eating",
+            "A movie poster with a beach swimmer at the top",
+            "A movie poster for a PG rated film"
+        ]
+    },
+    {
+        "name": "Teenage Mutant Ninja Turtles",
+        "clues": [
+            "One of these people has a bandana and uses a sword",
+            "This group is mentored by a talking rat",
+            "A member of this group loves to eat pizza",
+            "a member of this group talks in surfer slang and uses nunhchucks",
+            "At least one member of this group is dressed in a bandana and large turtle shell"
+        ]
+    },
+    {
+
+        "name": "Howard talking about RowIT",
+        "clues": [
+            "One person in the scene is sleeping",
+            "One person in the scene is talking excitedly about boats",
+            "One person in the scene is talking about houseboats",
+            "One person in the scene is rolling their eyes",
+            "One person in the scene is looking at their phone"
         ]
     }
 ]
