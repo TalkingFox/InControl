@@ -81,14 +81,18 @@ export class DrawingBoard {
     }
 
     private GetCurrentCoordinates(mouseEvent: MouseEvent, canvasElement: HTMLCanvasElement): Point {
-        const x = mouseEvent.clientX - canvasElement.offsetLeft;
-        const y = mouseEvent.clientY - canvasElement.offsetTop;
+        const rect = canvasElement.getBoundingClientRect();
+        const x = (mouseEvent.clientX - rect.left) / (rect.right - rect.left) * canvasElement.width;
+        const y = (mouseEvent.clientY - rect.top) / (rect.bottom - rect.top) * canvasElement.height;
         return new Point(x, y);
     }
 
     private GetTouchCoordinates(touchEvent: TouchEvent, canvasElement: HTMLCanvasElement): Point {
-        const x = touchEvent.touches[0].clientX - canvasElement.offsetLeft;
-        const y = touchEvent.touches[0].clientY - canvasElement.offsetTop;
+        const rect = canvasElement.getBoundingClientRect();
+        const x = (touchEvent.touches[0].clientX - rect.left) / (rect.right - rect.left) * canvasElement.width;
+        const y = (touchEvent.touches[0].clientY - rect.top) / (rect.bottom - rect.top) * canvasElement.height;
+        /*const x = touchEvent.touches[0].clientX - canvasElement.offsetLeft;
+        const y = touchEvent.touches[0].clientY - canvasElement.offsetTop;*/
         return new Point(x, y);
     }
 

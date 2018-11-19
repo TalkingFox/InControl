@@ -1,67 +1,70 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" type="text/css" href="content/main.css" />
+        <link rel="stylesheet" type="text/css" href="content/client.css" />
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+            integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+            crossorigin="anonymous"
+        />
+        <script src="build/client.entry.js"></script>
+    </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="stylesheet" type="text/css" href="content/main.css">
-  <link rel="stylesheet" type="text/css" href="content/client.css">
-  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
-    crossorigin="anonymous">
-  <script src="build/client.entry.js"></script>
-</head>
-
-<body>
-  <H3 id="header">CLIENT</H3>
-  <div class="container">
-    <p id="clue" class="hidden"></p>
-  </div>
-  <div id="joinArea">
-    <div class="container table">
-      <div>
-        <label>Enter your name</label>
-        <input type="text" id="username" />
-      </div>
-      <div>
-        <label>Room Name</label>
-        <input type="text" id="roomName">
-      </div>
-      <button id="connect">Join Room</button>
-    </div>
-  </div>
-  <div id="avatarArea" class="container hidden">
-    <div>
-      <p>Draw yourself an avatar</p>
-      <canvas width=500 height=500 id="avatar"></canvas>
-    </div>
-    <button id="login">Next</button>
-  </div>
-  <div id="waitingArea" class="container hidden">
-    <p id="waitingMessage">Waiting for the game to begin.</p>
-  </div>
-  <div id="playArea" class="container hidden">
-    <div>
-      <canvas id="drawingBoard"></canvas>
-      <br />
-      <button id="sendDrawing">Submit</button>
-    </div>
-  </div>
-  <div id="guessArea" class="container hidden">
-    <label>Submit your guess</label>
-    <input type="text" id="guess" />
-    <button id="sendGuess">Send Guess</button>
-  </div>
-  <div id="scoringArea" class="container hidden">
-    <div id="scoringMain">
-      <label>Score these guesses</label>
-      <table id="guesses">
-      </table>
-      <button id="submitScores">Submit Scores</button>
-    </div>
-    <div id="scoringWait" class="hidden">
-      <h3>Waiting for all scores to come in...</h3>
-    </div>
-  </div>
-</body>
-
+    <body>
+        <h3 id="header">CLIENT</h3>
+        <div class="container"><p id="clue" class="hidden"></p></div>
+        <div class="master-container">
+            <div id="joinArea" class="screen">
+                <div class="container table">
+                    <div>
+                        <label>Enter your name</label>
+                        <input type="text" id="username" />
+                    </div>
+                    <div>
+                        <label>Room Name</label>
+                        <input type="text" id="roomName" />
+                    </div>
+                    <button id="connect">Join Room</button>
+                </div>
+            </div>
+            <div id="avatarArea" class="container screen hidden">
+                <div>
+                    <p>Draw yourself an avatar</p>
+                    <canvas width="500" height="500" id="avatar"></canvas>
+                </div>
+                <button id="login">Next</button>
+            </div>
+            <div id="waitingArea" class="container screen hidden">
+                <p id="waitingMessage">Waiting for the game to begin.</p>
+            </div>
+            <div id="playArea" class="container screen hidden">
+                <div>
+                    <canvas id="drawingBoard"></canvas> <br />
+                    <button id="sendDrawing">Submit</button>
+                </div>
+            </div>
+            <div id="guessArea" class="container screen hidden">
+                <label>Submit your guess</label>
+                <input type="text" id="guess" />
+                <button id="sendGuess">Send Guess</button>
+            </div>
+            <div id="scoringArea" class="container screen hidden">
+                <div id="scoringMain">
+                    <label>Score these guesses</label>
+                    <table id="guesses"></table>
+                    <button id="submitScores">Submit Scores</button>
+                </div>
+                <div id="scoringWait" class="hidden">
+                    <h3>Waiting for all scores to come in...</h3>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>

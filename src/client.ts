@@ -75,7 +75,7 @@ function initialize() {
             },
                   (error: string) => alert('Failed to join room. Reason: '+error));
     });
-    
+
 }
 
 function sendDrawingUpdate() {
