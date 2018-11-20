@@ -1,17 +1,16 @@
-import { DrawingBoard } from "../drawing-board";
-import { Switchboard } from "../telephony/switchboard";
-import { QuestionService } from "../telephony/questionService";
-import { Question } from "../models/question";
-import { Room } from "../models/room";
-import { Component } from "./component";
-import { ClueEnvelope } from "../models/ClueEnvelope";
-import { Util } from "../util";
-import { Guess } from "../models/guess";
+import { DrawingBoard } from "../../drawing-board";
+import { Switchboard } from "../../telephony/switchboard";
+import { QuestionService } from "../../telephony/questionService";
+import { Question } from "../../models/question";
+import { Room } from "../../models/room";
+import { Component } from "../component";
+import { ClueEnvelope } from "../../models/ClueEnvelope";
+import { Util } from "../../util";
+import { Guess } from "../../models/guess";
 import { DrawingComponent } from "./drawingComponent";
-import { GuessScore } from "../models/guessScore";
+import { GuessScore } from "../../models/guessScore";
 import { AnswerComponent } from "./answerComponent";
-import { TalkativeArray } from "../models/talkative-array";
-import { GuessComponent } from "./host/guessComponent";
+import { GuessComponent } from "./guessComponent";
 
 export class HostComponent extends Component{
     private tagline: HTMLElement;

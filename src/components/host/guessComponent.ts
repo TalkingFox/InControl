@@ -1,5 +1,5 @@
 import { Component } from "../component";
-import { HostComponent } from "../hostComponent";
+import { HostComponent } from "./hostComponent";
 import { DrawingBoard } from "../../drawing-board";
 import { DrawingBoardSettings } from "../../models/drawing-board-settings";
 import { Guess } from "../../models/guess";

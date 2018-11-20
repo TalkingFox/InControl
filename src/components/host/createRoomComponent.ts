@@ -1,8 +1,8 @@
-import { Component } from './component';
+import { Component } from '../component';
 import { HostComponent } from './hostComponent';
-import { Room } from '../models/room';
-import { Player } from '../models/player';
-import { environment } from '../environment/environment';
+import { Room } from '../../models/room';
+import { Player } from '../../models/player';
+import { environment } from '../../environment/environment';
 
 export class CreateRoomComponent extends Component {
     private users: HTMLElement;

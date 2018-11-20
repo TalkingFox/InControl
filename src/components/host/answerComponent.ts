@@ -1,7 +1,7 @@
 import { HostComponent } from "./hostComponent";
-import { GuessScore } from "../models/guessScore";
-import { GuessScoreCard } from "../models/guessScoreCard";
-import { Component } from "./component";
+import { GuessScore } from "../../models/guessScore";
+import { GuessScoreCard } from "../../models/guessScoreCard";
+import { Component } from "../component";
 
 export class AnswerComponent extends Component {
 

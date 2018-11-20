@@ -1,6 +1,6 @@
 import { Room } from "./models/room";
 import { Guess } from "./models/guess";
-import { ScoreComponent } from "./components/scoreComponent";
+import { ScoreComponent } from "./components/client/scoreComponent";
 import { Telephone } from "./telephony/telephone";
 
 export class StateTransition {

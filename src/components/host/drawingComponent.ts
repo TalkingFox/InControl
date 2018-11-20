@@ -1,7 +1,7 @@
-import { Component } from "./component";
+import { Component } from "../component";
 import { HostComponent } from "./hostComponent";
-import { Util } from "../util";
-import { PlayerSelected } from "../models/events/playerSelected";
+import { Util } from "../../util";
+import { PlayerSelected } from "../../models/events/playerSelected";
 import { Observable } from "rxjs";
 
 export class DrawingComponent extends Component {

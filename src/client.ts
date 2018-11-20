@@ -8,7 +8,8 @@ import { StateTransition } from './stateTransition';
 import { PlayerLogin } from './models/events/playerLogin';
 import { Player } from './models/player';
 import { DrawingUpdate } from './models/events/drawingUpdate';
-import { SendGuess, Guess } from './models/guess';
+import { Guess } from './models/guess';
+import { GuessComponent } from './components/client/guessComponent';
 
 let drawingBoard: DrawingBoard;
 let avatarBoard: DrawingBoard;
@@ -16,14 +17,16 @@ let telephone: Telephone;
 let stateTransition: StateTransition;
 let sendDrawing: HTMLElement;
 let player: Player;
+let guessComponent: GuessComponent;
 
 window.onload = () => {
     initialize();
 };
 
-function initialize() {
+function initialize() {    
     telephone = new Telephone();
     stateTransition = new StateTransition(telephone);
+    guessComponent = new GuessComponent(telephone);
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
     drawingBoard.mouseUp.subscribe(() => {
         sendDrawingUpdate();
@@ -36,15 +39,7 @@ function initialize() {
         telephone.SendMessage(message);
         stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
         drawingBoard.ClearCanvas();
-    });
-
-    const sendGuess = document.getElementById('sendGuess');
-    sendGuess.addEventListener('click', () => {
-        const guessElement = document.getElementById('guess') as HTMLInputElement;
-        const message = new SendGuess(player.name, guessElement.value);
-        telephone.SendMessage(message);
-        stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
-    });
+    });    
 
     const login = document.getElementById('login');
     login.addEventListener('click', () => {
@@ -125,7 +120,7 @@ function listenToStateChanges(): void {
     stateTransition.room.roomState.subscribe((state: RoomState) => {
         switch (state) {
             case RoomState.GiveGuesses:
-                stateTransition.toGuessArea();
+                guessComponent.initialize();
                 break;
             case RoomState.GameEnded:
                 stateTransition.toWaitingArea();

@@ -1,6 +1,5 @@
 import { Observable, Subject } from 'rxjs';
 import { DataMessage, DataMessageType } from '../models/events/message';
-import { Question } from '../models/question';
 import { Guess } from '../models/guess';
 import { Player } from '../models/player';
 import 'simple-peer';
