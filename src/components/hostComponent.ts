@@ -14,6 +14,7 @@ import { AnswerComponent } from "./answerComponent";
 import { GiveGuesses } from "../models/events/giveGuesses";
 import { TalkativeArray } from "../models/talkative-array";
 import { Subject } from "rxjs";
+import { GuessComponent } from "./host/guessComponent";
 
 export class HostComponent extends Component{
     private tagline: HTMLElement;
@@ -39,7 +40,7 @@ export class HostComponent extends Component{
         this.drawingComponent = new DrawingComponent(this);
         this.scoredGuesses = new TalkativeArray<GuessScore[]>();
         this.answerComponent = new AnswerComponent(this);
-        this.guesses = new TalkativeArray<Guess>();
+        // this.guesses = new TalkativeArray<Guess>();
         this.reallyPlayAgain = document.getElementById('reallyPlayAgain');
     }
 
@@ -47,7 +48,7 @@ export class HostComponent extends Component{
         this.switchboard.drawingUpdates.subscribe((dataUrl: string) => {
             this.drawingBoard.loadDataUrl(dataUrl);
         });
-        this.switchboard.guesses.subscribe((guess: Guess) => this.guesses.Push(guess));
+        // this.switchboard.guesses.subscribe((guess: Guess) => this.guesses.Push(guess));
         this.switchboard.scoredGuesses.subscribe((scores: GuessScore[]) => {
             this.scoredGuesses.Push(scores);
         });
@@ -74,13 +75,15 @@ export class HostComponent extends Component{
     }
 
     public endGame() {
-        this.waitForGuesses()
-        .then((finalGuesses: Guess[]) => this.waitForScores(finalGuesses))
-        .then((newlyScoredGuesses: GuessScore[]) => this.answerComponent.initialize(newlyScoredGuesses));
+        const guessComponent = new GuessComponent(this);
+        guessComponent.waitForGuesses()
+            .then((finalGuesses: Guess[]) => this.waitForScores(finalGuesses))
+            .then((newlyScoredGuesses: GuessScore[]) => this.answerComponent.initialize(newlyScoredGuesses));
     }
 
     private waitForScores(finalGuesses: Guess[]): Promise<GuessScore[]> {
         this.Tagline = 'Waiting for Your Scores!'
+        console.log('scoring shit...');
         const guessesMessage = new GiveGuesses(finalGuesses);
         this.switchboard.dispatchMessageToAll(guessesMessage);
         
@@ -106,30 +109,7 @@ export class HostComponent extends Component{
             }
         });
         return promise.toPromise();
-    }
-
-    private waitForGuesses(): Promise<Guess[]> {
-        this.switchboard.dispatchStateChange(RoomState.GiveGuesses);
-        this.Tagline = "Submit Your Guesses!";
-        this.IsTaglineGlowing = true;
-        this.IsTurnMessageHidden = true;
-    
-        if (this.guesses.length === this.room.users.length) {
-            const resolution = Promise.resolve(this.guesses.elements.splice(0));
-            this.guesses.clear();
-            return resolution;
-        }
-        const promise = new Subject<Guess[]>();
-        const subscription = this.guesses.Subscribe(() => {
-            if (this.guesses.length === this.room.users.length) {
-                promise.next(this.guesses.clone());
-                this.guesses.clear();
-                promise.complete();
-                subscription.unsubscribe();
-            }
-        });
-        return promise.toPromise();
-    }
+    }   
 
     private takeClues(): ClueEnvelope[] {
         const clues = this.room.users.map((user: string) => {
