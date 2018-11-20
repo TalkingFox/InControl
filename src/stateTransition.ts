@@ -1,15 +1,10 @@
 import { Room } from "./models/room";
-import { ScoreComponent } from "./components/client/scoreComponent";
-import { Telephone } from "./telephony/telephone";
 
 export class StateTransition {
     public room: Room;
-    private score: ScoreComponent;
     private _hide: EventListener;
 
-    constructor(private telephone: Telephone){
-        this.score = new ScoreComponent(telephone);
-    }
+    constructor(){}
 
     public toPlayArea(): void {
         this.transitionTo('playArea');

@@ -27,7 +27,7 @@ window.onload = () => {
 
 function initialize() {    
     telephone = new Telephone();
-    stateTransition = new StateTransition(telephone);
+    stateTransition = new StateTransition();
     guessComponent = new GuessComponent(telephone);
     scoreComponent = new ScoreComponent(telephone);
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});

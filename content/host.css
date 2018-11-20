@@ -12,7 +12,8 @@
     border-radius: 5px;
     background: white;
     color: black;
-    width: 50%;
+    width: 30%;
+    height:30%;
 }
 
 .player > img {
