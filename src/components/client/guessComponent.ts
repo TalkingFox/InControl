@@ -5,7 +5,9 @@ import { SendGuess } from '../../models/guess';
 export class GuessComponent extends Component {
     constructor(private telephone: Telephone) {
         super();
-        const sendGuess = document.getElementById('sendGuess');
+        const guessInput = document.getElementById('guess') as HTMLInputElement;
+        guessInput.value = '';
+        const sendGuess = document.getElementById('sendGuess');        
         sendGuess.addEventListener('click', () => {
             const guessElement = document.getElementById('guess') as HTMLInputElement;
             const message = new SendGuess(
