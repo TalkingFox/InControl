@@ -2,12 +2,14 @@ import { Guess } from '../../models/guess';
 import { GuessScore } from '../../models/guessScore';
 import { Telephone } from '../../telephony/telephone';
 import { GuessesScored } from '../../models/events/guessesScored';
+import { Component } from '../component';
 
-export class ScoreComponent {
+export class ScoreComponent extends Component {
     private guessScore: Map<string, GuessScore>;
     private guessTable: HTMLElement;
 
     constructor(private telephone: Telephone) {
+        super();
         const submit = document.getElementById('submitScores');
         submit.addEventListener('click', () => {
             const message = new GuessesScored([...this.guessScore.values()]);
@@ -30,6 +32,7 @@ export class ScoreComponent {
             this.guessTable.removeChild(this.guessTable.firstChild);
         }
         this.createGuessRows(newGuesses);
+        this.transitionTo('scoringArea');
     }
 
     private setWaiting(isWaiting: boolean): void {

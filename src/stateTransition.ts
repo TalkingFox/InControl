@@ -12,10 +12,6 @@ export class StateTransition {
         this.score = new ScoreComponent(telephone);
     }
 
-    public toGuessArea(): void {
-        this.transitionTo('guessArea');
-    }
-
     public toPlayArea(): void {
         this.transitionTo('playArea');
     }
@@ -26,11 +22,6 @@ export class StateTransition {
 
     public toAvatarArea(): void {
         this.transitionTo('avatarArea');
-    }
-
-    public toScoringArea(newGuesses: Guess[]): void {
-        this.score.initialize(newGuesses);
-        this.transitionTo('scoringArea');        
     }
 
     public toWaitingArea(): void {

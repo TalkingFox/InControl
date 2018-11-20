@@ -10,6 +10,7 @@ import { Player } from './models/player';
 import { DrawingUpdate } from './models/events/drawingUpdate';
 import { Guess } from './models/guess';
 import { GuessComponent } from './components/client/guessComponent';
+import { ScoreComponent } from './components/client/scoreComponent';
 
 let drawingBoard: DrawingBoard;
 let avatarBoard: DrawingBoard;
@@ -18,6 +19,7 @@ let stateTransition: StateTransition;
 let sendDrawing: HTMLElement;
 let player: Player;
 let guessComponent: GuessComponent;
+let scoreComponent: ScoreComponent;
 
 window.onload = () => {
     initialize();
@@ -27,6 +29,7 @@ function initialize() {
     telephone = new Telephone();
     stateTransition = new StateTransition(telephone);
     guessComponent = new GuessComponent(telephone);
+    scoreComponent = new ScoreComponent(telephone);
     drawingBoard = new DrawingBoard({elementId: 'drawingBoard'});
     drawingBoard.mouseUp.subscribe(() => {
         sendDrawingUpdate();
@@ -112,7 +115,7 @@ function listenForCanvasUpdates(): void {
 
 function listenForGuesses(): void {
     telephone.guesses.subscribe((newGuesses: Guess[]) => {
-        stateTransition.toScoringArea(newGuesses);
+        scoreComponent.initialize(newGuesses);
     });
 }
 
