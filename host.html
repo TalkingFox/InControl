@@ -1,61 +1,73 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <link rel="stylesheet" type="text/css" href="content/main.css" />
+        <link rel="stylesheet" type="text/css" href="content/host.css" />
+        <link rel="stylesheet" type="text/css" href="content/loaders.css" />
+        <link
+            href="https://fonts.googleapis.com/css?family=Roboto"
+            rel="stylesheet"
+        />
+        <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+            integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+            crossorigin="anonymous"
+        />
+        <script src="build/host.entry.js"></script>
+    </head>
 
-<head>
-  <meta charset="UTF-8" />
-  <link rel="stylesheet" type="text/css" href="content/main.css">
-  <link rel="stylesheet" type="text/css" href="content/host.css">
-  <link rel="stylesheet" type="text/css" href="content/loaders.css">
-  <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-  <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.5.0/css/all.css" integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
-    crossorigin="anonymous">
-  <script src="build/host.entry.js"></script>
-</head>
-
-<body>
-  <h3>Camel by Committee</h3>
-  <div class="" id="waitingArea">
-    <div class="container">
-      <label>Room Name</label>
-      <input id="roomId" value="Loading..." readonly />
-      <button id="startGame">Start Game</button>
-    </div>
-    <div id="usersArea" class="container">
-      <label>Waiting for Players</label>
-      <div id="users"></div>
-    </div>
-  </div>
-  <div id="drawingArea" class="container hidden">
-    <p id="tagline">Let's watch your clues come together</p>
-    <p id="turnMessage"><span id="currentPlayer" class="glow"></span> is up!</p>
-    <canvas id="drawingBoard"></canvas>
-  </div>
-  <div id="revealArea" class="hidden">
-    <div class="flex">
-      <div class="third">
-        <h3>Your Guesses</h3>
-        <table id="guesses"></table>
-      </div>
-      <div class="container third">
-        <p>
-          We wanted <span id="answer" class="glow"></span>
-        </p>
-        <p>You gave us</p>
-        <img id="finalDrawing" />
-        <br />
-        <button id="replay">Play again?</button>
-      </div>
-      <div class="third">
-        <h3>Your Clues</h3>
-        <table id="clues"></table>
-      </div>
-    </div>
-    <div id="outOfQuestions" class="container hidden">
-      <p>Sorry, but there aren't any questions left.</p>
-      <p>You played them all.</p>
-      <p>If you want to keep playing ones you want to you can click this button, but it probably won't be as fun.</p>
-      <button id="reallyPlayAgain">Play again with the same questions</button>
-    </div>
-</body>
-
+    <body>
+        <h3>Camel by Committee</h3>
+        <div class="master-container">
+            <div class="screen" id="waitingArea">
+                <div class="container">
+                    <label>Room Name</label>
+                    <input id="roomId" value="Loading..." readonly />
+                    <button id="startGame">Start Game</button>
+                </div>
+                <div id="usersArea" class="container">
+                    <label>Waiting for Players</label>
+                    <div id="users"></div>
+                </div>
+            </div>
+            <div id="drawingArea" class="container screen hidden">
+                <p id="tagline">Let's watch your clues come together</p>
+                <p id="turnMessage">
+                    <span id="currentPlayer" class="glow"></span> is up!
+                </p>
+                <canvas id="drawingBoard"></canvas>
+            </div>
+            <div id="revealArea" class="screen hidden">
+                <div class="flex">
+                    <div class="third">
+                        <h3>Your Guesses</h3>
+                        <table id="guesses"></table>
+                    </div>
+                    <div class="container third">
+                        <p>We wanted <span id="answer" class="glow"></span></p>
+                        <p>You gave us</p>
+                        <img id="finalDrawing" /> <br />
+                        <button id="replay">Play again?</button>
+                    </div>
+                    <div class="third">
+                        <h3>Your Clues</h3>
+                        <table id="clues"></table>
+                    </div>
+                </div>
+                <div id="outOfQuestions" class="container hidden">
+                    <p>Sorry, but there aren't any questions left.</p>
+                    <p>You played them all.</p>
+                    <p>
+                        If you want to keep playing ones you want to you can
+                        click this button, but it probably won't be as fun.
+                    </p>
+                    <button id="reallyPlayAgain">
+                        Play again with the same questions
+                    </button>
+                </div>
+            </div>
+        </div>
+    </body>
 </html>
