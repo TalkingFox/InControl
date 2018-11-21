@@ -3,13 +3,49 @@
     <link rel="stylesheet" type="text/css" href="content/main.css">
     <link rel="stylesheet" type="text/css" href="content/index.css">
     <link href="https://fonts.googleapis.com/css?family=Roboto" rel="stylesheet">
-    <script src="build/host.entry.js"></script>
+    <link
+            rel="stylesheet"
+            href="https://use.fontawesome.com/releases/v5.5.0/css/all.css"
+            integrity="sha384-B4dIYHKNBt8Bc12p+WXckhzcICo0wtJAoU8YZTY5qE0Id1GSseTk6S+L3BlXeVIU"
+            crossorigin="anonymous"
+        />
 </head>
 
 <body>
-    <h3>Camel by Committee</h3>
+    <h3>Camel by Committee 🐪</h3>
     <div class="container">
-        <a class="button" href="/host.html">Host Game</a>
-        <a class="button" href="/client.html">Join Game</a>        
+        <i id="spinner" class="fas fa-spinner"></i>
+        <div id="online" class="hidden">
+            <a class="button" href="/host.html">Host Game</a>
+            <a class="button" href="/client.html">Join Game</a>        
+        </div>
+        <div id="offline" class="hidden">
+            <p>Camel by Committee is offline right now.</p>
+        </div>
     </div>
 </body>
+
+<script>
+const spinner = document.getElementById('spinner');
+const onlineContainer = document.getElementById('online');
+const offlineContainer = document.getElementById('offline');
+
+var request = new XMLHttpRequest();
+request.open('GET', 'ec2-34-195-121-9.compute-1.amazonaws.com');
+request.onreadystatechange = function() {
+    if (request.status === 200) {
+        onlineContainer.classList.remove('hidden');
+    } else {
+        offlineContainer.classList.remove('hidden');
+    }
+    spinner.classList.add('hidden');    
+}
+
+request.ontimeout = function(e) {
+    offlineContainer.classList.remove('hidden');
+    spinner.classList.add('hidden');
+}
+
+request.timeout = 2 * 1000;
+request.send(null);
+</script>
