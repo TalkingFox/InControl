@@ -29,4 +29,9 @@ export class Room {
     public setCanvasData(url: string) {
         this.canvasSubject.next(url);
     }
+
+    public reset() {
+        this.usedClues = [];
+        this.cluelessUsers = [];
+    }
 }

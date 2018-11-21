@@ -47,7 +47,17 @@ export class HostComponent extends Component{
         });
     }
 
+    private resetBoard() {
+        this.IsTaglineGlowing = false;
+        this.IsTurnMessageHidden = false;
+        this.drawingBoard.ClearCanvas();
+        this.room.reset();
+        console.log(this.room);
+        console.log(this.switchboard);
+    }
+
     public startGame() {
+        this.resetBoard();
         this.switchboard.stopAcceptingNewUsers();
         this.questions.take().then((question: Question) => {
             if (!question) {

@@ -35,8 +35,7 @@ export class Telephone {
         this.guesses = this.guessesSubject.asObservable();
     }
 
-    public connect(player: Player, room: Room): Observable<void> {
-        this.player = player;
+    public connect(room: Room): Observable<void> {
         this.room = room;
         this.peer = new Peer({initiator: true, trickle: false});
         this.peer.on('signal', (id: any) => {

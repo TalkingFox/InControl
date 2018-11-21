@@ -11,12 +11,6 @@ export class AnswerComponent extends Component {
         super();
         const replay = document.getElementById('replay');
         replay.addEventListener('click', () => {
-            host.IsTaglineGlowing = false;
-            host.IsTurnMessageHidden = false;
-            host.drawingBoard.ClearCanvas();
-            host.startGame();
-        });
-        replay.addEventListener('click', () => {
             host.startGame();
         });
 
