@@ -61,6 +61,7 @@ export class DrawingBoard {
             }
         });
         canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault(); // don't scroll
             if (this.isMouseDown) {
                 const coordinates = this.GetTouchCoordinates(e, canvas);
                 this.Draw(coordinates);
