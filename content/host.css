@@ -7,6 +7,10 @@
     }
 }
 
+#roomId {
+    font-size: 4em;
+}
+
 .player { 
     border: 3px solid #cc9913;
     border-radius: 5px;
