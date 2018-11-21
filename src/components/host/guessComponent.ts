@@ -8,6 +8,7 @@ import { TalkativeArray } from "../../models/talkative-array";
 import { Subject, Subscription } from "rxjs";
 import { GiveGuesses } from "../../models/events/giveGuesses";
 import { GuessScore } from "../../models/guessScore";
+import { Util } from "../../util";
 
 export class GuessComponent extends Component {
     private drawingBoard: DrawingBoard;
@@ -103,9 +104,7 @@ export class GuessComponent extends Component {
     }
 
     private setWaitingOn(): void {
-        while(this.waitingOn.firstChild) {
-            this.waitingOn.removeChild(this.waitingOn.firstChild);
-        }
+        Util.ClearElement(this.waitingOn);
         this.notGuessed.forEach((person: string) => {
             const user: HTMLElement = document.createElement('li');
             user.textContent = person;

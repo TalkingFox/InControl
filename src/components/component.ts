@@ -1,17 +1,23 @@
+import { Observable, Subject } from 'rxjs';
+
 export abstract class Component {
     private _hide: EventListener;
 
-    protected transitionTo(area: string) {
-        console.log('transition to',area);
+    protected transitionTo(area: string): void {
+        console.log('transition to', area);
         const allAreas = document.querySelectorAll('.master-container > div');
         allAreas.forEach((value: Element) => {
             if (value.id == area) {
                 value.classList.remove('hidden');
                 value.classList.remove('slide-out');
                 value.classList.add('slide-in');
-            } else if (value.classList.contains('hidden')) {
+            } else if (
+                value.classList.contains('hidden') ||
+                value.classList.contains('slide-out')
+            ) { // if hidden, do not hide again. If sliding-out, it will be hidden soon.
                 return;
             } else {
+                console.log('slide-out', value.id);
                 value.classList.remove('slide-in');
                 value.classList.add('slide-out');
                 this._hide = this.hide.bind(this);

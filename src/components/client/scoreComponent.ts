@@ -3,6 +3,7 @@ import { GuessScore } from '../../models/guessScore';
 import { Telephone } from '../../telephony/telephone';
 import { GuessesScored } from '../../models/events/guessesScored';
 import { Component } from '../component';
+import { Util } from '../../util';
 
 export class ScoreComponent extends Component {
     private guessScore: Map<string, GuessScore>;
@@ -27,10 +28,7 @@ export class ScoreComponent extends Component {
             this.guessScore.set(guess.user, score);
         });
         this.guessTable = document.getElementById('guesses');
-        while (this.guessTable.firstChild) {
-            // clear guesses
-            this.guessTable.removeChild(this.guessTable.firstChild);
-        }
+        Util.ClearElement(this.guessTable);
         this.createGuessRows(newGuesses);
         this.transitionTo('scoringArea');
     }

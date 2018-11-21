@@ -16,4 +16,10 @@ export class Util {
         array = array.splice(array.indexOf(element),1);
         return element;
     }
+
+    public static ClearElement(element: HTMLElement) {
+        while(element.firstChild) {
+            element.removeChild(element.firstChild);
+        }
+    }
 }
