@@ -31,7 +31,7 @@ const onlineContainer = document.getElementById('online');
 const offlineContainer = document.getElementById('offline');
 
 var request = new XMLHttpRequest();
-request.open('GET', 'http://ec2-34-195-121-9.compute-1.amazonaws.com');
+request.open('GET', 'https://d2ksg37v18emmg.cloudfront.net');
 request.onreadystatechange = function() {
     if (request.status === 200) {
         onlineContainer.classList.remove('hidden');
