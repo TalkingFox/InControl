@@ -10,9 +10,14 @@ export class GuessComponent extends Component {
         const sendGuess = document.getElementById('sendGuess');        
         sendGuess.addEventListener('click', () => {
             const guessElement = document.getElementById('guess') as HTMLInputElement;
+            const guess = guessElement.value;
+            if (!guess) {
+                alert('Please enter a guess');
+                return;
+            }
             const message = new SendGuess(
                 this.telephone.player.name,
-                guessElement.value
+                guess
             );
             this.telephone.SendMessage(message);
             this.transitionTo('waitingArea');
