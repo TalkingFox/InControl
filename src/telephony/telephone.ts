@@ -51,7 +51,7 @@ export class Telephone {
             donezo.complete();
             this.listenForMessages(this.peer);
         });        
-        this.socket = SocketIOClient(environment.signalServer);
+        this.socket = SocketIOClient(environment.signalServer, {secure: true});
         const donezo = new Subject<void>();
         this.socket.on(RoomEvent.PlayerAccepted, (host: string) => {
             this.peer.signal(host);            

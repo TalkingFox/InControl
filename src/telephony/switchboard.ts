@@ -65,7 +65,7 @@ export class Switchboard {
     
     public createRoom(): Observable<string> {
         const subject: Subject<string> = new Subject();
-        this.socket = SocketIo(environment.signalServer);
+        this.socket = SocketIo(environment.signalServer,{secure: true});
             this.socket.on(RoomEvent.RoomCreated, (room: string) => {
                 this.registerNewConnections();  
                 subject.next(room);

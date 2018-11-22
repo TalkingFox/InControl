@@ -66,3 +66,5 @@ assets
 # build output
 build
 host.ps1
+
+src/environment/environment.ts
