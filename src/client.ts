@@ -107,6 +107,7 @@ function listenForClues(): void {
         const clueElement = document.getElementById('clue');
         clueElement.textContent = 'Clue: ' + clue;
         clueElement.classList.remove('hidden');
+        clueElement.parentElement.classList.remove('hidden');
     });
 }
 
@@ -118,19 +119,16 @@ function listenForCanvasUpdates(): void {
 
 function listenForGuesses(): void {
     telephone.guesses.subscribe((newGuesses: Guess[]) => {
+        drawingBoard.ClearCanvas();
         scoreComponent.initialize(newGuesses);
     });
 }
 
 function listenToStateChanges(): void {
     stateTransition.room.roomState.subscribe((state: RoomState) => {
-        console.log('roomstate', state);
         switch (state) {
             case RoomState.GiveGuesses:
                 guessComponent.initialize();
-                break;
-            case RoomState.GameEnded:
-                waitingComponent.initialize();
                 break;
             case RoomState.MyTurn:
                 playComponent.initialize();

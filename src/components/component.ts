@@ -4,7 +4,6 @@ export abstract class Component {
     private _hide: EventListener;
 
     protected transitionTo(area: string): void {
-        console.log('transition to', area);
         const allAreas = document.querySelectorAll('.master-container > div');
         allAreas.forEach((value: Element) => {
             if (value.id == area) {
@@ -17,7 +16,6 @@ export abstract class Component {
             ) { // if hidden, do not hide again. If sliding-out, it will be hidden soon.
                 return;
             } else {
-                console.log('slide-out', value.id);
                 value.classList.remove('slide-in');
                 value.classList.add('slide-out');
                 this._hide = this.hide.bind(this);
@@ -28,7 +26,6 @@ export abstract class Component {
     }
 
     private hide(event: Event) {
-        console.log('hiding', event.srcElement.id);
         event.srcElement.removeEventListener('animationend', this._hide);
         event.srcElement.removeEventListener('webkitAnimationEnd', this._hide);
         event.srcElement.classList.add('hidden');

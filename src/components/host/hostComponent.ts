@@ -52,8 +52,6 @@ export class HostComponent extends Component{
         this.IsTurnMessageHidden = false;
         this.drawingBoard.ClearCanvas();
         this.room.reset();
-        console.log(this.room);
-        console.log(this.switchboard);
     }
 
     public startGame() {
