@@ -9,3 +9,7 @@
 .selected {
     color: #cc9913 !important;
 }
+
+#guesses, #clues {
+    margin: auto;
+}

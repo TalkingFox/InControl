@@ -39,6 +39,7 @@ img {
 #guesses,#clues {
     color: white;
     text-align: center;
+    margin: auto;
 }
 
 #clues {
@@ -79,4 +80,8 @@ i {
 
 .icon-count {
     min-width: 20%;
+}
+
+#drawingArea, #guessArea {
+    max-width: 30% !important;
 }
