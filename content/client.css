@@ -13,3 +13,6 @@
 #guesses, #clues {
     margin: auto;
 }
+#avatarArea, #playArea {
+    max-width: 30% !important;
+}
