@@ -82,8 +82,8 @@ i {
     min-width: 20%;
 }
 
-#drawingArea, #guessArea {
-    max-width: 30% !important;
+#revealArea {
+    max-width: unset !important;
 }
 
 #finalDrawing {
