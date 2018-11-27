@@ -7,11 +7,11 @@ import { Player } from "../models/player";
 import 'simple-peer';
 import * as Peer from 'simple-peer';
 import { Instance } from "simple-peer";
-import * as SocketIOClient from 'socket.io-client';
-import { RoomEvent } from "../models/roomEvents";
 import { JoinRoomRequest } from "./joinRoomRequest";
-import { environment } from "../environment/environment";
 import { Guess } from "../models/guess";
+import { RoomService } from "./roomService";
+import { PlayerOffer } from "./playerOffer";
+import { catchError } from "rxjs/operators";
 
 export class Telephone {
     public player: Player;
@@ -24,7 +24,7 @@ export class Telephone {
     private guessesSubject: Subject<Guess[]>;
     private peer: Instance;
     private room: Room;
-    private socket: SocketIOClient.Socket;
+    private roomService: RoomService;
     
     constructor() {
         this.messageSubject = new Subject<DataMessage>();
@@ -36,31 +36,29 @@ export class Telephone {
     }
 
     public connect(room: Room): Observable<void> {
+        const donezo = new Subject<void>();
         this.room = room;
         this.peer = new Peer({initiator: true, trickle: false});
-        this.peer.on('signal', (id: any) => {
+        this.peer.on('signal', (id: any) => {            
             const request: JoinRoomRequest = {
                 offer: JSON.stringify(id),
                 player: this.player.name,
                 room: room.name
             };
-            this.socket.emit(RoomEvent.Join, JSON.stringify(request));
+            this.roomService.requestRoom(request).pipe(catchError((error, source) => {
+                donezo.error(error);
+                donezo.complete();
+                return source;
+            }))
+                .subscribe((offer: PlayerOffer) => {
+                this.peer.signal(offer.answer);
+            })
         });
         this.peer.on('connect', () => {
             donezo.next();
             donezo.complete();
             this.listenForMessages(this.peer);
-        });        
-        this.socket = SocketIOClient(environment.signalServer, {secure: true});
-        const donezo = new Subject<void>();
-        this.socket.on(RoomEvent.PlayerAccepted, (host: string) => {
-            this.peer.signal(host);            
-        });
-        this.socket.on(RoomEvent.PlayerNameTaken,() => {
-            donezo.error('Sorry, that name is taken. Enter another one.');
-            donezo.complete();
-        });
-        
+        });                
         return donezo.asObservable();
     }
         
