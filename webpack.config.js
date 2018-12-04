@@ -11,6 +11,10 @@ module.exports = {
     path: path.resolve(__dirname, 'build'),
     filename: '[name].entry.js'
   },
+  node: {
+    fs: 'empty',
+    tls: 'empty'
+  },
   devServer: {
     contentBase: path.resolve(__dirname, './'),
     publicPath: '/build/',

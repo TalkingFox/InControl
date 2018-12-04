@@ -5,16 +5,13 @@ import { Player } from '../models/player';
 import 'simple-peer';
 import { Instance } from 'simple-peer';
 import * as Peer from 'simple-peer';
-import { RoomEvent } from '../models/roomEvents';
 import { AcceptPlayer } from './acceptPlayer';
-import { environment } from '../environment/environment';
 import { RoomState, StateChanged } from '../models/events/stateChanged';
 import { GuessScore } from '../models/guessScore';
 import { RoomService } from './roomService';
 import { share } from 'rxjs/operators';
-import { timer } from 'rxjs';
-import { Dictionary } from '../models/dictionary';
-import { NewGuest } from './newGuest';
+import { IotClient } from './iot/iot-client';
+import { JoinRoomRequest } from './iot/joinRoomRequest';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -81,39 +78,32 @@ export class Switchboard {
         //});
     }
 
-    private listenForGuests(room: string) {
-        const source = timer(0, 2000);
-        const subscription = source.subscribe(() => {
+    private listenForGuests(room: string): void {
+        this.roomService.readGuestBook(room).subscribe((request: JoinRoomRequest) => {
             if (!this.isOpenToNewUsers) {
-                subscription.unsubscribe();
                 return;
             }
-            this.roomService
-                .getNewGuests(room)
-                .subscribe((guests: NewGuest[]) => {
-                    guests.map((guest: NewGuest) => {
-                        this.registerConnection(room, guest);
-                    });
-                });
+            console.log(request);
+            this.registerConnection(request);
         });
     }
 
-    private registerConnection(room: string, guest: NewGuest): void {
+    private registerConnection(request: JoinRoomRequest): void {
         const newPeer = new Peer({
             initiator: false,
             trickle: false
         });
-        newPeer.signal(JSON.parse(guest.offer));
+        newPeer.signal(JSON.parse(request.offer));
         newPeer.on('signal', (id: any) => {
             const acceptance: AcceptPlayer = {
                 answer: id,
-                player: guest.name,
-                room: room
+                player: request.player,
+                room: request.room
             };
-            this.roomService.registerGuest(acceptance).subscribe();
+            this.roomService.registerGuest(acceptance);
         });
         newPeer.on('connect', () => {
-            this.connections.set(guest.name, newPeer);
+            this.connections.set(request.player, newPeer);
             this.listenForMessages(newPeer);
         });
     }

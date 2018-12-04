@@ -1,49 +1,76 @@
 import { ajax, AjaxResponse } from 'rxjs/ajax';
-import { Observable, merge } from 'rxjs';
-import { map, switchMap, filter, first } from 'rxjs/operators';
+import { Observable, Subject } from 'rxjs';
+import {
+    map,
+    switchMap,
+    first,
+    share,
+    delay,
+    mergeMap,
+    tap
+} from 'rxjs/operators';
 import { environment } from '../environment/environment';
 import { NewGuest } from './newGuest';
 import { AcceptPlayer } from './acceptPlayer';
-import { JoinRoomRequest } from './joinRoomRequest';
+import { JoinRoomRequest } from './iot/joinRoomRequest';
 import { PlayerOffer } from './playerOffer';
+import { IotClient } from './iot/iot-client';
+import { Room } from '../models/room';
 
 export class RoomService {
+    private iot: IotClient = new IotClient();
+
+    private getHeaders() {
+        return {
+            'Content-Type': 'application/json'
+        };
+    }
+
     public bookRoom(): Observable<string> {
         const endpoint = environment.signalServer + '/rooms';
-        return ajax.post(endpoint).pipe(
+        const headers = this.getHeaders();
+        return ajax.post(endpoint, null, headers).pipe(
             map((response: AjaxResponse) => {
                 return response.response;
             })
         );
     }
 
-    public getNewGuests(room: string): Observable<NewGuest[]> {
-        const endpoint = environment.signalServer + '/rooms/' + room + '/offers';
-        return ajax.get(endpoint).pipe(
-            map((data: AjaxResponse) => {
-                return JSON.parse(data.response);
-            })
-        );
+    public readGuestBook(room: string): Observable<JoinRoomRequest> {
+        this.iot.subscribe(room);
+        return this.iot.requests;
     }
 
-    public registerGuest(request: AcceptPlayer): Observable<void> {
-        const endpoint = `${environment.signalServer}/rooms/${request.room}/offers/${request.player}`;
+    public registerGuest(request: AcceptPlayer): void {
+        this.iot.publish(request.room, request.answer);
+    }
+
+    public requestRoom(room: string): Observable<string> {
+        const endpoint = `${environment.signalServer}/rooms/${room}`;
+        const headers = this.getHeaders();
         return ajax
-            .post(endpoint, { answer: request.answer })
-            .pipe(map(() => {}));
-    }
-
-    public requestRoom(request: JoinRoomRequest): Observable<PlayerOffer> {
-        const endpoint = `${environment.signalServer}/rooms/${request.room}/offers`;
-        return ajax.post(endpoint, { name: request.player, offer: request.offer })
-            .pipe(switchMap(() => this.getAnswer(request)));
-            
+            .get(endpoint, headers)
+            .pipe(map((data: AjaxResponse) => data.response));
     }
 
     private getAnswer(request: JoinRoomRequest): Observable<PlayerOffer> {
-        const endpoint = `${environment.signalServer}/rooms/${request.room}/offers/${request.player}`;
-        return ajax.get(endpoint).pipe(
-            first((data: AjaxResponse) => (<PlayerOffer>JSON.parse(data.response)).answer != undefined),
-            map((data: AjaxResponse) => (<PlayerOffer>JSON.parse(data.response))));
+        const endpoint = `${environment.signalServer}/rooms/${
+            request.room
+        }/offers/${request.player}`;
+        const subject = new Subject<PlayerOffer>();
+        ajax.get(endpoint)
+            .pipe(
+                tap((data: AjaxResponse) => console.log(data)),
+                first(
+                    (data: AjaxResponse) =>
+                        (<PlayerOffer>data.response).answer != undefined
+                ),
+                map((data: AjaxResponse) => <PlayerOffer>data.response)
+            )
+            .subscribe((offer: PlayerOffer) => {
+                subject.next(offer);
+                subject.complete();
+            });
+        return subject.asObservable();
     }
 }

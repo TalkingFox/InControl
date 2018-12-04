@@ -7,11 +7,12 @@ import { Player } from "../models/player";
 import 'simple-peer';
 import * as Peer from 'simple-peer';
 import { Instance } from "simple-peer";
-import { JoinRoomRequest } from "./joinRoomRequest";
+import { JoinRoomRequest } from "./iot/joinRoomRequest";
 import { Guess } from "../models/guess";
 import { RoomService } from "./roomService";
 import { PlayerOffer } from "./playerOffer";
 import { catchError } from "rxjs/operators";
+import { IotClient } from "./iot/iot-client";
 
 export class Telephone {
     public player: Player;
@@ -25,34 +26,31 @@ export class Telephone {
     private peer: Instance;
     private room: Room;
     private roomService: RoomService;
+    private iot: IotClient;
     
     constructor() {
+        this.iot = new IotClient();
         this.messageSubject = new Subject<DataMessage>();
         this.messages = this.messageSubject.asObservable();
         this.cluesSubject = new Subject<string>();
         this.clues = this.cluesSubject.asObservable();
         this.guessesSubject = new Subject<Guess[]>();
         this.guesses = this.guessesSubject.asObservable();
+        this.roomService = new RoomService();
     }
 
     public connect(room: Room): Observable<void> {
         const donezo = new Subject<void>();
         this.room = room;
         this.peer = new Peer({initiator: true, trickle: false});
-        this.peer.on('signal', (id: any) => {            
+        this.peer.on('signal', (id: any) => {
+            console.log('signal');
             const request: JoinRoomRequest = {
                 offer: JSON.stringify(id),
                 player: this.player.name,
                 room: room.name
             };
-            this.roomService.requestRoom(request).pipe(catchError((error, source) => {
-                donezo.error(error);
-                donezo.complete();
-                return source;
-            }))
-                .subscribe((offer: PlayerOffer) => {
-                this.peer.signal(offer.answer);
-            })
+            this.iot.publish(room.name, request);
         });
         this.peer.on('connect', () => {
             donezo.next();
