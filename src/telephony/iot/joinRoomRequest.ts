@@ -2,7 +2,7 @@ export interface ConnectRequest {
     room: string;
     player: string;
     offer: string;
-    type: string;
+    type: ConnectType;
 }
 
 export type ConnectResponse = ConnectRequest;
