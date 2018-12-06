@@ -5,13 +5,12 @@ import { Player } from '../models/player';
 import 'simple-peer';
 import { Instance } from 'simple-peer';
 import * as Peer from 'simple-peer';
-import { AcceptPlayer } from './acceptPlayer';
 import { RoomState, StateChanged } from '../models/events/stateChanged';
 import { GuessScore } from '../models/guessScore';
 import { RoomService } from './roomService';
 import { share } from 'rxjs/operators';
 import { IotClient } from './iot/iot-client';
-import { JoinRoomRequest } from './iot/joinRoomRequest';
+import { ConnectRequest, ConnectResponse, ConnectType } from './iot/joinRoomRequest';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -67,6 +66,7 @@ export class Switchboard {
     public createRoom(): Observable<string> {
         const observable = this.roomService.bookRoom().pipe(share());
         observable.subscribe((room: string) => {
+            console.log('listening for guests');
             this.listenForGuests(room);
         });
         return observable;
@@ -79,30 +79,35 @@ export class Switchboard {
     }
 
     private listenForGuests(room: string): void {
-        this.roomService.readGuestBook(room).subscribe((request: JoinRoomRequest) => {
+        this.roomService.readGuestBook(room).subscribe((request: ConnectRequest) => {            
             if (!this.isOpenToNewUsers) {
+                console.log('not open anymore...');
                 return;
             }
-            console.log(request);
+            console.log('new request', request);
             this.registerConnection(request);
         });
     }
 
-    private registerConnection(request: JoinRoomRequest): void {
+    private registerConnection(request: ConnectRequest): void {
         const newPeer = new Peer({
             initiator: false,
             trickle: false
         });
-        newPeer.signal(JSON.parse(request.offer));
+        console.log('signalling offer...', request);
+        newPeer.signal(request.offer);
         newPeer.on('signal', (id: any) => {
-            const acceptance: AcceptPlayer = {
-                answer: id,
+            console.log('signalled');
+            const acceptance: ConnectResponse = {
+                offer: id,
                 player: request.player,
-                room: request.room
+                room: request.room,
+                type: ConnectType.Answer
             };
             this.roomService.registerGuest(acceptance);
         });
         newPeer.on('connect', () => {
+            console.log('connected')
             this.connections.set(request.player, newPeer);
             this.listenForMessages(newPeer);
         });

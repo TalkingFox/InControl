@@ -1,18 +1,23 @@
 import { device } from 'aws-iot-device-sdk';
 import { environment } from '../../environment/environment';
 import { Observable, Subject } from 'rxjs';
-import { JoinRoomRequest } from './joinRoomRequest';
+import { ConnectRequest, ConnectResponse, ConnectType } from './joinRoomRequest';
 
 export class IotClient {
     private device: device;
     private decoder: TextDecoder = new TextDecoder('utf-8');
 
-    private _requests: Subject<JoinRoomRequest>;
-    public requests: Observable<JoinRoomRequest>;
+    private _requests: Subject<ConnectRequest>;
+    public requests: Observable<ConnectRequest>;
+
+    private _responses: Subject<ConnectResponse>;
+    public responses: Observable<ConnectResponse>;
 
     constructor() {
-        this._requests = new Subject<JoinRoomRequest>();
+        this._requests = new Subject<ConnectRequest>();
         this.requests = this._requests.asObservable();
+        this._responses = new Subject<ConnectResponse>();
+        this.responses = this._responses.asObservable();
 
         this.device = new device({
             region: environment.region,
@@ -31,12 +36,17 @@ export class IotClient {
 
     private attachEvents(): void {
         this.device.on('message', (topic: string, payload: Uint8Array) => {
+            console.log('new message', topic, this.decoder.decode(payload));
             const message = this.decoder.decode(payload);
-            const data = JSON.parse(message) as JoinRoomRequest;
-            if (!data.offer) {
-                return;
+            const data = JSON.parse(message) as ConnectRequest;
+            console.log(data);
+            if (data.type === ConnectType.Offer) {
+                this._requests.next(data);
+            } else if (data.type === ConnectType.Answer) {
+                this._responses.next(data);
+            } else {
+                console.log('twerent neither')
             }
-            this._requests.next(data);
         });
         this.device.on('reconnect', () => {
             console.log('reconnect');
@@ -50,9 +60,6 @@ export class IotClient {
             console.log('iot client error', err);
         });
 
-        this.device.on('message', (topic, message: Uint8Array) => {
-            console.log('new message', topic, this.decoder.decode(message));
-        });
         this.device.on('connect', () => {
             console.log('connected');
         });
