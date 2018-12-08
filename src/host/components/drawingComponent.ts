@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
-import { PlayerSelected } from '../../models/events/playerSelected';
 import { Component } from '../../core/component';
-import { HostComponent } from './hostComponent';
 import { Util } from '../../core/util';
+import { PlayerSelected } from '../../models/events/playerSelected';
+import { HostComponent } from './hostComponent';
 
 export class DrawingComponent extends Component {
     private currentPlayer: HTMLElement;
@@ -20,7 +20,7 @@ export class DrawingComponent extends Component {
                 subscription.unsubscribe();
                 this.host.drawingBoard.loadDataUrl(dataUrl);
                 this.host.startNextRound();
-            },
+            }
         );
     }
 
@@ -33,7 +33,7 @@ export class DrawingComponent extends Component {
         const player = Util.PopRandomElement(this.host.room.cluelessUsers);
         const selected = new PlayerSelected(
             player,
-            this.host.drawingBoard.toDataUrl(),
+            this.host.drawingBoard.toDataUrl()
         );
         this.host.switchboard.dispatchMessageToAll(selected);
         this.currentPlayer.textContent = player;

@@ -4,6 +4,8 @@ import { GuessComponent } from './client/components/guessComponent';
 import { PlayComponent } from './client/components/playComponent';
 import { ScoreComponent } from './client/components/scoreComponent';
 import { WaitingComponent } from './client/components/waitingComponent';
+import { Telephone } from './client/telephone';
+import { DrawingBoard } from './core/drawing/drawingBoard';
 import { Guess } from './models/event-bodies/guess';
 import { DrawingUpdate } from './models/events/drawingUpdate';
 import { SentDrawing } from './models/events/sentDrawing';
@@ -11,8 +13,6 @@ import { RoomState } from './models/events/stateChanged';
 import { Player } from './models/player';
 import { Room } from './models/room';
 import { StateTransition } from './stateTransition';
-import { Telephone } from './client/telephone';
-import { DrawingBoard } from './core/drawing/drawingBoard';
 
 let drawingBoard: DrawingBoard;
 let telephone: Telephone;
@@ -50,10 +50,10 @@ function initialize() {
 
     connect.addEventListener('click', () => {
         const roomName = document.getElementById(
-            'roomName',
+            'roomName'
         ) as HTMLInputElement;
         const playerName = document.getElementById(
-            'username',
+            'username'
         ) as HTMLInputElement;
         if (!roomName.value) {
             alert('Enter a room name.');
@@ -69,7 +69,7 @@ function initialize() {
             () => {
                 avatarComponent.initialize();
             },
-            (error: string) => alert('Failed to join room. Reason: ' + error),
+            (error: string) => alert('Failed to join room. Reason: ' + error)
         );
     });
 }
@@ -97,7 +97,7 @@ function joinRoom(room: Room): Promise<void> {
             },
             (error: string) => {
                 promise.error(error);
-            },
+            }
         );
     return promise.toPromise();
 }

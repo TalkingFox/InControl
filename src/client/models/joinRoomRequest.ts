@@ -1,5 +1,5 @@
 export class JoinRoomRequest {
-    room: string;
-    player: string;
-    offer: string;
+    public room: string;
+    public player: string;
+    public offer: string;
 }

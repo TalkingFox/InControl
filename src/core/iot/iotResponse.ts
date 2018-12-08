@@ -5,5 +5,5 @@ export interface IotResponse  {
 
 export enum ConnectType {
     Answer = 'answer',
-    Offer = 'offer',
+    Offer = 'offer'
 }

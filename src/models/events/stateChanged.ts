@@ -15,5 +15,5 @@ export enum RoomState {
     OtherPlayerSelected,
     RoundEnded,
     ScoreGuesses,
-    WaitingForRoundEnd,
+    WaitingForRoundEnd
 }

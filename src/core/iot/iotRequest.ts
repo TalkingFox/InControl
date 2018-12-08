@@ -1,5 +1,5 @@
 export class AcceptGuestRequest {
-    answer: string;
-    guestId: string;
-    room: string;
+    public answer: string;
+    public guestId: string;
+    public room: string;
 }

@@ -1,3 +1,3 @@
 export class JoinRoomResponse {
-    roomTopic: string
+    public roomTopic: string;
 }

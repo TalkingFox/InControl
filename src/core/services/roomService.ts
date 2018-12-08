@@ -1,13 +1,13 @@
 import { Observable } from 'rxjs';
 import { ajax, AjaxResponse } from 'rxjs/ajax';
 import { map, mergeMap } from 'rxjs/operators';
-import { IotClient } from '../iot/iotClient';
-import { environment } from '../../environment/environment';
-import { JoinRoomResponse } from '../iot/joinRoomResponse';
-import { HostResponse } from '../iot/hostResponse';
 import { JoinRoomRequest } from '../../client/models/joinRoomRequest';
+import { environment } from '../../environment/environment';
 import { GuestRequest } from '../iot/clientRequest';
+import { HostResponse } from '../iot/hostResponse';
+import { IotClient } from '../iot/iotClient';
 import { AcceptGuestRequest } from '../iot/iotRequest';
+import { JoinRoomResponse } from '../iot/joinRoomResponse';
 
 export class RoomService {
     private iot: IotClient = new IotClient();
@@ -34,7 +34,7 @@ export class RoomService {
     }
 
     public registerGuest(request: AcceptGuestRequest): void {
-        const endpoint = `${environment.signalServer}/rooms/${request.room}/accept`
+        const endpoint = `${environment.signalServer}/rooms/${request.room}/accept`;
         const headers = this.getHeaders();
         ajax.post(
             endpoint,
@@ -50,14 +50,14 @@ export class RoomService {
         const endpoint = `${environment.signalServer}/rooms/${request.room}/join`;
         const headers = this.getHeaders();
         return ajax.post(
-            endpoint, 
+            endpoint,
             {
                 player: request.player,
                 offer: request.offer
-            }, 
+            },
             headers).pipe(
             mergeMap((response: AjaxResponse) => {
-                const joinResponse = <JoinRoomResponse>response.response;
+                const joinResponse = response.response as JoinRoomResponse;
                 this.iot.publish(joinResponse.roomTopic, request);
                 this.iot.subscribe(joinResponse.roomTopic);
                 return this.iot.responses;

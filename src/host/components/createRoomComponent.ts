@@ -1,9 +1,9 @@
+import { Component } from '../../core/component';
+import { RoomService } from '../../core/services/roomService';
 import { environment } from '../../environment/environment';
 import { Player } from '../../models/player';
 import { Room } from '../../models/room';
-import { Component } from '../../core/component';
 import { HostComponent } from './hostComponent';
-import { RoomService } from '../../core/services/roomService';
 
 export class CreateRoomComponent extends Component {
     private users: HTMLElement;
@@ -39,7 +39,7 @@ export class CreateRoomComponent extends Component {
         this.host.switchboard.createRoom().subscribe((roomName: string) => {
             this.host.room = new Room(roomName);
             const idHaver = document.getElementById(
-                'roomId',
+                'roomId'
             ) as HTMLInputElement;
             idHaver.value = roomName;
             this.host.switchboard.players.subscribe((user: Player) => {

@@ -1,17 +1,17 @@
 import { Observable, Subject } from 'rxjs';
-import 'simple-peer';
 import { Instance } from 'simple-peer';
 import * as Peer from 'simple-peer';
+import 'simple-peer';
+import { HostResponse } from '../core/iot/hostResponse';
+import { IotClient } from '../core/iot/iotClient';
+import { RoomService } from '../core/services/roomService';
 import { Guess } from '../models/event-bodies/guess';
 import { PlayerState } from '../models/event-bodies/playerState';
 import { DataMessage, DataMessageType } from '../models/events/message';
 import { RoomState } from '../models/events/stateChanged';
 import { Player } from '../models/player';
 import { Room } from '../models/room';
-import { RoomService } from '../core/services/roomService';
-import { IotClient } from '../core/iot/iotClient';
 import { JoinRoomRequest } from './models/joinRoomRequest';
-import { HostResponse } from '../core/iot/hostResponse';
 
 export class Telephone {
     public player: Player;
@@ -45,13 +45,13 @@ export class Telephone {
             const request: JoinRoomRequest = {
                 offer: JSON.stringify(id),
                 player: this.player.name,
-                room: room.name,
+                room: room.name
             };
             this.roomService.bookRoom(request).subscribe(
                 (response: HostResponse) => {
                     this.peer.signal(response.answer);
                 },
-                (error: any) => donezo.error(error),
+                (error: any) => donezo.error(error)
             );
         });
         this.peer.on('connect', () => {

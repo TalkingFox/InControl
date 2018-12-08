@@ -1,16 +1,16 @@
+import { Component } from '../../core/component';
+import { DrawingBoard } from '../../core/drawing/drawingBoard';
+import { Util } from '../../core/util';
 import { ClueEnvelope } from '../../models/ClueEnvelope';
 import { Guess } from '../../models/event-bodies/guess';
 import { GuessScore } from '../../models/guessScore';
 import { Question } from '../../models/question';
 import { Room } from '../../models/room';
-import { Component } from '../../core/component';
+import { QuestionService } from '../services/questionService';
+import { Switchboard } from '../switchboard';
 import { AnswerComponent } from './answerComponent';
 import { DrawingComponent } from './drawingComponent';
 import { GuessComponent } from './guessComponent';
-import { DrawingBoard } from '../../core/drawing/drawingBoard';
-import { Switchboard } from '../switchboard';
-import { QuestionService } from '../services/questionService';
-import { Util } from '../../core/util';
 
 export class HostComponent extends Component {
 
@@ -78,15 +78,14 @@ export class HostComponent extends Component {
             console.log('got question');
             this.room.question = question;
             this.room.cluelessUsers = this.room.users.slice();
-            try
-            {
+            try {
                 this.takeClues().map((envelope: ClueEnvelope) => {
                     console.log('sending envelopes');
                     this.switchboard.dispatchMessage(envelope.player, envelope.clue);
                 });
                 console.log('starting new round');
                 this.startNextRound();
-            } catch(error) {
+            } catch (error) {
                 console.log(error);
             }
         });
@@ -101,7 +100,7 @@ export class HostComponent extends Component {
 
     public startNextRound(): void {
         if (this.room.cluelessUsers.length === 0) {
-            console.log('no clueless!')
+            console.log('no clueless!');
             return this.endGame();
         }
         console.log('initializing drawing component');

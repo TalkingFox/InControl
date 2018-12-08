@@ -1,5 +1,5 @@
-import { SendGuess } from '../../models/sendGuess';
 import { Component } from '../../core/component';
+import { SendGuess } from '../../models/sendGuess';
 import { Telephone } from '../telephone';
 
 export class GuessComponent extends Component {
@@ -17,7 +17,7 @@ export class GuessComponent extends Component {
             }
             const message = new SendGuess(
                 this.telephone.player.name,
-                guess,
+                guess
             );
             this.telephone.SendMessage(message);
             this.transitionTo('waitingArea');

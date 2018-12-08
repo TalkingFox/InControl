@@ -12,6 +12,16 @@
         "interface-name": [
             true,
             "never-prefix"
+        ],
+        "trailing-comma": [
+            true,
+            {
+                "multiline":"never",
+                "singleline":"never"
+            }
+        ],
+        "object-literal-sort-keys": [
+            false
         ]
     },
     "rulesDirectory": []

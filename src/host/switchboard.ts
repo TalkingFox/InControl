@@ -3,14 +3,14 @@ import { share } from 'rxjs/operators';
 import * as Peer from 'simple-peer';
 import { Instance } from 'simple-peer';
 import 'simple-peer';
+import { GuestRequest } from '../core/iot/clientRequest';
+import { AcceptGuestRequest } from '../core/iot/iotRequest';
+import { RoomService } from '../core/services/roomService';
 import { Guess } from '../models/event-bodies/guess';
 import { DataMessage, DataMessageType } from '../models/events/message';
 import { RoomState, StateChanged } from '../models/events/stateChanged';
 import { GuessScore } from '../models/guessScore';
 import { Player } from '../models/player';
-import { RoomService } from '../core/services/roomService';
-import { GuestRequest } from '../core/iot/clientRequest';
-import { AcceptGuestRequest } from '../core/iot/iotRequest';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -92,8 +92,8 @@ export class Switchboard {
         newPeer.on('signal', (id: any) => {
             const acceptance: AcceptGuestRequest = {
                 answer: id,
-                room: request.room,
-                guestId: request.id
+                guestId: request.id,
+                room: request.room
             };
             this.roomService.registerGuest(acceptance);
         });

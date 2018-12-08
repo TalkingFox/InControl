@@ -1,6 +1,6 @@
-import { PlayerLogin } from '../../models/events/playerLogin';
 import { Component } from '../../core/component';
 import { DrawingBoard } from '../../core/drawing/drawingBoard';
+import { PlayerLogin } from '../../models/events/playerLogin';
 import { Telephone } from '../telephone';
 
 export class AvatarComponent extends Component {

@@ -1,14 +1,14 @@
 import { Subject, Subscription } from 'rxjs';
+import { Component } from '../../core/component';
+import { DrawingBoard } from '../../core/drawing/drawingBoard';
 import { DrawingBoardSettings } from '../../core/drawing/drawingBoardSettings';
+import { Util } from '../../core/util';
 import { Guess } from '../../models/event-bodies/guess';
 import { GiveGuesses } from '../../models/events/giveGuesses';
 import { RoomState } from '../../models/events/stateChanged';
 import { GuessScore } from '../../models/guessScore';
 import { TalkativeArray } from '../../models/talkative-array';
-import { Component } from '../../core/component';
 import { HostComponent } from './hostComponent';
-import { DrawingBoard } from '../../core/drawing/drawingBoard';
-import { Util } from '../../core/util';
 
 export class GuessComponent extends Component {
     private drawingBoard: DrawingBoard;
@@ -23,7 +23,7 @@ export class GuessComponent extends Component {
         super();
         const settings: DrawingBoardSettings = {
             elementId: 'guessDrawing',
-            isReadOnly: true,
+            isReadOnly: true
         };
         this.drawingBoard = new DrawingBoard(settings);
         this.drawingBoard.loadDataUrl(host.drawingBoard.toDataUrl());
