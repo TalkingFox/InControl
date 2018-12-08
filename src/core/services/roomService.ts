@@ -1,6 +1,6 @@
-import { Observable } from 'rxjs';
-import { ajax, AjaxResponse } from 'rxjs/ajax';
-import { map, mergeMap } from 'rxjs/operators';
+import { Observable, of, throwError } from 'rxjs';
+import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax';
+import { map, mergeMap, catchError } from 'rxjs/operators';
 import { JoinRoomRequest } from '../../client/models/joinRoomRequest';
 import { environment } from '../../environment/environment';
 import { GuestRequest } from '../iot/clientRequest';
@@ -34,7 +34,9 @@ export class RoomService {
     }
 
     public registerGuest(request: AcceptGuestRequest): void {
-        const endpoint = `${environment.signalServer}/rooms/${request.room}/accept`;
+        const endpoint = `${environment.signalServer}/rooms/${
+            request.room
+        }/accept`;
         const headers = this.getHeaders();
         ajax.post(
             endpoint,
@@ -49,25 +51,31 @@ export class RoomService {
     public bookRoom(request: JoinRoomRequest): Observable<HostResponse> {
         const endpoint = `${environment.signalServer}/rooms/${request.room}/join`;
         const headers = this.getHeaders();
-        return ajax.post(
-            endpoint,
-            {
-                player: request.player,
-                offer: request.offer
-            },
-            headers).pipe(
-            mergeMap((response: AjaxResponse) => {
-                const joinResponse = response.response as JoinRoomResponse;
-                this.iot.publish(joinResponse.roomTopic, request);
-                this.iot.subscribe(joinResponse.roomTopic);
-                return this.iot.responses;
-            })
-        );
+        return ajax
+            .post(
+                endpoint,
+                {
+                    player: request.player,
+                    offer: request.offer
+                },
+                headers
+            )
+            .pipe(
+                mergeMap((response: AjaxResponse) => {
+                    const joinResponse = response.response as JoinRoomResponse;
+                    this.iot.publish(joinResponse.roomTopic, request);
+                    this.iot.subscribe(joinResponse.roomTopic);
+                    return this.iot.responses;
+                }),
+                catchError((error: AjaxError) => {
+                    return throwError(error.response.message);
+                })
+            );
     }
 
-    private getHeaders(): Headers {
-        const headers = new Headers();
-        headers.append('Content-Type', 'application/json');
-        return headers;
+    private getHeaders(): Object {
+        return {
+            'Content-Type': 'application/json'
+        };
     }
 }

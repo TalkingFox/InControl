@@ -51,7 +51,10 @@ export class Telephone {
                 (response: HostResponse) => {
                     this.peer.signal(response.answer);
                 },
-                (error: any) => donezo.error(error)
+                (error: any) => {
+                    console.log('error-higher',error);
+                    donezo.error(error)
+                }
             );
         });
         this.peer.on('connect', () => {
