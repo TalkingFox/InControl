@@ -96,7 +96,6 @@ function joinRoom(room: Room): Promise<void> {
                 subscription.unsubscribe();
             },
             (error: string) => {
-                console.log('error:',error)
                 promise.error(error);
             }
         );

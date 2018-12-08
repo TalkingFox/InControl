@@ -98,7 +98,7 @@ export class Switchboard {
             this.roomService.registerGuest(acceptance);
         });
         newPeer.on('connect', () => {
-            this.connections.set(request.player, newPeer);
+            this.connections.set(request.name, newPeer);
             this.listenForMessages(newPeer);
         });
     }
