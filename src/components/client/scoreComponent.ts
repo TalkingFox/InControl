@@ -1,9 +1,9 @@
+import { GuessesScored } from '../../models/events/guessesScored';
 import { Guess } from '../../models/guess';
 import { GuessScore } from '../../models/guessScore';
 import { Telephone } from '../../telephony/telephone';
-import { GuessesScored } from '../../models/events/guessesScored';
-import { Component } from '../component';
 import { Util } from '../../util';
+import { Component } from '../component';
 
 export class ScoreComponent extends Component {
     private guessScore: Map<string, GuessScore>;

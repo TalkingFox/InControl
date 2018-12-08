@@ -1,4 +1,4 @@
-import { DataMessageType, Message } from "./message";
+import { DataMessageType, Message } from './message';
 
 export class PlayerSelected implements Message<PlayerState> {
     public type: string = DataMessageType.PlayerSelected;
@@ -10,5 +10,5 @@ export class PlayerSelected implements Message<PlayerState> {
 }
 
 export class PlayerState {
-    constructor(public player: string, public canvasUrl: string){}
+    constructor(public player: string, public canvasUrl: string) {}
 }

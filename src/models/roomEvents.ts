@@ -7,5 +7,5 @@ export enum RoomEvent {
     PlayerNameTaken = 'playerNameTaken',
     PlayerJoined = 'playerJoined',
     RoomCreated = 'roomCreated',
-    RoomDoesNotExist = 'roomDoesNotExist'
+    RoomDoesNotExist = 'roomDoesNotExist',
 }

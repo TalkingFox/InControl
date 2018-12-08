@@ -1,4 +1,4 @@
-import { Guess } from "./guess";
+import { Guess } from './guess';
 
 export class GuessScoreCard {
     public likes: number = 0;

@@ -1,12 +1,12 @@
-import { Component } from "../component";
-import { DrawingBoard } from "../../drawing-board";
-import { Telephone } from "../../telephony/telephone";
-import { PlayerLogin } from "../../models/events/playerLogin";
+import { DrawingBoard } from '../../drawing-board';
+import { PlayerLogin } from '../../models/events/playerLogin';
+import { Telephone } from '../../telephony/telephone';
+import { Component } from '../component';
 
 export class AvatarComponent extends Component {
     private board: DrawingBoard;
 
-    constructor(private telephone: Telephone){
+    constructor(private telephone: Telephone) {
         super();
         const login = document.getElementById('login');
         login.addEventListener('click', () => {

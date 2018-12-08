@@ -1,23 +1,23 @@
-import { sentDrawing } from "./sentDrawing";
-import { GiveClue } from "./giveClue";
-import { StateChanged } from "./stateChanged";
-import { PlayerSelected } from "./playerSelected";
-import { SendGuess } from "../guess";
-import { PlayerLogin } from "./playerLogin";
-import { DrawingUpdate } from "./drawingUpdate";
-import { GiveGuesses } from "./giveGuesses";
-import { GuessesScored } from "./guessesScored";
+import { SendGuess } from '../guess';
+import { DrawingUpdate } from './drawingUpdate';
+import { GiveClue } from './giveClue';
+import { GiveGuesses } from './giveGuesses';
+import { GuessesScored } from './guessesScored';
+import { PlayerLogin } from './playerLogin';
+import { PlayerSelected } from './playerSelected';
+import { sentDrawing } from './sentDrawing';
+import { StateChanged } from './stateChanged';
 
-export interface Message<T> { 
+export interface Message<T> {
     type: string;
     body: T;
 }
 
-export type DataMessage = sentDrawing | GiveClue 
+export type DataMessage = sentDrawing | GiveClue
             | StateChanged | PlayerSelected
             | SendGuess | PlayerLogin
             | DrawingUpdate | GiveGuesses
-            | GuessesScored
+            | GuessesScored;
 
 export class DataMessageType {
     public static UserLogin = 'UserLogin';
@@ -26,7 +26,7 @@ export class DataMessageType {
     public static GiveGuesses = 'GiveGuesses';
     public static Guess = 'Guess';
     public static StateChange = 'StateChange';
-    public static PlayerSelected = 'UserSelected;'
+    public static PlayerSelected = 'UserSelected;';
     public static DrawingUpdate = 'DrawingUpdate';
     public static GuessesScored = 'GuessesScored';
 }

@@ -1,20 +1,20 @@
-import { Question } from "./question";
-import { Observable, Subject } from "rxjs";
-import { RoomState } from "./events/stateChanged";
+import { Observable, Subject } from 'rxjs';
+import { RoomState } from './events/stateChanged';
+import { Question } from './question';
 
-export class Room { 
+export class Room {
     public users: string[] = [];
     public cluelessUsers: string[];
     public usedClues: string[] = [];
     public question: Question;
 
     public roomState: Observable<RoomState>;
-    private roomStateSubject: Subject<RoomState>;
 
     public canvas: Observable<string>;
+    private roomStateSubject: Subject<RoomState>;
     private canvasSubject: Subject<string>;
 
-    constructor(public name){
+    constructor(public name) {
         this.roomStateSubject = new Subject<RoomState>();
         this.roomState = this.roomStateSubject.asObservable();
 

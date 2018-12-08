@@ -1,5 +1,5 @@
-import { Message, DataMessageType } from "./message";
-import { Guess } from "../guess";
+import { Guess } from '../guess';
+import { DataMessageType, Message } from './message';
 
 export class GiveGuesses implements Message<Guess[]> {
     public type: string = DataMessageType.GiveGuesses;

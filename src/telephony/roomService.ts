@@ -1,21 +1,15 @@
-import { ajax, AjaxResponse } from 'rxjs/ajax';
 import { Observable, Subject } from 'rxjs';
+import { ajax, AjaxResponse } from 'rxjs/ajax';
 import {
     map,
     mergeMap,
 } from 'rxjs/operators';
 import { environment } from '../environment/environment';
-import { ConnectRequest, ConnectResponse } from './iot/joinRoomRequest';
 import { IotClient } from './iot/iot-client';
+import { ConnectRequest, ConnectResponse } from './iot/joinRoomRequest';
 
 export class RoomService {
     private iot: IotClient = new IotClient();
-
-    private getHeaders() {
-        return {
-            'Content-Type': 'application/json'
-        };
-    }
 
     public bookRoom(): Observable<string> {
         const endpoint = environment.signalServer + '/rooms';
@@ -23,7 +17,7 @@ export class RoomService {
         return ajax.post(endpoint, null, headers).pipe(
             map((response: AjaxResponse) => {
                 return response.response;
-            })
+            }),
         );
     }
 
@@ -45,7 +39,13 @@ export class RoomService {
                 this.iot.publish(request.room, request);
                 this.iot.subscribe(request.room);
                 return this.iot.responses;
-            })
+            }),
         );
+    }
+
+    private getHeaders() {
+        return {
+            'Content-Type': 'application/json',
+        };
     }
 }

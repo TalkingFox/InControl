@@ -1,14 +1,14 @@
-import { Component } from "../component";
-import { HostComponent } from "./hostComponent";
-import { DrawingBoard } from "../../drawing-board";
-import { DrawingBoardSettings } from "../../models/drawing-board-settings";
-import { Guess } from "../../models/guess";
-import { RoomState } from "../../models/events/stateChanged";
-import { TalkativeArray } from "../../models/talkative-array";
-import { Subject, Subscription } from "rxjs";
-import { GiveGuesses } from "../../models/events/giveGuesses";
-import { GuessScore } from "../../models/guessScore";
-import { Util } from "../../util";
+import { Subject, Subscription } from 'rxjs';
+import { DrawingBoard } from '../../drawing-board';
+import { DrawingBoardSettings } from '../../models/drawing-board-settings';
+import { GiveGuesses } from '../../models/events/giveGuesses';
+import { RoomState } from '../../models/events/stateChanged';
+import { Guess } from '../../models/guess';
+import { GuessScore } from '../../models/guessScore';
+import { TalkativeArray } from '../../models/talkative-array';
+import { Util } from '../../util';
+import { Component } from '../component';
+import { HostComponent } from './hostComponent';
 
 export class GuessComponent extends Component {
     private drawingBoard: DrawingBoard;
@@ -23,7 +23,7 @@ export class GuessComponent extends Component {
         super();
         const settings: DrawingBoardSettings = {
             elementId: 'guessDrawing',
-            isReadOnly: true
+            isReadOnly: true,
         };
         this.drawingBoard = new DrawingBoard(settings);
         this.drawingBoard.loadDataUrl(host.drawingBoard.toDataUrl());
@@ -32,13 +32,13 @@ export class GuessComponent extends Component {
         this.scoredGuesses = new TalkativeArray<GuessScore[]>();
         this.subs = this.host.switchboard.guesses.subscribe((guess: Guess) => {
             this.guesses.Push(guess);
-            this.notGuessed = this.notGuessed.filter(x => x !== guess.user);
+            this.notGuessed = this.notGuessed.filter((x) => x !== guess.user);
             this.setWaitingOn();
         });
-        
+
         this.subs.add(this.host.switchboard.scoredGuesses.subscribe((scores: GuessScore[]) => {
             this.scoredGuesses.Push(scores);
-            this.notGuessed = this.notGuessed.filter(x => x !== scores[0].scoredBy);
+            this.notGuessed = this.notGuessed.filter((x) => x !== scores[0].scoredBy);
             this.setWaitingOn();
         }));
     }
@@ -52,9 +52,9 @@ export class GuessComponent extends Component {
         this.tagline = 'Submit Your Guesses!';
         this.transitionTo('guessArea');
         this.notGuessed = this.host.room.users.slice(0);
-        this.setWaitingOn();        
+        this.setWaitingOn();
         this.host.switchboard.dispatchStateChange(RoomState.GiveGuesses);
-        
+
         if (this.guesses.length === this.host.room.users.length) {
             const resolution = Promise.resolve(this.guesses.elements.splice(0));
             this.guesses.clear();
@@ -78,20 +78,20 @@ export class GuessComponent extends Component {
         this.setWaitingOn();
         const guessesMessage = new GiveGuesses(finalGuesses);
         this.host.switchboard.dispatchMessageToAll(guessesMessage);
-        
+
         if (this.scoredGuesses.length === this.host.room.users.length) {
-            const flattenedGuesses = this.scoredGuesses.elements.reduce((a,b) => {
+            const flattenedGuesses = this.scoredGuesses.elements.reduce((a, b) => {
                 return a.concat(b);
             });
             const resolution = Promise.resolve(flattenedGuesses.splice(0));
             this.scoredGuesses.clear();
             return resolution;
         }
-    
+
         const promise = new Subject<GuessScore[]>();
         const subscription = this.scoredGuesses.Subscribe(() => {
             if (this.scoredGuesses.length === this.host.room.users.length) {
-                const flattenedGuesses = this.scoredGuesses.elements.reduce((a,b) => {
+                const flattenedGuesses = this.scoredGuesses.elements.reduce((a, b) => {
                     return a.concat(b);
                 });
                 promise.next(flattenedGuesses.splice(0));

@@ -1,7 +1,7 @@
-import { Message, DataMessageType } from "./message";
-import { GuessScore } from "../guessScore";
+import { GuessScore } from '../guessScore';
+import { DataMessageType, Message } from './message';
 
-export class GuessesScored implements Message<GuessScore[]>{
+export class GuessesScored implements Message<GuessScore[]> {
     public type: string = DataMessageType.GuessesScored;
     public body: GuessScore[];
 

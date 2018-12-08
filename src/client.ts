@@ -1,18 +1,18 @@
-import { Room } from './models/room';
-import { Telephone } from './telephony/telephone';
-import { DrawingBoard } from './drawing-board';
-import { sentDrawing } from './models/events/sentDrawing';
-import { RoomState } from './models/events/stateChanged';
 import { Subject } from 'rxjs';
-import { StateTransition } from './stateTransition';
-import { Player } from './models/player';
-import { DrawingUpdate } from './models/events/drawingUpdate';
-import { Guess } from './models/guess';
+import { AvatarComponent } from './components/client/avatarComponent';
 import { GuessComponent } from './components/client/guessComponent';
+import { PlayComponent } from './components/client/playComponent';
 import { ScoreComponent } from './components/client/scoreComponent';
 import { WaitingComponent } from './components/client/waitingComponent';
-import { PlayComponent } from './components/client/playComponent';
-import { AvatarComponent } from './components/client/avatarComponent';
+import { DrawingBoard } from './drawing-board';
+import { DrawingUpdate } from './models/events/drawingUpdate';
+import { sentDrawing } from './models/events/sentDrawing';
+import { RoomState } from './models/events/stateChanged';
+import { Guess } from './models/guess';
+import { Player } from './models/player';
+import { Room } from './models/room';
+import { StateTransition } from './stateTransition';
+import { Telephone } from './telephony/telephone';
 
 let drawingBoard: DrawingBoard;
 let telephone: Telephone;
@@ -20,8 +20,8 @@ let stateTransition: StateTransition;
 let sendDrawing: HTMLElement;
 let guessComponent: GuessComponent;
 let scoreComponent: ScoreComponent;
-let waitingComponent: WaitingComponent = new WaitingComponent();
-let playComponent: PlayComponent = new PlayComponent();
+const waitingComponent: WaitingComponent = new WaitingComponent();
+const playComponent: PlayComponent = new PlayComponent();
 let avatarComponent: AvatarComponent;
 
 window.onload = () => {
@@ -46,14 +46,14 @@ function initialize() {
         telephone.SendMessage(message);
         stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
         drawingBoard.ClearCanvas();
-    });    
+    });
 
     connect.addEventListener('click', () => {
         const roomName = document.getElementById(
-            'roomName'
+            'roomName',
         ) as HTMLInputElement;
         const playerName = document.getElementById(
-            'username'
+            'username',
         ) as HTMLInputElement;
         if (!roomName.value) {
             alert('Enter a room name.');
@@ -69,7 +69,7 @@ function initialize() {
             () => {
                 avatarComponent.initialize();
             },
-            (error: string) => alert('Failed to join room. Reason: ' + error)
+            (error: string) => alert('Failed to join room. Reason: ' + error),
         );
     });
 }
@@ -97,7 +97,7 @@ function joinRoom(room: Room): Promise<void> {
             },
             (error: string) => {
                 promise.error(error);
-            }
+            },
         );
     return promise.toPromise();
 }
@@ -112,7 +112,7 @@ function listenForClues(): void {
 }
 
 function listenForCanvasUpdates(): void {
-    stateTransition.room.canvas.subscribe(data => {
+    stateTransition.room.canvas.subscribe((data) => {
         drawingBoard.loadDataUrl(data);
     });
 }

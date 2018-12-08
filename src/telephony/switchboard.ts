@@ -1,16 +1,16 @@
 import { Observable, Subject } from 'rxjs';
-import { DataMessage, DataMessageType } from '../models/events/message';
-import { Guess } from '../models/guess';
-import { Player } from '../models/player';
-import 'simple-peer';
-import { Instance } from 'simple-peer';
-import * as Peer from 'simple-peer';
-import { RoomState, StateChanged } from '../models/events/stateChanged';
-import { GuessScore } from '../models/guessScore';
-import { RoomService } from './roomService';
 import { share } from 'rxjs/operators';
+import * as Peer from 'simple-peer';
+import { Instance } from 'simple-peer';
+import 'simple-peer';
+import { DataMessage, DataMessageType } from '../models/events/message';
+import { RoomState, StateChanged } from '../models/events/stateChanged';
+import { Guess } from '../models/guess';
+import { GuessScore } from '../models/guessScore';
+import { Player } from '../models/player';
 import { IotClient } from './iot/iot-client';
 import { ConnectRequest, ConnectResponse, ConnectType } from './iot/joinRoomRequest';
+import { RoomService } from './roomService';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -70,16 +70,16 @@ export class Switchboard {
             this.listenForGuests(room);
         });
         return observable;
-        //this.peer = new Peer({
+        // this.peer = new Peer({
         //    initiator: true,
         //   trickle: false,
         //  config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }] }});
-        //this.peer.on('signal', (id: Peer.SignalData) => {
-        //});
+        // this.peer.on('signal', (id: Peer.SignalData) => {
+        // });
     }
 
     private listenForGuests(room: string): void {
-        this.roomService.readGuestBook(room).subscribe((request: ConnectRequest) => {            
+        this.roomService.readGuestBook(room).subscribe((request: ConnectRequest) => {
             if (!this.isOpenToNewUsers) {
                 console.log('not open anymore...');
                 return;
@@ -92,7 +92,7 @@ export class Switchboard {
     private registerConnection(request: ConnectRequest): void {
         const newPeer = new Peer({
             initiator: false,
-            trickle: false
+            trickle: false,
         });
         console.log('signalling offer...', request);
         newPeer.signal(request.offer);
@@ -102,12 +102,12 @@ export class Switchboard {
                 offer: id,
                 player: request.player,
                 room: request.room,
-                type: ConnectType.Answer
+                type: ConnectType.Answer,
             };
             this.roomService.registerGuest(acceptance);
         });
         newPeer.on('connect', () => {
-            console.log('connected')
+            console.log('connected');
             this.connections.set(request.player, newPeer);
             this.listenForMessages(newPeer);
         });
@@ -118,20 +118,20 @@ export class Switchboard {
             const data = JSON.parse(message) as DataMessage;
             switch (data.type) {
                 case DataMessageType.NewDrawing:
-                    this.drawingQueue.next(<string>data.body);
+                    this.drawingQueue.next(data.body as string);
                     break;
                 case DataMessageType.Guess:
-                    this.guessQueue.next(<Guess>data.body);
+                    this.guessQueue.next(data.body as Guess);
                     break;
                 case DataMessageType.UserLogin:
-                    const player = <Player>data.body;
+                    const player = data.body as Player;
                     this.playerQueue.next(player);
                     break;
                 case DataMessageType.DrawingUpdate:
-                    this.drawingUpdatesQueue.next(<string>data.body);
+                    this.drawingUpdatesQueue.next(data.body as string);
                     break;
                 case DataMessageType.GuessesScored:
-                    this.scoredGuessQueue.next(<GuessScore[]>data.body);
+                    this.scoredGuessQueue.next(data.body as GuessScore[]);
                     break;
                 default:
                     console.log(data);

@@ -1,7 +1,7 @@
 export class Util {
     public static Shuffle(array: any[]) {
-        for(let i = array.length - 1; i >0;i--) {
-            const j = Math.floor(Math.random() * (i+1));
+        for (let i = array.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
         }
         return array;
@@ -13,12 +13,12 @@ export class Util {
         }
         const index = Math.floor(Math.random() * array.length);
         const element = array[index];
-        array = array.splice(array.indexOf(element),1);
+        array = array.splice(array.indexOf(element), 1);
         return element;
     }
 
     public static ClearElement(element: HTMLElement) {
-        while(element.firstChild) {
+        while (element.firstChild) {
             element.removeChild(element.firstChild);
         }
     }

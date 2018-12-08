@@ -1,8 +1,8 @@
-import { HostComponent } from "./hostComponent";
-import { GuessScore } from "../../models/guessScore";
-import { GuessScoreCard } from "../../models/guessScoreCard";
-import { Component } from "../component";
-import { Util } from "../../util";
+import { GuessScore } from '../../models/guessScore';
+import { GuessScoreCard } from '../../models/guessScoreCard';
+import { Util } from '../../util';
+import { Component } from '../component';
+import { HostComponent } from './hostComponent';
 
 export class AnswerComponent extends Component {
 
@@ -25,7 +25,7 @@ export class AnswerComponent extends Component {
         finalGuesses.forEach((scoreCard: GuessScoreCard) => {
             const row = this.createScoreRow(scoreCard);
             guessedTable.appendChild(row);
-        });        
+        });
         const cluesList = document.getElementById('clues');
         Util.ClearElement(cluesList);
         this.host.room.usedClues.map((clue: string) => {
@@ -62,7 +62,7 @@ export class AnswerComponent extends Component {
 
     private createScoreRow(card: GuessScoreCard): HTMLElement {
         const row = document.createElement('tr');
-        
+
         const playerBody = document.createElement('td');
         const playerText = document.createElement('div');
         playerText.textContent = card.guess.user;

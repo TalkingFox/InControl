@@ -1,4 +1,4 @@
-import { DataMessageType, Message } from "./message";
+import { DataMessageType, Message } from './message';
 
 export class DrawingUpdate implements Message<string> {
     public type: string = DataMessageType.DrawingUpdate;

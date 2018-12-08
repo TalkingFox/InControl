@@ -1,6 +1,6 @@
-import { Point } from "./point";
-import { DrawingBoardSettings } from "./models/drawing-board-settings";
-import { Observable, Subject } from "rxjs";
+import { Observable, Subject } from 'rxjs';
+import { DrawingBoardSettings } from './models/drawing-board-settings';
+import { Point } from './point';
 
 export class DrawingBoard {
     public mouseUp: Observable<void>;
@@ -15,7 +15,7 @@ export class DrawingBoard {
         this.mouseUpSubject = new Subject<void>();
         this.mouseUp = this.mouseUpSubject.asObservable();
         this.canvas = document.getElementById(settings.elementId) as HTMLCanvasElement;
-        this.canvasContext = this.canvas.getContext("2d");
+        this.canvasContext = this.canvas.getContext('2d');
         this.canvas.width = 500;
         this.canvas.height = 500;
         if (!settings.isReadOnly) {
@@ -35,7 +35,7 @@ export class DrawingBoard {
         const image: HTMLImageElement = new Image();
         image.onload = () => {
             this.canvasContext.drawImage(image, 0, 0);
-        }
+        };
         image.src = url;
     }
 
@@ -117,8 +117,7 @@ export class DrawingBoard {
     }
 
     private Dot(coordinates: Point) {
-        this.canvasContext.strokeRect(coordinates.x, coordinates.y, 2,2);
+        this.canvasContext.strokeRect(coordinates.x, coordinates.y, 2, 2);
     }
 
-    
 }

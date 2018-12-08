@@ -8,5 +8,5 @@ export interface ConnectRequest {
 export type ConnectResponse = ConnectRequest;
 export enum ConnectType {
     Answer = 'answer',
-    Offer = 'offer'
+    Offer = 'offer',
 }

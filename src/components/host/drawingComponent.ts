@@ -1,11 +1,11 @@
-import { Component } from "../component";
-import { HostComponent } from "./hostComponent";
-import { Util } from "../../util";
-import { PlayerSelected } from "../../models/events/playerSelected";
-import { Observable } from "rxjs";
+import { Observable } from 'rxjs';
+import { PlayerSelected } from '../../models/events/playerSelected';
+import { Util } from '../../util';
+import { Component } from '../component';
+import { HostComponent } from './hostComponent';
 
 export class DrawingComponent extends Component {
-    
+
     private currentPlayer: HTMLElement;
 
     constructor(private host: HostComponent) {
@@ -30,10 +30,9 @@ export class DrawingComponent extends Component {
     private selectPlayer(): void {
         Util.Shuffle(this.host.room.cluelessUsers);
         const player = Util.PopRandomElement(this.host.room.cluelessUsers);
-        const selected = new PlayerSelected(player, this.host.drawingBoard.toDataUrl());    
+        const selected = new PlayerSelected(player, this.host.drawingBoard.toDataUrl());
         this.host.switchboard.dispatchMessageToAll(selected);
         this.currentPlayer.textContent = player;
     }
-
 
 }

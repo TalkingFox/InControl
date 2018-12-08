@@ -1,4 +1,4 @@
-import { DataMessageType, Message } from "./events/message";
+import { DataMessageType, Message } from './events/message';
 
 export class SendGuess implements Message<Guess> {
     public type: string = DataMessageType.Guess;
@@ -10,5 +10,5 @@ export class SendGuess implements Message<Guess> {
 }
 
 export class Guess {
-    constructor(public user: string, public guess: string){}
+    constructor(public user: string, public guess: string) {}
 }

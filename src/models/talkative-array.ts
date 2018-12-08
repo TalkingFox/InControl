@@ -1,6 +1,6 @@
-import { Subject, Observable, Subscribable, Subscription } from "rxjs";
+import { Observable, Subject, Subscribable, Subscription } from 'rxjs';
 
-export class TalkativeArray<T> { 
+export class TalkativeArray<T> {
     public elements: T[] = [];
 
     private subject: Subject<T>;
@@ -13,10 +13,9 @@ export class TalkativeArray<T> {
         return this.elements.splice(0);
     }
 
-    public get length() : number {
+    public get length(): number {
         return this.elements.length;
     }
-    
 
     public clear(): void {
         this.elements.length = 0;
@@ -27,7 +26,7 @@ export class TalkativeArray<T> {
         this.subject.next(element);
     }
 
-    public Subscribe(next?: (value:T) => void): Subscription {
+    public Subscribe(next?: (value: T) => void): Subscription {
         return this.subject.asObservable().subscribe(next);
     }
 }

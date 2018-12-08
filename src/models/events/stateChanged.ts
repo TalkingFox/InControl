@@ -1,7 +1,6 @@
-import { Message, DataMessageType } from "./message";
+import { DataMessageType, Message } from './message';
 
-export class StateChanged implements Message<RoomState>
-{
+export class StateChanged implements Message<RoomState> {
     public type: string = DataMessageType.StateChange;
     public body: RoomState;
 
@@ -16,5 +15,5 @@ export enum RoomState {
     OtherPlayerSelected,
     RoundEnded,
     ScoreGuesses,
-    WaitingForRoundEnd
+    WaitingForRoundEnd,
 }

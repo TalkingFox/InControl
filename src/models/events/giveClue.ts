@@ -1,4 +1,4 @@
-import { Message, DataMessageType } from "./message";
+import { DataMessageType, Message } from './message';
 
 export class GiveClue implements Message<string> {
     public type: string = DataMessageType.GiveClue;
