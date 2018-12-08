@@ -1,7 +1,7 @@
-import { DrawingBoard } from '../../drawing-board';
 import { PlayerLogin } from '../../models/events/playerLogin';
-import { Telephone } from '../../telephony/telephone';
-import { Component } from '../component';
+import { Component } from '../../core/component';
+import { DrawingBoard } from '../../core/drawing/drawingBoard';
+import { Telephone } from '../telephone';
 
 export class AvatarComponent extends Component {
     private board: DrawingBoard;

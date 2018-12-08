@@ -1,6 +1,6 @@
 import { Subject } from 'rxjs';
-import { Question } from '../models/question';
-import { Util } from '../util';
+import { Util } from '../../core/util';
+import { Question } from '../../models/question';
 
 export class QuestionService {
     private questions: Question[];

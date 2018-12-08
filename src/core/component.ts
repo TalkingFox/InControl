@@ -1,5 +1,3 @@
-import { Observable, Subject } from 'rxjs';
-
 export abstract class Component {
     private hideBinding: EventListener;
 

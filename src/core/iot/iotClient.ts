@@ -1,22 +1,24 @@
 import { device } from 'aws-iot-device-sdk';
 import { Observable, Subject } from 'rxjs';
 import { environment } from '../../environment/environment';
-import { ConnectRequest, ConnectResponse, ConnectType } from './joinRoomRequest';
+import { HostResponse } from './hostResponse';
+import { IotResponse, ConnectType } from './iotResponse';
+import { GuestRequest } from './clientRequest';
 
 export class IotClient {
-    public requests: Observable<ConnectRequest>;
-    public responses: Observable<ConnectResponse>;
+    public requests: Observable<GuestRequest>;
+    public responses: Observable<HostResponse>;
     private device: device;
     private decoder: TextDecoder = new TextDecoder('utf-8');
 
-    private requests$: Subject<ConnectRequest>;
+    private requests$: Subject<GuestRequest>;
 
-    private responses$: Subject<ConnectResponse>;
+    private responses$: Subject<HostResponse>;
 
     constructor() {
-        this.requests$ = new Subject<ConnectRequest>();
+        this.requests$ = new Subject<GuestRequest>();
         this.requests = this.requests$.asObservable();
-        this.responses$ = new Subject<ConnectResponse>();
+        this.responses$ = new Subject<HostResponse>();
         this.responses = this.responses$.asObservable();
 
         this.device = new device({
@@ -38,22 +40,26 @@ export class IotClient {
         this.device.publish('rooms/' + room, JSON.stringify(message));
     }
 
-    public subscribe(room: string): void {
-        this.device.subscribe('rooms/' + room);
+    public subscribe(topic: string): void {
+        console.log('subscribing to:',topic);
+        this.device.subscribe(topic);
     }
 
     public subscribeAll(room: string): void {
+        console.log('subscribing to:','rooms/',room,'/#');
         this.device.subscribe('rooms/' + room + '/#');
     }
 
     private attachEvents(): void {
         this.device.on('message', (topic: string, payload: Uint8Array) => {
             const message = this.decoder.decode(payload);
-            const data = JSON.parse(message) as ConnectRequest;
+            console.log('got message:', message)
+            const data = JSON.parse(message) as IotResponse
             if (data.type === ConnectType.Offer) {
-                this.requests$.next(data);
+                data.id = topic.split('/').pop();
+                this.requests$.next(<GuestRequest>data);
             } else if (data.type === ConnectType.Answer) {
-                this.responses$.next(data);
+                this.responses$.next(<HostResponse>data);
             } else {
                 throw new Error('received unknown data type: ' + data.type);
             }

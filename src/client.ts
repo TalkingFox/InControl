@@ -1,10 +1,9 @@
 import { Subject } from 'rxjs';
-import { AvatarComponent } from './components/client/avatarComponent';
-import { GuessComponent } from './components/client/guessComponent';
-import { PlayComponent } from './components/client/playComponent';
-import { ScoreComponent } from './components/client/scoreComponent';
-import { WaitingComponent } from './components/client/waitingComponent';
-import { DrawingBoard } from './drawing-board';
+import { AvatarComponent } from './client/components/avatarComponent';
+import { GuessComponent } from './client/components/guessComponent';
+import { PlayComponent } from './client/components/playComponent';
+import { ScoreComponent } from './client/components/scoreComponent';
+import { WaitingComponent } from './client/components/waitingComponent';
 import { Guess } from './models/event-bodies/guess';
 import { DrawingUpdate } from './models/events/drawingUpdate';
 import { SentDrawing } from './models/events/sentDrawing';
@@ -12,7 +11,8 @@ import { RoomState } from './models/events/stateChanged';
 import { Player } from './models/player';
 import { Room } from './models/room';
 import { StateTransition } from './stateTransition';
-import { Telephone } from './telephony/telephone';
+import { Telephone } from './client/telephone';
+import { DrawingBoard } from './core/drawing/drawingBoard';
 
 let drawingBoard: DrawingBoard;
 let telephone: Telephone;

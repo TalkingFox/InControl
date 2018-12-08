@@ -1,6 +1,6 @@
 import { Observable, Subject } from 'rxjs';
-import { DrawingBoardSettings } from './models/drawing-board-settings';
 import { Point } from './point';
+import { DrawingBoardSettings } from './drawingBoardSettings';
 
 export class DrawingBoard {
     public mouseUp: Observable<void>;

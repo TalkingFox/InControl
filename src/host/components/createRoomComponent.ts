@@ -1,15 +1,18 @@
 import { environment } from '../../environment/environment';
 import { Player } from '../../models/player';
 import { Room } from '../../models/room';
-import { Component } from '../component';
+import { Component } from '../../core/component';
 import { HostComponent } from './hostComponent';
+import { RoomService } from '../../core/services/roomService';
 
 export class CreateRoomComponent extends Component {
     private users: HTMLElement;
+    private roomService: RoomService;
 
     constructor(private host: HostComponent) {
         super();
         this.users = document.getElementById('users');
+        this.roomService = new RoomService();
     }
 
     public initialize(): void {
@@ -53,6 +56,7 @@ export class CreateRoomComponent extends Component {
                     return;
                 }
                 this.host.startGame();
+                this.roomService.freeRoom(roomName);
             });
         });
     }

@@ -8,9 +8,9 @@ import { DataMessage, DataMessageType } from '../models/events/message';
 import { RoomState, StateChanged } from '../models/events/stateChanged';
 import { GuessScore } from '../models/guessScore';
 import { Player } from '../models/player';
-import { IotClient } from './iot/iot-client';
-import { ConnectRequest, ConnectResponse, ConnectType } from './iot/joinRoomRequest';
-import { RoomService } from './roomService';
+import { RoomService } from '../core/services/roomService';
+import { GuestRequest } from '../core/iot/clientRequest';
+import { AcceptGuestRequest } from '../core/iot/iotRequest';
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -64,7 +64,7 @@ export class Switchboard {
     }
 
     public createRoom(): Observable<string> {
-        const observable = this.roomService.bookRoom().pipe(share());
+        const observable = this.roomService.createRoom().pipe(share());
         observable.subscribe((room: string) => {
             this.listenForGuests(room);
         });
@@ -72,26 +72,28 @@ export class Switchboard {
     }
 
     private listenForGuests(room: string): void {
-        this.roomService.readGuestBook(room).subscribe((request: ConnectRequest) => {
-            if (!this.isOpenToNewUsers) {
-                return;
-            }
-            this.registerConnection(request);
-        });
+        const subscription = this.roomService
+            .readGuestBook(room)
+            .subscribe((request: GuestRequest) => {
+                if (!this.isOpenToNewUsers) {
+                    subscription.unsubscribe();
+                    return;
+                }
+                this.registerConnection(request);
+            });
     }
 
-    private registerConnection(request: ConnectRequest): void {
+    private registerConnection(request: GuestRequest): void {
         const newPeer = new Peer({
             initiator: false,
-            trickle: false,
+            trickle: false
         });
         newPeer.signal(request.offer);
         newPeer.on('signal', (id: any) => {
-            const acceptance: ConnectResponse = {
-                offer: id,
-                player: request.player,
+            const acceptance: AcceptGuestRequest = {
+                answer: id,
                 room: request.room,
-                type: ConnectType.Answer,
+                guestId: request.id
             };
             this.roomService.registerGuest(acceptance);
         });

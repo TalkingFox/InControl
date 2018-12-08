@@ -1,8 +1,8 @@
 import { GuessScore } from '../../models/guessScore';
 import { GuessScoreCard } from '../../models/guessScoreCard';
-import { Util } from '../../util';
-import { Component } from '../component';
+import { Component } from '../../core/component';
 import { HostComponent } from './hostComponent';
+import { Util } from '../../core/util';
 
 export class AnswerComponent extends Component {
 

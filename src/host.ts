@@ -1,5 +1,5 @@
-import { CreateRoomComponent } from './components/host/createRoomComponent';
-import { HostComponent } from './components/host/hostComponent';
+import { CreateRoomComponent } from './host/components/createRoomComponent';
+import { HostComponent } from './host/components/hostComponent';
 
 let hostComponent: HostComponent;
 let createRoomComponent: CreateRoomComponent;

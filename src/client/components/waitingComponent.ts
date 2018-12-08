@@ -1,4 +1,4 @@
-import { Component } from '../component';
+import { Component } from '../../core/component';
 
 export class WaitingComponent extends Component {
     constructor() {

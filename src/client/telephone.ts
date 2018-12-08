@@ -8,10 +8,10 @@ import { DataMessage, DataMessageType } from '../models/events/message';
 import { RoomState } from '../models/events/stateChanged';
 import { Player } from '../models/player';
 import { Room } from '../models/room';
-import { IotClient } from './iot/iot-client';
-import { ConnectRequest, ConnectResponse, ConnectType } from './iot/joinRoomRequest';
-import { PlayerOffer } from './playerOffer';
-import { RoomService } from './roomService';
+import { RoomService } from '../core/services/roomService';
+import { IotClient } from '../core/iot/iotClient';
+import { JoinRoomRequest } from './models/joinRoomRequest';
+import { HostResponse } from '../core/iot/hostResponse';
 
 export class Telephone {
     public player: Player;
@@ -42,15 +42,14 @@ export class Telephone {
         this.room = room;
         this.peer = new Peer({ initiator: true, trickle: false });
         this.peer.on('signal', (id: any) => {
-            const request: ConnectRequest = {
+            const request: JoinRoomRequest = {
                 offer: JSON.stringify(id),
                 player: this.player.name,
                 room: room.name,
-                type: ConnectType.Offer,
             };
-            this.roomService.requestRoom(request).subscribe(
-                (response: ConnectResponse) => {
-                    this.peer.signal(response.offer);
+            this.roomService.bookRoom(request).subscribe(
+                (response: HostResponse) => {
+                    this.peer.signal(response.answer);
                 },
                 (error: any) => donezo.error(error),
             );

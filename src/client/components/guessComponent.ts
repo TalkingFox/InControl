@@ -1,6 +1,6 @@
 import { SendGuess } from '../../models/sendGuess';
-import { Telephone } from '../../telephony/telephone';
-import { Component } from '../component';
+import { Component } from '../../core/component';
+import { Telephone } from '../telephone';
 
 export class GuessComponent extends Component {
     constructor(private telephone: Telephone) {

@@ -1,4 +1,4 @@
-import { Component } from '../component';
+import { Component } from '../../core/component';
 
 export class PlayComponent extends Component {
     constructor() {

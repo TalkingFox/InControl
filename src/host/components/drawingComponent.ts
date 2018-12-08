@@ -1,8 +1,8 @@
 import { Observable } from 'rxjs';
 import { PlayerSelected } from '../../models/events/playerSelected';
-import { Util } from '../../util';
-import { Component } from '../component';
+import { Component } from '../../core/component';
 import { HostComponent } from './hostComponent';
+import { Util } from '../../core/util';
 
 export class DrawingComponent extends Component {
     private currentPlayer: HTMLElement;
