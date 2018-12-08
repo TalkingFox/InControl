@@ -7,7 +7,7 @@ import { WaitingComponent } from './components/client/waitingComponent';
 import { DrawingBoard } from './drawing-board';
 import { Guess } from './models/event-bodies/guess';
 import { DrawingUpdate } from './models/events/drawingUpdate';
-import { sentDrawing } from './models/events/sentDrawing';
+import { SentDrawing } from './models/events/sentDrawing';
 import { RoomState } from './models/events/stateChanged';
 import { Player } from './models/player';
 import { Room } from './models/room';
@@ -42,7 +42,7 @@ function initialize() {
     sendDrawing = document.getElementById('sendDrawing');
     sendDrawing.addEventListener('click', () => {
         const data = drawingBoard.toDataUrl();
-        const message = new sentDrawing(data);
+        const message = new SentDrawing(data);
         telephone.SendMessage(message);
         stateTransition.room.setRoomState(RoomState.WaitingForRoundEnd);
         drawingBoard.ClearCanvas();

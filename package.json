@@ -25,9 +25,11 @@
     "@types/socket.io-client": "^1.4.32",
     "aws-iot-device-sdk": "^2.2.1",
     "babel-loader": "^7.1.5",
+    "global": "^4.3.2",
     "rxjs": "^6.2.2",
     "simple-peer": "^9.1.2",
     "socket.io-client": "^2.1.1",
+    "ts-unused-exports": "^2.0.11",
     "url-parse": "^1.4.3"
   },
   "scripts": {
@@ -36,7 +38,8 @@
     "build": "webpack --mode production && webpack-dev-server --mode production",
     "host": "powershell ./host.ps1",
     "lint": "tslint -c tslint.json 'src/**/*.ts",
-    "lint-fix": "tslint -c tslint.json 'src/**/*.ts --fix"
+    "lint-fix": "tslint -c tslint.json 'src/**/*.ts --fix",
+    "unused-exports": "ts-unused-exports tsconfig.json"
   },
   "repository": {
     "type": "git",

@@ -5,7 +5,6 @@ import { GiveGuesses } from './giveGuesses';
 import { GuessesScored } from './guessesScored';
 import { PlayerLogin } from './playerLogin';
 import { PlayerSelected } from './playerSelected';
-import { sentDrawing } from './sentDrawing';
 import { StateChanged } from './stateChanged';
 
 export interface Message<T> {
@@ -13,7 +12,7 @@ export interface Message<T> {
     body: T;
 }
 
-export type DataMessage = sentDrawing | GiveClue
+export type DataMessage = GiveClue
             | StateChanged | PlayerSelected
             | SendGuess | PlayerLogin
             | DrawingUpdate | GiveGuesses
