@@ -10,16 +10,27 @@ import { AcceptGuestRequest } from '../iot/iotRequest';
 import { JoinRoomResponse } from '../iot/joinRoomResponse';
 
 export class RoomService {
-    private iot: IotClient = new IotClient();
+    private iot: IotClient;
+    constructor() {
+        this.iot = new IotClient(`In-Control-Host-${Math.floor(Math.random() * 1000000 + 1)}`);
+    }
 
     public createRoom(): Observable<string> {
         const endpoint = environment.signalServer + '/rooms';
         const headers = this.getHeaders();
-        return ajax.post(endpoint, null, headers).pipe(
-            map((response: AjaxResponse) => {
-                return response.response;
-            })
-        );
+        return ajax
+            .post(
+                endpoint,
+                {
+                    host: this.iot.clientId
+                },
+                headers
+            )
+            .pipe(
+                map((response: AjaxResponse) => {
+                    return response.response;
+                })
+            );
     }
 
     public freeRoom(room: string): void {
@@ -49,7 +60,9 @@ export class RoomService {
     }
 
     public bookRoom(request: JoinRoomRequest): Observable<HostResponse> {
-        const endpoint = `${environment.signalServer}/rooms/${request.room}/join`;
+        const endpoint = `${environment.signalServer}/rooms/${
+            request.room
+        }/join`;
         const headers = this.getHeaders();
         return ajax
             .post(

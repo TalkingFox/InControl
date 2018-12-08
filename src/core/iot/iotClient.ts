@@ -15,7 +15,7 @@ export class IotClient {
 
     private responses$: Subject<HostResponse>;
 
-    constructor() {
+    constructor(public clientId: string = `${Math.floor(Math.random() * 1000000 + 1)}`) {
         this.requests$ = new Subject<GuestRequest>();
         this.requests = this.requests$.asObservable();
         this.responses$ = new Subject<HostResponse>();
@@ -24,9 +24,7 @@ export class IotClient {
         this.device = new device({
             accessKeyId: environment.accessKey,
             baseReconnectTimeMs: 250,
-            clientId: `In-Control-Host-${Math.floor(
-                Math.random() * 1000000 + 1
-            )}`,
+            clientId: this.clientId,
             host: environment.iotHost,
             maximumReconnectTimeMs: 500,
             protocol: 'wss',
