@@ -4,7 +4,7 @@ import { HostComponent } from './host/components/hostComponent';
 let hostComponent: HostComponent;
 let createRoomComponent: CreateRoomComponent;
 
-function initialize() {
+function initialize(): void {
     hostComponent = new HostComponent();
     hostComponent.initialize();
     createRoomComponent = new CreateRoomComponent(hostComponent);

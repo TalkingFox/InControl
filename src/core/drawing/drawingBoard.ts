@@ -23,7 +23,7 @@ export class DrawingBoard {
         }
     }
 
-    public ClearCanvas() {
+    public ClearCanvas(): void {
         this.canvasContext.clearRect(0, 0, this.canvas.width, this.canvas.height);
     }
 
@@ -31,7 +31,7 @@ export class DrawingBoard {
         return this.canvas.toDataURL();
     }
 
-    public loadDataUrl(url: string) {
+    public loadDataUrl(url: string): void {
         const image: HTMLImageElement = new Image();
         image.onload = () => {
             this.canvasContext.drawImage(image, 0, 0);
@@ -92,17 +92,15 @@ export class DrawingBoard {
         const rect = canvasElement.getBoundingClientRect();
         const x = (touchEvent.touches[0].clientX - rect.left) / (rect.right - rect.left) * canvasElement.width;
         const y = (touchEvent.touches[0].clientY - rect.top) / (rect.bottom - rect.top) * canvasElement.height;
-        /*const x = touchEvent.touches[0].clientX - canvasElement.offsetLeft;
-        const y = touchEvent.touches[0].clientY - canvasElement.offsetTop;*/
         return new Point(x, y);
     }
 
-    private SetLastCoordinates(coordinates: Point) {
+    private SetLastCoordinates(coordinates: Point): void {
         this.lastPosition.x = coordinates.x;
         this.lastPosition.y = coordinates.y;
     }
 
-    private Draw(newCoordinates: Point) {
+    private Draw(newCoordinates: Point): void {
         this.canvasContext.beginPath();
         this.canvasContext.moveTo(this.lastPosition.x, this.lastPosition.y);
         this.canvasContext.lineTo(newCoordinates.x, newCoordinates.y);
@@ -116,7 +114,7 @@ export class DrawingBoard {
         this.SetLastCoordinates(newCoordinates);
     }
 
-    private Dot(coordinates: Point) {
+    private Dot(coordinates: Point): void {
         this.canvasContext.strokeRect(coordinates.x, coordinates.y, 2, 2);
     }
 

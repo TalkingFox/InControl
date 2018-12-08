@@ -24,7 +24,7 @@ export class GuessComponent extends Component {
         });
     }
 
-    public initialize() {
+    public initialize(): void {
         this.transitionTo('guessArea');
     }
 }

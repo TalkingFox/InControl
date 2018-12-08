@@ -23,7 +23,7 @@ export abstract class Component {
         });
     }
 
-    private hide(event: Event) {
+    private hide(event: Event): void {
         event.srcElement.removeEventListener('animationend', this.hideBinding);
         event.srcElement.removeEventListener('webkitAnimationEnd', this.hideBinding);
         event.srcElement.classList.add('hidden');

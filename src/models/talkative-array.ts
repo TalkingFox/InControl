@@ -21,7 +21,7 @@ export class TalkativeArray<T> {
         this.elements.length = 0;
     }
 
-    public Push(element: T) {
+    public Push(element: T): void {
         this.elements.push(element);
         this.subject.next(element);
     }

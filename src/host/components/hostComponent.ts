@@ -56,7 +56,7 @@ export class HostComponent extends Component {
         this.reallyPlayAgain = document.getElementById('reallyPlayAgain');
     }
 
-    public initialize() {
+    public initialize(): void {
         this.switchboard.drawingUpdates.subscribe((dataUrl: string) => {
             this.drawingBoard.loadDataUrl(dataUrl);
         });
@@ -67,7 +67,7 @@ export class HostComponent extends Component {
         });
     }
 
-    public startGame() {
+    public startGame(): void {
         this.resetBoard();
         this.switchboard.stopAcceptingNewUsers();
         this.questions.take().then((question: Question) => {
@@ -91,7 +91,7 @@ export class HostComponent extends Component {
         });
     }
 
-    public endGame() {
+    public endGame(): void {
         const guessComponent = new GuessComponent(this);
         guessComponent.waitForGuesses()
             .then((finalGuesses: Guess[]) => guessComponent.waitForScores(finalGuesses))
@@ -107,7 +107,7 @@ export class HostComponent extends Component {
         this.drawingComponent.initialize();
     }
 
-    private resetBoard() {
+    private resetBoard(): void {
         this.IsTaglineGlowing = false;
         this.IsTurnMessageHidden = false;
         this.drawingBoard.ClearCanvas();

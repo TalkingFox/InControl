@@ -18,7 +18,7 @@ export class AvatarComponent extends Component {
         this.board = new DrawingBoard({elementId: 'avatar'});
     }
 
-    public initialize() {
+    public initialize(): void {
         this.transitionTo('avatarArea');
     }
 }

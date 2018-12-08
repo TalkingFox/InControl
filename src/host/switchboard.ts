@@ -43,23 +43,23 @@ export class Switchboard {
         this.scoredGuesses = this.scoredGuessQueue.asObservable();
     }
 
-    public dispatchMessage(user: string, message: DataMessage) {
+    public dispatchMessage(user: string, message: DataMessage): void {
         const matchedUser = this.connections.get(user);
         matchedUser.send(JSON.stringify(message));
     }
 
-    public dispatchMessageToAll(message: DataMessage) {
+    public dispatchMessageToAll(message: DataMessage): void {
         this.connections.forEach((connection: Instance) => {
             connection.send(JSON.stringify(message));
         });
     }
 
-    public dispatchStateChange(state: RoomState) {
+    public dispatchStateChange(state: RoomState): void {
         const stateChange = new StateChanged(state);
         this.dispatchMessageToAll(stateChange);
     }
 
-    public stopAcceptingNewUsers() {
+    public stopAcceptingNewUsers(): void {
         this.isOpenToNewUsers = false;
     }
 
@@ -103,7 +103,7 @@ export class Switchboard {
         });
     }
 
-    private listenForMessages(connection: Instance) {
+    private listenForMessages(connection: Instance): void {
         connection.on('data', (message: string) => {
             const data = JSON.parse(message) as DataMessage;
             switch (data.type) {

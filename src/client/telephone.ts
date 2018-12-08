@@ -66,7 +66,7 @@ export class Telephone {
         this.peer.send(JSON.stringify(message));
     }
 
-    private listenForMessages(connection: Instance) {
+    private listenForMessages(connection: Instance): void {
         connection.on('data', (message: string) => {
             const data = JSON.parse(message) as DataMessage;
             switch (data.type) {

@@ -1,5 +1,5 @@
 export class Util {
-    public static Shuffle(array: any[]) {
+    public static Shuffle(array: any[]): any[] {
         for (let i = array.length - 1; i > 0; i--) {
             const j = Math.floor(Math.random() * (i + 1));
             [array[i], array[j]] = [array[j], array[i]];
@@ -17,7 +17,7 @@ export class Util {
         return element;
     }
 
-    public static ClearElement(element: HTMLElement) {
+    public static ClearElement(element: HTMLElement): void {
         while (element.firstChild) {
             element.removeChild(element.firstChild);
         }

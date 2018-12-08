@@ -65,9 +65,9 @@ export class RoomService {
         );
     }
 
-    private getHeaders() {
-        return {
-            'Content-Type': 'application/json'
-        };
+    private getHeaders(): Headers {
+        const headers = new Headers();
+        headers.append('Content-Type', 'application/json');
+        return headers;
     }
 }

@@ -28,7 +28,7 @@ window.onload = () => {
     initialize();
 };
 
-function initialize() {
+function initialize(): void {
     telephone = new Telephone();
     stateTransition = new StateTransition();
     guessComponent = new GuessComponent(telephone);
@@ -74,7 +74,7 @@ function initialize() {
     });
 }
 
-function sendDrawingUpdate() {
+function sendDrawingUpdate(): void {
     const dataUrl = drawingBoard.toDataUrl();
     const update = new DrawingUpdate(dataUrl);
     telephone.SendMessage(update);

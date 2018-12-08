@@ -20,7 +20,7 @@ export class CreateRoomComponent extends Component {
         this.createRoom();
     }
 
-    public playerJoined(user: Player) {
+    public playerJoined(user: Player): void {
         this.host.room.users.push(user.name);
         const userGroup = document.createElement('div');
         userGroup.classList.add('player');

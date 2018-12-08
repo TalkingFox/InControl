@@ -19,7 +19,7 @@ export class ScoreComponent extends Component {
         });
     }
 
-    public initialize(newGuesses: Guess[]) {
+    public initialize(newGuesses: Guess[]): void {
         this.setWaiting(false);
         this.guessScore = new Map<string, GuessScore>();
         newGuesses.map((guess: Guess) => {

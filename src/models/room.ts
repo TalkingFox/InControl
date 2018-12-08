@@ -14,7 +14,7 @@ export class Room {
     private roomStateSubject: Subject<RoomState>;
     private canvasSubject: Subject<string>;
 
-    constructor(public name) {
+    constructor(public name: string) {
         this.roomStateSubject = new Subject<RoomState>();
         this.roomState = this.roomStateSubject.asObservable();
 
@@ -22,15 +22,15 @@ export class Room {
         this.canvas = this.canvasSubject.asObservable();
     }
 
-    public setRoomState(state: RoomState) {
+    public setRoomState(state: RoomState): void {
         this.roomStateSubject.next(state);
     }
 
-    public setCanvasData(url: string) {
+    public setCanvasData(url: string): void {
         this.canvasSubject.next(url);
     }
 
-    public reset() {
+    public reset(): void {
         this.usedClues = [];
         this.cluelessUsers = [];
     }
