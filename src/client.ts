@@ -5,10 +5,10 @@ import { PlayComponent } from './components/client/playComponent';
 import { ScoreComponent } from './components/client/scoreComponent';
 import { WaitingComponent } from './components/client/waitingComponent';
 import { DrawingBoard } from './drawing-board';
+import { Guess } from './models/event-bodies/guess';
 import { DrawingUpdate } from './models/events/drawingUpdate';
 import { sentDrawing } from './models/events/sentDrawing';
 import { RoomState } from './models/events/stateChanged';
-import { Guess } from './models/guess';
 import { Player } from './models/player';
 import { Room } from './models/room';
 import { StateTransition } from './stateTransition';
@@ -140,7 +140,7 @@ function listenToStateChanges(): void {
                 waitingComponent.initialize();
                 break;
             default:
-                console.log(state);
+                throw state;
         }
     });
 }

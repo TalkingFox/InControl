@@ -1,5 +1,5 @@
+import { Guess } from '../../models/event-bodies/guess';
 import { GuessesScored } from '../../models/events/guessesScored';
-import { Guess } from '../../models/guess';
 import { GuessScore } from '../../models/guessScore';
 import { Telephone } from '../../telephony/telephone';
 import { Util } from '../../util';

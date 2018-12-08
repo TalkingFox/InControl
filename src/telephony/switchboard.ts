@@ -3,9 +3,9 @@ import { share } from 'rxjs/operators';
 import * as Peer from 'simple-peer';
 import { Instance } from 'simple-peer';
 import 'simple-peer';
+import { Guess } from '../models/event-bodies/guess';
 import { DataMessage, DataMessageType } from '../models/events/message';
 import { RoomState, StateChanged } from '../models/events/stateChanged';
-import { Guess } from '../models/guess';
 import { GuessScore } from '../models/guessScore';
 import { Player } from '../models/player';
 import { IotClient } from './iot/iot-client';
@@ -66,25 +66,16 @@ export class Switchboard {
     public createRoom(): Observable<string> {
         const observable = this.roomService.bookRoom().pipe(share());
         observable.subscribe((room: string) => {
-            console.log('listening for guests');
             this.listenForGuests(room);
         });
         return observable;
-        // this.peer = new Peer({
-        //    initiator: true,
-        //   trickle: false,
-        //  config: { iceServers: [{ urls: 'stun:stun.l.google.com:19302' }, { urls: 'stun:global.stun.twilio.com:3478?transport=udp' }] }});
-        // this.peer.on('signal', (id: Peer.SignalData) => {
-        // });
     }
 
     private listenForGuests(room: string): void {
         this.roomService.readGuestBook(room).subscribe((request: ConnectRequest) => {
             if (!this.isOpenToNewUsers) {
-                console.log('not open anymore...');
                 return;
             }
-            console.log('new request', request);
             this.registerConnection(request);
         });
     }
@@ -94,10 +85,8 @@ export class Switchboard {
             initiator: false,
             trickle: false,
         });
-        console.log('signalling offer...', request);
         newPeer.signal(request.offer);
         newPeer.on('signal', (id: any) => {
-            console.log('signalled');
             const acceptance: ConnectResponse = {
                 offer: id,
                 player: request.player,
@@ -107,7 +96,6 @@ export class Switchboard {
             this.roomService.registerGuest(acceptance);
         });
         newPeer.on('connect', () => {
-            console.log('connected');
             this.connections.set(request.player, newPeer);
             this.listenForMessages(newPeer);
         });
@@ -134,7 +122,7 @@ export class Switchboard {
                     this.scoredGuessQueue.next(data.body as GuessScore[]);
                     break;
                 default:
-                    console.log(data);
+                    throw data;
             }
         });
     }

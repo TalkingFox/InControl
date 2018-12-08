@@ -1,3 +1,4 @@
+import { Guess } from './event-bodies/guess';
 import { DataMessageType, Message } from './events/message';
 
 export class SendGuess implements Message<Guess> {
@@ -7,8 +8,4 @@ export class SendGuess implements Message<Guess> {
     constructor(user: string, guess: string) {
         this.body = new Guess(user, guess);
     }
-}
-
-export class Guess {
-    constructor(public user: string, public guess: string) {}
 }

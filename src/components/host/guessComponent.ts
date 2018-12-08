@@ -1,9 +1,9 @@
 import { Subject, Subscription } from 'rxjs';
 import { DrawingBoard } from '../../drawing-board';
 import { DrawingBoardSettings } from '../../models/drawing-board-settings';
+import { Guess } from '../../models/event-bodies/guess';
 import { GiveGuesses } from '../../models/events/giveGuesses';
 import { RoomState } from '../../models/events/stateChanged';
-import { Guess } from '../../models/guess';
 import { GuessScore } from '../../models/guessScore';
 import { TalkativeArray } from '../../models/talkative-array';
 import { Util } from '../../util';

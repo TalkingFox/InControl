@@ -1,4 +1,4 @@
-import { Guess } from '../guess';
+import { Guess } from '../event-bodies/guess';
 import { DataMessageType, Message } from './message';
 
 export class GiveGuesses implements Message<Guess[]> {

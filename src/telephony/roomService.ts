@@ -27,7 +27,6 @@ export class RoomService {
     }
 
     public registerGuest(request: ConnectResponse): void {
-        console.log('registering', request.player);
         this.iot.publish(request.room, request);
     }
 

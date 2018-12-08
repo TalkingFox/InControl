@@ -1,4 +1,4 @@
-import { Guess } from './guess';
+import { Guess } from './event-bodies/guess';
 
 export class GuessScore {
     public isLiked: boolean = false;

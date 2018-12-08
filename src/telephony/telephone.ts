@@ -1,12 +1,11 @@
 import { Observable, Subject } from 'rxjs';
-import { catchError } from 'rxjs/operators';
-import * as Peer from 'simple-peer';
 import 'simple-peer';
 import { Instance } from 'simple-peer';
+import * as Peer from 'simple-peer';
+import { Guess } from '../models/event-bodies/guess';
+import { PlayerState } from '../models/event-bodies/playerState';
 import { DataMessage, DataMessageType } from '../models/events/message';
-import { PlayerState } from '../models/events/playerSelected';
 import { RoomState } from '../models/events/stateChanged';
-import { Guess } from '../models/guess';
 import { Player } from '../models/player';
 import { Room } from '../models/room';
 import { IotClient } from './iot/iot-client';
@@ -43,7 +42,6 @@ export class Telephone {
         this.room = room;
         this.peer = new Peer({ initiator: true, trickle: false });
         this.peer.on('signal', (id: any) => {
-            console.log('signal');
             const request: ConnectRequest = {
                 offer: JSON.stringify(id),
                 player: this.player.name,
@@ -52,7 +50,6 @@ export class Telephone {
             };
             this.roomService.requestRoom(request).subscribe(
                 (response: ConnectResponse) => {
-                    console.log('got answer');
                     this.peer.signal(response.offer);
                 },
                 (error: any) => donezo.error(error),
@@ -86,14 +83,14 @@ export class Telephone {
                 case DataMessageType.PlayerSelected:
                     const selectedPlayer = data.body as PlayerState;
                     const newRoomState =
-                        selectedPlayer.player == this.player.name
+                        selectedPlayer.player === this.player.name
                             ? RoomState.MyTurn
                             : RoomState.OtherPlayerSelected;
                     this.room.setRoomState(newRoomState);
                     this.room.setCanvasData(selectedPlayer.canvasUrl);
                     break;
                 default:
-                    console.log(data);
+                    throw data;
             }
         });
     }

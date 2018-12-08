@@ -1,12 +1,12 @@
 import { Observable, Subject } from 'rxjs';
 
 export abstract class Component {
-    private _hide: EventListener;
+    private hideBinding: EventListener;
 
     protected transitionTo(area: string): void {
         const allAreas = document.querySelectorAll('.master-container > div');
         allAreas.forEach((value: Element) => {
-            if (value.id == area) {
+            if (value.id === area) {
                 value.classList.remove('hidden');
                 value.classList.remove('slide-out');
                 value.classList.add('slide-in');
@@ -18,16 +18,16 @@ export abstract class Component {
             } else {
                 value.classList.remove('slide-in');
                 value.classList.add('slide-out');
-                this._hide = this.hide.bind(this);
-                value.addEventListener('animationend', this._hide);
-                value.addEventListener('webkitAnimationEnd', this._hide);
+                this.hideBinding = this.hide.bind(this);
+                value.addEventListener('animationend', this.hideBinding);
+                value.addEventListener('webkitAnimationEnd', this.hideBinding);
             }
         });
     }
 
     private hide(event: Event) {
-        event.srcElement.removeEventListener('animationend', this._hide);
-        event.srcElement.removeEventListener('webkitAnimationEnd', this._hide);
+        event.srcElement.removeEventListener('animationend', this.hideBinding);
+        event.srcElement.removeEventListener('webkitAnimationEnd', this.hideBinding);
         event.srcElement.classList.add('hidden');
         event.srcElement.classList.remove('slide-out');
     }

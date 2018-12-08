@@ -1,6 +1,6 @@
 import { DrawingBoard } from '../../drawing-board';
 import { ClueEnvelope } from '../../models/ClueEnvelope';
-import { Guess } from '../../models/guess';
+import { Guess } from '../../models/event-bodies/guess';
 import { GuessScore } from '../../models/guessScore';
 import { Question } from '../../models/question';
 import { Room } from '../../models/room';

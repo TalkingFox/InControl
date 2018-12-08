@@ -1,4 +1,4 @@
-import { SendGuess } from '../guess';
+import { SendGuess } from '../sendGuess';
 import { DrawingUpdate } from './drawingUpdate';
 import { GiveClue } from './giveClue';
 import { GiveGuesses } from './giveGuesses';

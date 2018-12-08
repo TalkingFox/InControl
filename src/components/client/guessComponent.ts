@@ -1,4 +1,4 @@
-import { SendGuess } from '../../models/guess';
+import { SendGuess } from '../../models/sendGuess';
 import { Telephone } from '../../telephony/telephone';
 import { Component } from '../component';
 

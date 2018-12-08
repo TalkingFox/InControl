@@ -34,7 +34,7 @@ export class QuestionService {
         const http = new XMLHttpRequest();
         const questionSubject = new Subject<Question[]>();
         http.onreadystatechange = () => {
-            if (http.readyState == 4 && http.status == 200) {
+            if (http.readyState === 4 && http.status === 200) {
                 const response = JSON.parse(http.response) as Question[];
                 this.questions = response;
                 questionSubject.next(response);
