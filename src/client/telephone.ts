@@ -52,8 +52,7 @@ export class Telephone {
                     this.peer.signal(response.answer);
                 },
                 (error: any) => {
-                    console.log('error-higher',error);
-                    donezo.error(error)
+                    donezo.error(error);
                 }
             );
         });

@@ -13,7 +13,6 @@ import { DrawingComponent } from './drawingComponent';
 import { GuessComponent } from './guessComponent';
 
 export class HostComponent extends Component {
-
     public set Tagline(value: string) {
         this.tagline.textContent = value;
     }
@@ -48,7 +47,10 @@ export class HostComponent extends Component {
         super();
         this.tagline = document.getElementById('tagline');
         this.turnMessage = document.getElementById('turnMessage');
-        this.drawingBoard = new DrawingBoard({ elementId: 'drawingBoard', isReadOnly: true });
+        this.drawingBoard = new DrawingBoard({
+            elementId: 'drawingBoard',
+            isReadOnly: true
+        });
         this.switchboard = new Switchboard();
         this.questions = new QuestionService();
         this.drawingComponent = new DrawingComponent(this);
@@ -75,35 +77,34 @@ export class HostComponent extends Component {
                 this.transitionTo('outOfQuestions');
                 return;
             }
-            console.log('got question');
             this.room.question = question;
             this.room.cluelessUsers = this.room.users.slice();
-            try {
-                this.takeClues().map((envelope: ClueEnvelope) => {
-                    console.log('sending envelopes');
-                    this.switchboard.dispatchMessage(envelope.player, envelope.clue);
-                });
-                console.log('starting new round');
-                this.startNextRound();
-            } catch (error) {
-                console.log(error);
-            }
+            this.takeClues().map((envelope: ClueEnvelope) => {
+                this.switchboard.dispatchMessage(
+                    envelope.player,
+                    envelope.clue
+                );
+            });
+            this.startNextRound();
         });
     }
 
     public endGame(): void {
         const guessComponent = new GuessComponent(this);
-        guessComponent.waitForGuesses()
-            .then((finalGuesses: Guess[]) => guessComponent.waitForScores(finalGuesses))
-            .then((newlyScoredGuesses: GuessScore[]) => this.answerComponent.initialize(newlyScoredGuesses));
+        guessComponent
+            .waitForGuesses()
+            .then((finalGuesses: Guess[]) =>
+                guessComponent.waitForScores(finalGuesses)
+            )
+            .then((newlyScoredGuesses: GuessScore[]) =>
+                this.answerComponent.initialize(newlyScoredGuesses)
+            );
     }
 
     public startNextRound(): void {
         if (this.room.cluelessUsers.length === 0) {
-            console.log('no clueless!');
             return this.endGame();
         }
-        console.log('initializing drawing component');
         this.drawingComponent.initialize();
     }
 

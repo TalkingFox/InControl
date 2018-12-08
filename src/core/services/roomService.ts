@@ -1,6 +1,6 @@
 import { Observable, of, throwError } from 'rxjs';
-import { ajax, AjaxResponse, AjaxError } from 'rxjs/ajax';
-import { map, mergeMap, catchError } from 'rxjs/operators';
+import { ajax, AjaxError, AjaxResponse } from 'rxjs/ajax';
+import { catchError, map, mergeMap } from 'rxjs/operators';
 import { JoinRoomRequest } from '../../client/models/joinRoomRequest';
 import { environment } from '../../environment/environment';
 import { GuestRequest } from '../iot/clientRequest';
@@ -73,7 +73,7 @@ export class RoomService {
             );
     }
 
-    private getHeaders(): Object {
+    private getHeaders(): object {
         return {
             'Content-Type': 'application/json'
         };

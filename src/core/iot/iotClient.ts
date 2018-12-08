@@ -41,19 +41,16 @@ export class IotClient {
     }
 
     public subscribe(topic: string): void {
-        console.log('subscribing to:', topic);
         this.device.subscribe(topic);
     }
 
     public subscribeAll(room: string): void {
-        console.log('subscribing to:', 'rooms/', room, '/#');
         this.device.subscribe('rooms/' + room + '/#');
     }
 
     private attachEvents(): void {
         this.device.on('message', (topic: string, payload: Uint8Array) => {
             const message = this.decoder.decode(payload);
-            console.log('got message:', message);
             const data = JSON.parse(message) as IotResponse;
             if (data.type === ConnectType.Offer) {
                 data.id = topic.split('/').pop();
