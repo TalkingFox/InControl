@@ -34,10 +34,6 @@ export class IotClient {
         this.attachEvents();
     }
 
-    public publish(room: string, message: any): void {
-        this.device.publish('rooms/' + room, JSON.stringify(message));
-    }
-
     public subscribe(topic: string): void {
         this.device.subscribe(topic);
     }

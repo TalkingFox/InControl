@@ -76,7 +76,6 @@ export class RoomService {
             .pipe(
                 mergeMap((response: AjaxResponse) => {
                     const joinResponse = response.response as JoinRoomResponse;
-                    this.iot.publish(joinResponse.roomTopic, request);
                     this.iot.subscribe(joinResponse.roomTopic);
                     return this.iot.responses;
                 }),
