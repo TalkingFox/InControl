@@ -27,7 +27,7 @@
     "babel-loader": "^7.1.5",
     "global": "^4.3.2",
     "rxjs": "^6.2.2",
-    "simple-peer": "^9.1.2",
+    "simple-peer": "9.2.0",
     "socket.io-client": "^2.1.1",
     "ts-unused-exports": "^2.0.11",
     "url-parse": "^1.4.3"
