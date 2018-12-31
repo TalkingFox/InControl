@@ -1,16 +1,18 @@
 import { Observable, Subject } from 'rxjs';
-import { share } from 'rxjs/operators';
 import * as Peer from 'simple-peer';
 import { Instance } from 'simple-peer';
 import 'simple-peer';
-import { GuestRequest } from '../core/iot/clientRequest';
-import { AcceptGuestRequest } from '../core/iot/iotRequest';
-import { RoomService } from '../core/services/roomService';
 import { Guess } from '../models/event-bodies/guess';
 import { DataMessage, DataMessageType } from '../models/events/message';
 import { RoomState, StateChanged } from '../models/events/stateChanged';
 import { GuessScore } from '../models/guessScore';
 import { Player } from '../models/player';
+import { environment } from '../environment/environment';
+import { GuestRequest } from 'foxconnect/dist/models/clientRequest';
+import { AcceptGuestRequest } from 'foxconnect/dist/iot/iotRequest';
+import { FoxConnect } from 'foxconnect';
+import { share } from 'rxjs/operators';
+
 
 export class Switchboard {
     public players: Observable<Player>;
@@ -26,10 +28,9 @@ export class Switchboard {
     private connections: Map<string, Instance>;
     private isOpenToNewUsers: boolean = true;
     private scoredGuessQueue: Subject<GuessScore[]>;
-    private roomService: RoomService;
+    private foxConnect: FoxConnect;
 
     constructor() {
-        this.roomService = new RoomService();
         this.guessQueue = new Subject<Guess>();
         this.guesses = this.guessQueue.asObservable();
         this.drawingQueue = new Subject<string>();
@@ -41,6 +42,14 @@ export class Switchboard {
         this.drawingUpdates = this.drawingUpdatesQueue.asObservable();
         this.scoredGuessQueue = new Subject<GuessScore[]>();
         this.scoredGuesses = this.scoredGuessQueue.asObservable();
+        this.foxConnect = new FoxConnect({
+                awsAccessKey: environment.accessKey,
+                awsIotHost: environment.iotHost,
+                awsRegion: environment.region,
+                awsSecretKey: environment.secretKey,
+                clientId: `${Math.floor(Math.random() * 1000000 + 1)}`,
+                signalServer: environment.signalServer
+        });
     }
 
     public dispatchMessage(user: string, message: DataMessage): void {
@@ -64,7 +73,7 @@ export class Switchboard {
     }
 
     public createRoom(): Observable<string> {
-        const observable = this.roomService.createRoom().pipe(share());
+        const observable = this.foxConnect.createRoom().pipe(share());
         observable.subscribe((room: string) => {
             this.listenForGuests(room);
         });
@@ -72,8 +81,8 @@ export class Switchboard {
     }
 
     private listenForGuests(room: string): void {
-        const subscription = this.roomService
-            .readGuestBook(room)
+        const subscription = this.foxConnect
+            .listenForGuests(room)
             .subscribe((request: GuestRequest) => {
                 if (!this.isOpenToNewUsers) {
                     subscription.unsubscribe();
@@ -95,7 +104,7 @@ export class Switchboard {
                 guestId: request.id,
                 room: request.room
             };
-            this.roomService.registerGuest(acceptance);
+            this.foxConnect.registerGuest(acceptance);
         });
         newPeer.on('connect', () => {
             this.connections.set(request.name, newPeer);

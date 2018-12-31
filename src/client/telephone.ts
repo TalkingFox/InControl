@@ -2,16 +2,16 @@ import { Observable, Subject } from 'rxjs';
 import { Instance } from 'simple-peer';
 import * as Peer from 'simple-peer';
 import 'simple-peer';
-import { HostResponse } from '../core/iot/hostResponse';
-import { IotClient } from '../core/iot/iotClient';
-import { RoomService } from '../core/services/roomService';
 import { Guess } from '../models/event-bodies/guess';
 import { PlayerState } from '../models/event-bodies/playerState';
 import { DataMessage, DataMessageType } from '../models/events/message';
 import { RoomState } from '../models/events/stateChanged';
 import { Player } from '../models/player';
 import { Room } from '../models/room';
-import { JoinRoomRequest } from './models/joinRoomRequest';
+import { FoxConnect } from 'foxconnect';
+import { environment } from '../environment/environment';
+import { JoinRoomRequest } from 'foxconnect/dist/models/joinRoomRequest';
+import { HostResponse } from 'foxconnect/dist/models/hostResponse';
 
 export class Telephone {
     public player: Player;
@@ -24,8 +24,7 @@ export class Telephone {
     private guessesSubject: Subject<Guess[]>;
     private peer: Instance;
     private room: Room;
-    private roomService: RoomService;
-    private iot: IotClient;
+    private foxConnect: FoxConnect;
 
     constructor() {
         this.messageSubject = new Subject<DataMessage>();
@@ -34,7 +33,14 @@ export class Telephone {
         this.clues = this.cluesSubject.asObservable();
         this.guessesSubject = new Subject<Guess[]>();
         this.guesses = this.guessesSubject.asObservable();
-        this.roomService = new RoomService();
+        this.foxConnect = new FoxConnect({
+            awsAccessKey: environment.accessKey,
+            awsIotHost: environment.iotHost,
+            awsRegion: environment.region,
+            awsSecretKey: environment.secretKey,
+            clientId: `${Math.floor(Math.random() * 1000000 + 1)}`,
+            signalServer: environment.signalServer
+        });
     }
 
     public connect(room: Room): Observable<void> {
@@ -47,7 +53,7 @@ export class Telephone {
                 player: this.player.name,
                 room: room.name
             };
-            this.roomService.bookRoom(request).subscribe(
+            this.foxConnect.joinRoom(request).subscribe(
                 (response: HostResponse) => {
                     this.peer.signal(response.answer);
                 },

@@ -1,18 +1,25 @@
 import { Component } from '../../core/component';
-import { RoomService } from '../../core/services/roomService';
 import { environment } from '../../environment/environment';
 import { Player } from '../../models/player';
 import { Room } from '../../models/room';
 import { HostComponent } from './hostComponent';
+import { FoxConnect } from 'foxconnect';
 
 export class CreateRoomComponent extends Component {
     private users: HTMLElement;
-    private roomService: RoomService;
+    private foxConnect: FoxConnect;
 
     constructor(private host: HostComponent) {
         super();
         this.users = document.getElementById('users');
-        this.roomService = new RoomService();
+        this.foxConnect = new FoxConnect({
+            awsAccessKey: environment.accessKey,
+            awsIotHost: environment.iotHost,
+            awsRegion: environment.region,
+            awsSecretKey: environment.secretKey,
+            clientId: `${Math.floor(Math.random() * 1000000 + 1)}`,
+            signalServer: environment.signalServer
+        });
     }
 
     public initialize(): void {
@@ -56,7 +63,7 @@ export class CreateRoomComponent extends Component {
                     return;
                 }
                 this.host.startGame();
-                this.roomService.freeRoom(roomName);
+                this.foxConnect.freeRoom(roomName);
             });
         });
     }
